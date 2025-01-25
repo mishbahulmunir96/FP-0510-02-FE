@@ -1,3 +1,10 @@
+import LandingPageLayout from "@/components/LandingPageLayout";
+import HomeComponent from "@/features/home";
+
 export default function Home() {
-  return <div>Homepage</div>;
+  return (
+    <LandingPageLayout>
+      <HomeComponent />
+    </LandingPageLayout>
+  );
 }

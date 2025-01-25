@@ -3,6 +3,7 @@ import "./globals.css";
 import { amarante, poppins } from "./utils/font";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title:
