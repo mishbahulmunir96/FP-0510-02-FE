@@ -1,8 +1,8 @@
+import NuqsProvider from "@/providers/NuqsProvider";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import type { Metadata } from "next";
 import "./globals.css";
 import { amarante, poppins } from "./utils/font";
-import NuqsProvider from "@/providers/NuqsProvider";
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title:
