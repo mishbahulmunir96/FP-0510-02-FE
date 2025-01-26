@@ -179,7 +179,7 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
               onClick={handleSearch}
               className="flex-1 bg-[#0194F3] px-8 py-2 font-semibold text-white hover:bg-blue-600"
             >
-              Search
+              Find
             </Button>
             <Button
               onClick={handleReset}
@@ -194,7 +194,7 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
         {/* Most Searched Locations */}
         <div className="my-8">
           <h2 className="mb-6 text-2xl font-bold">Most Searched Locations</h2>
-          <div className="flex gap-6 overflow-x-auto pb-4">
+          <div className="flex justify-between gap-6 overflow-x-auto pb-4">
             {locations.map((location, index) => (
               <div
                 key={index}

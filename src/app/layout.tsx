@@ -4,6 +4,7 @@ import { amarante, poppins } from "./utils/font";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import Navbar from "@/components/Navbar";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title:
@@ -23,6 +24,7 @@ export default function RootLayout({
         <NuqsProvider>
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </NuqsProvider>
+        <ToastContainer />
       </body>
     </html>
   );

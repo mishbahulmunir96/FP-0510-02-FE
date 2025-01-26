@@ -108,23 +108,24 @@ export default function PropertyListPage() {
         onCheckOut={handleCheckOut}
         onGuest={handleGuest}
       />
+      <div className="relative mx-4 mt-6 w-full max-w-md sm:mx-6 sm:max-w-lg md:mx-12 lg:mx-24 lg:max-w-xl">
+        <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500 sm:h-6 sm:w-6" />
+        <Input
+          className="w-full rounded-full border-2 border-gray-300 px-12 py-2 pl-12 pr-4 text-sm text-gray-800 placeholder-gray-500 transition-all duration-300 ease-in-out focus:border-blue-500 focus:shadow-lg focus:ring-2 focus:ring-blue-200 sm:py-3 sm:text-base"
+          placeholder="Search property..."
+          onChange={(e) => handleSearchChange(e.target.value)}
+          value={search}
+          aria-label="Search property"
+        />
+      </div>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="container px-4 sm:px-6 lg:px-24">
         <motion.div
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="relative mx-auto mb-6 max-w-xl"
-        >
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transform text-sky-400" />
-          <Input
-            className="w-full rounded-full border-2 border-sky-300 py-2 pl-12 pr-4 text-sm text-gray-800 placeholder-gray-500 transition-colors duration-300 focus:border-sky-500 focus:ring-0 sm:py-3"
-            placeholder="Cari property..."
-            onChange={(e) => handleSearchChange(e.target.value)}
-            value={search}
-            aria-label="Search property"
-          />
-        </motion.div>
+        ></motion.div>
 
         {isLoading ? (
           <motion.div
