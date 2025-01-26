@@ -21,7 +21,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.className} ${amarante.className}antialiased`}>
         <NuqsProvider>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            <Navbar />
+            {children}
+          </ReactQueryProvider>
         </NuqsProvider>
       </body>
     </html>
