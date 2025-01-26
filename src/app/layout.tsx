@@ -3,7 +3,6 @@ import "./globals.css";
 import { amarante, poppins } from "./utils/font";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title:
@@ -21,10 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.className} ${amarante.className}antialiased`}>
         <NuqsProvider>
-          <ReactQueryProvider>
-            <Navbar />
-            {children}
-          </ReactQueryProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
         </NuqsProvider>
       </body>
     </html>
