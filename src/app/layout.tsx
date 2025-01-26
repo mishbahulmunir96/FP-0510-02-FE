@@ -3,7 +3,7 @@ import "./globals.css";
 import { amarante, poppins } from "./utils/font";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-
+import { ToastContainer } from "react-toastify";
 export const metadata: Metadata = {
   title:
     "MAKÉT | Makelar Ticket. Access Your Favorite Events with a Single Click!",
@@ -22,6 +22,7 @@ export default function RootLayout({
         <NuqsProvider>
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </NuqsProvider>
+        <ToastContainer />
       </body>
     </html>
   );

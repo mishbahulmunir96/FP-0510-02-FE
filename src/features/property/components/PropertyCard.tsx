@@ -92,7 +92,7 @@ const PropertyCard: FC<PropertyCardProps> = ({ property }) => {
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
             <Badge
               variant="default"
-              className="rounded-md bg-sky-200 px-2 py-1 text-xs text-sky-800"
+              className="rounded-md bg-sky-200 px-2 py-1 text-xs text-sky-400"
             >
               {property.category}
             </Badge>
