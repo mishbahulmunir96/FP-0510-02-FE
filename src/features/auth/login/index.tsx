@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,7 @@ const LoginPage = () => {
         <div className="flex flex-col gap-6">
           <Card className="overflow-hidden">
             <CardContent className="grid p-0 md:grid-cols-2">
+              {/* Bagian Kiri: Form Login Biasa */}
               <form onSubmit={formik.handleSubmit} className="p-6 md:p-8">
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col items-center text-center">
@@ -39,6 +41,7 @@ const LoginPage = () => {
                     </p>
                   </div>
 
+                  {/* Input Email */}
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -56,6 +59,7 @@ const LoginPage = () => {
                     ) : null}
                   </div>
 
+                  {/* Input Password */}
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
@@ -81,8 +85,41 @@ const LoginPage = () => {
                     ) : null}
                   </div>
 
+                  {/* Tombol Login */}
                   <Button type="submit" className="w-full" disabled={isPending}>
                     {isPending ? "Loading..." : "Login"}
+                  </Button>
+
+                  {/* Pemisah */}
+                  <div className="relative flex items-center justify-center">
+                    <span className="mx-2 text-sm text-muted-foreground">
+                      or
+                    </span>
+                  </div>
+
+                  {/* Tombol Login dengan Google */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => signIn("google", { callbackUrl: "/" })}
+                  >
+                    <svg
+                      className="mr-2 h-4 w-4"
+                      aria-hidden="true"
+                      focusable="false"
+                      data-prefix="fab"
+                      data-icon="google"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 488 512"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M488 261.8c0 141.4-114.6 256-256 256C114.6 517.8 0 403.2 0 261.8S114.6 6 232 6c62.7 0 112.5 23.3 150.8 61.8l-61 58.8C307 102.7 273.8 90 232 90 142.6 90 70.9 160.7 70.9 261.8s71.7 171.8 161.1 171.8c103 0 141.7-74 147.7-112.6h-147.7v-74.2H488v38.8z"
+                      ></path>
+                    </svg>
+                    Sign in with Google
                   </Button>
 
                   <div className="text-center text-sm">
@@ -97,6 +134,7 @@ const LoginPage = () => {
                 </div>
               </form>
 
+              {/* Bagian Kanan: Gambar */}
               <div className="relative hidden bg-muted md:block">
                 <Image
                   src="https://res.cloudinary.com/andikalp/image/upload/v1737903319/photo-1563911302283-d2bc129e7570_iy9h5v.jpg"

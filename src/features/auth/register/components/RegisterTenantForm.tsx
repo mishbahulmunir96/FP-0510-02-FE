@@ -18,6 +18,8 @@ import { cn } from "@/lib/utils";
 import useRegister from "@/hooks/api/auth/useRegister";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import SuccessModal from "@/components/modals/SuccessModal";
 
 YupPassword(Yup);
 
@@ -30,9 +32,12 @@ const tenantSchema = Yup.object().shape({
   imageUrl: Yup.string().nullable(),
 });
 
-const TenantForm = () => {
+const RegisterTenantForm = () => {
   const { mutate: register, isPending } = useRegister();
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [formData, setFormData] = useState<any>(null);
 
   const formik = useFormik({
     initialValues: {
@@ -46,7 +51,7 @@ const TenantForm = () => {
     },
     validationSchema: tenantSchema,
     onSubmit: (values) => {
-      register({
+      setFormData({
         name: values.name,
         email: values.email,
         phoneNumber: values.phoneNumber,
@@ -55,8 +60,22 @@ const TenantForm = () => {
         role: "TENANT",
         image: values.imageUrl ?? undefined,
       });
+      setShowConfirmModal(true);
     },
   });
+
+  const handleConfirmRegistration = async () => {
+    try {
+      await register(formData);
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
+      formik.resetForm();
+      setSelectedImage("");
+    } catch (error) {
+      setShowConfirmModal(false);
+      // Error handling sudah di-handle oleh useRegister hook
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,133 +86,150 @@ const TenantForm = () => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit} className="space-y-6">
-      <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold tracking-tight">Become a Tenant</h1>
-        <p className="text-sm text-muted-foreground">
-          Register your property management account
-        </p>
-      </div>
+    <>
+      <form onSubmit={formik.handleSubmit} className="space-y-6">
+        <div className="space-y-2 text-center">
+          <h1 className="text-2xl font-bold tracking-tight">Become a Tenant</h1>
+          <p className="text-sm text-muted-foreground">
+            Register your property management account
+          </p>
+        </div>
 
-      <div className="space-y-4">
-        {/* Image Upload */}
-        <div className="space-y-2">
-          <Label htmlFor="imageUrl">Profile Picture</Label>
-          <Input
-            id="imageUrl"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-          {selectedImage && (
-            <img
-              src={selectedImage}
-              alt="Preview"
-              className="mx-auto h-32 w-32 rounded-full object-cover"
+        <div className="space-y-4">
+          {/* Image Upload */}
+          <div className="space-y-2">
+            <Label htmlFor="imageUrl">Profile Picture</Label>
+            <Input
+              id="imageUrl"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
             />
-          )}
-        </div>
-
-        {/* Basic Info */}
-        <div className="space-y-2">
-          <Label htmlFor="name" className="flex items-center gap-2">
-            <User size={16} />
-            Tenant Name
-          </Label>
-          <Input
-            id="name"
-            {...formik.getFieldProps("name")}
-            className={cn(
-              formik.touched.name && formik.errors.name && "border-red-500",
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Preview"
+                className="mx-auto h-32 w-32 rounded-full object-cover"
+              />
             )}
-          />
-          {formik.touched.name && formik.errors.name && (
-            <p className="text-xs text-red-500">{formik.errors.name}</p>
-          )}
-        </div>
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email" className="flex items-center gap-2">
-            <Mail size={16} />
-            Email
-          </Label>
-          <Input
-            id="email"
-            type="email"
-            {...formik.getFieldProps("email")}
-            className={cn(
-              formik.touched.email && formik.errors.email && "border-red-500",
+          {/* Basic Info */}
+          <div className="space-y-2">
+            <Label htmlFor="name" className="flex items-center gap-2">
+              <User size={16} />
+              Tenant Name
+            </Label>
+            <Input
+              id="name"
+              {...formik.getFieldProps("name")}
+              className={cn(
+                formik.touched.name && formik.errors.name && "border-red-500",
+              )}
+            />
+            {formik.touched.name && formik.errors.name && (
+              <p className="text-xs text-red-500">{formik.errors.name}</p>
             )}
-          />
-          {formik.touched.email && formik.errors.email && (
-            <p className="text-xs text-red-500">{formik.errors.email}</p>
-          )}
-        </div>
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phoneNumber" className="flex items-center gap-2">
-            <Phone size={16} />
-            Phone Number
-          </Label>
-          <Input
-            id="phoneNumber"
-            {...formik.getFieldProps("phoneNumber")}
-            className={cn(
-              formik.touched.phoneNumber &&
-                formik.errors.phoneNumber &&
-                "border-red-500",
+          <div className="space-y-2">
+            <Label htmlFor="email" className="flex items-center gap-2">
+              <Mail size={16} />
+              Email
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              {...formik.getFieldProps("email")}
+              className={cn(
+                formik.touched.email && formik.errors.email && "border-red-500",
+              )}
+            />
+            {formik.touched.email && formik.errors.email && (
+              <p className="text-xs text-red-500">{formik.errors.email}</p>
             )}
-          />
-          {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-            <p className="text-xs text-red-500">{formik.errors.phoneNumber}</p>
-          )}
-        </div>
+          </div>
 
-        {/* Bank Details */}
-        <div className="space-y-2">
-          <Label htmlFor="bankName" className="flex items-center gap-2">
-            <Building size={16} />
-            Bank Name
-          </Label>
-          <Input
-            id="bankName"
-            {...formik.getFieldProps("bankName")}
-            className={cn(
-              formik.touched.bankName &&
-                formik.errors.bankName &&
-                "border-red-500",
+          <div className="space-y-2">
+            <Label htmlFor="phoneNumber" className="flex items-center gap-2">
+              <Phone size={16} />
+              Phone Number
+            </Label>
+            <Input
+              id="phoneNumber"
+              {...formik.getFieldProps("phoneNumber")}
+              className={cn(
+                formik.touched.phoneNumber &&
+                  formik.errors.phoneNumber &&
+                  "border-red-500",
+              )}
+            />
+            {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+              <p className="text-xs text-red-500">
+                {formik.errors.phoneNumber}
+              </p>
             )}
-          />
-          {formik.touched.bankName && formik.errors.bankName && (
-            <p className="text-xs text-red-500">{formik.errors.bankName}</p>
-          )}
-        </div>
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="bankNumber" className="flex items-center gap-2">
-            <CreditCard size={16} />
-            Bank Account Number
-          </Label>
-          <Input
-            id="bankNumber"
-            {...formik.getFieldProps("bankNumber")}
-            className={cn(
-              formik.touched.bankNumber &&
-                formik.errors.bankNumber &&
-                "border-red-500",
+          {/* Bank Details */}
+          <div className="space-y-2">
+            <Label htmlFor="bankName" className="flex items-center gap-2">
+              <Building size={16} />
+              Bank Name
+            </Label>
+            <Input
+              id="bankName"
+              {...formik.getFieldProps("bankName")}
+              className={cn(
+                formik.touched.bankName &&
+                  formik.errors.bankName &&
+                  "border-red-500",
+              )}
+            />
+            {formik.touched.bankName && formik.errors.bankName && (
+              <p className="text-xs text-red-500">{formik.errors.bankName}</p>
             )}
-          />
-          {formik.touched.bankNumber && formik.errors.bankNumber && (
-            <p className="text-xs text-red-500">{formik.errors.bankNumber}</p>
-          )}
-        </div>
-      </div>
+          </div>
 
-      <Button type="submit" className="w-full bg-sky-600" disabled={isPending}>
-        {isPending ? "Creating account..." : "Register as Tenant"}
-      </Button>
-    </form>
+          <div className="space-y-2">
+            <Label htmlFor="bankNumber" className="flex items-center gap-2">
+              <CreditCard size={16} />
+              Bank Account Number
+            </Label>
+            <Input
+              id="bankNumber"
+              {...formik.getFieldProps("bankNumber")}
+              className={cn(
+                formik.touched.bankNumber &&
+                  formik.errors.bankNumber &&
+                  "border-red-500",
+              )}
+            />
+            {formik.touched.bankNumber && formik.errors.bankNumber && (
+              <p className="text-xs text-red-500">{formik.errors.bankNumber}</p>
+            )}
+          </div>
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full bg-sky-600"
+          disabled={isPending}
+        >
+          Continue Registration
+        </Button>
+      </form>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmRegistration}
+        email={formData?.email || ""}
+        isLoading={isPending}
+      />
+    </>
   );
 };
 
-export default TenantForm;
+export default RegisterTenantForm;
