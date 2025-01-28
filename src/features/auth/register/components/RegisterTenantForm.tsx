@@ -24,11 +24,6 @@ YupPassword(Yup);
 const tenantSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .minLowercase(1)
-    .minUppercase(1)
-    .min(6),
   phoneNumber: Yup.string().required("Phone number is required"),
   bankName: Yup.string().required("Bank name is required"),
   bankNumber: Yup.string().required("Bank number is required"),
@@ -36,7 +31,6 @@ const tenantSchema = Yup.object().shape({
 });
 
 const TenantForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const { mutate: register, isPending } = useRegister();
   const [selectedImage, setSelectedImage] = useState<string>("");
 
@@ -44,7 +38,6 @@ const TenantForm = () => {
     initialValues: {
       name: "",
       email: "",
-      password: "",
       phoneNumber: "",
       bankName: "",
       bankNumber: "",
@@ -56,7 +49,6 @@ const TenantForm = () => {
       register({
         name: values.name,
         email: values.email,
-        password: values.password,
         phoneNumber: values.phoneNumber,
         bankName: values.bankName,
         bankNumber: values.bankNumber,
@@ -139,35 +131,6 @@ const TenantForm = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="flex items-center gap-2">
-            <Eye size={16} />
-            Password
-          </Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              {...formik.getFieldProps("password")}
-              className={cn(
-                formik.touched.password &&
-                  formik.errors.password &&
-                  "border-red-500",
-              )}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-          {formik.touched.password && formik.errors.password && (
-            <p className="text-xs text-red-500">{formik.errors.password}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
           <Label htmlFor="phoneNumber" className="flex items-center gap-2">
             <Phone size={16} />
             Phone Number
@@ -226,11 +189,7 @@ const TenantForm = () => {
         </div>
       </div>
 
-      <Button
-        type="submit"
-        className="w-full bg-sky-600 hover:bg-sky-700"
-        disabled={isPending}
-      >
+      <Button type="submit" className="w-full bg-sky-600" disabled={isPending}>
         {isPending ? "Creating account..." : "Register as Tenant"}
       </Button>
     </form>

@@ -1,6 +1,6 @@
 import TenantForm from "./components/RegisterTenantForm";
 
-export default function TenantRegistrationComponent() {
+export default function TenantRegistrationPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="relative hidden bg-muted lg:block">

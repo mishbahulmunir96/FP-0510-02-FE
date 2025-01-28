@@ -1,3 +1,4 @@
+
 "use client";
 
 import { SessionProvider } from "next-auth/react";
@@ -8,3 +9,4 @@ const NextAuthProvider: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export default NextAuthProvider;
+

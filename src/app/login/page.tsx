@@ -1,4 +1,5 @@
-import LoginPage from "@/features/login";
+
+import LoginPage from "@/features/auth/login";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -10,3 +11,4 @@ const Login = async () => {
 };
 
 export default Login;
+
