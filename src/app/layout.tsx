@@ -4,6 +4,7 @@ import { amarante, poppins } from "./utils/font";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { ToastContainer } from "react-toastify";
+import NextAuthProvider from "@/providers/NextAuthProvider";
 export const metadata: Metadata = {
   title:
     "MAKÉT | Makelar Ticket. Access Your Favorite Events with a Single Click!",
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} ${amarante.className}antialiased`}>
-        <NuqsProvider>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
-        </NuqsProvider>
-        <ToastContainer />
+        <NextAuthProvider>
+          <NuqsProvider>
+            <ReactQueryProvider>{children}</ReactQueryProvider>
+            <ToastContainer />
+          </NuqsProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );
