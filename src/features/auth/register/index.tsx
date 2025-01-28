@@ -2,9 +2,9 @@
 import { User } from "lucide-react";
 import RegisterForm from "./components/RegisterUserForm";
 
-const UserRegisterComponent = ({ role }: { role: "USER" | "TENANT" }) => {
+const UserRegisterPage = ({ role }: { role: "USER" | "TENANT" }) => {
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-[950px] lg:grid-cols-2">
       <div className="relative hidden bg-muted lg:block">
         <img
           src="https://res.cloudinary.com/andikalp/image/upload/v1737903319/photo-1563911302283-d2bc129e7570_iy9h5v.jpg"
@@ -23,7 +23,7 @@ const UserRegisterComponent = ({ role }: { role: "USER" | "TENANT" }) => {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-lg">
-            <RegisterForm role={role.toUpperCase() as "USER" | "TENANT"} />
+            <RegisterForm />
           </div>
         </div>
       </div>
@@ -31,4 +31,4 @@ const UserRegisterComponent = ({ role }: { role: "USER" | "TENANT" }) => {
   );
 };
 
-export default UserRegisterComponent;
+export default UserRegisterPage;

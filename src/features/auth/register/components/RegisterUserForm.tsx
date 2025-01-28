@@ -10,40 +10,39 @@ import { cn } from "@/lib/utils";
 import useRegister from "@/hooks/api/auth/useRegister";
 import * as yup from "yup";
 
-interface RegisterFormProps {
-  role: "USER" | "TENANT";
-}
-
 const registerSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  password: yup
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
   imageUrl: yup.string().optional(),
 });
 
-const RegisterForm = ({ role }: RegisterFormProps) => {
-  const [showPassword, setShowPassword] = useState(false);
+const RegisterForm = () => {
   const { mutate: register, isPending } = useRegister();
-
+  const [selectedImage, setSelectedImage] = useState<string>("");
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
-      password: "",
-      phoneNumber: "",
-      imageUrl: "",
-      role: role,
-      bankName: "",
-      bankNumber: "",
+      imageUrl: null as File | null,
+      role: "USER" as const,
     },
     validationSchema: registerSchema,
-    onSubmit: async (values) => {
-      register(values);
+    onSubmit: (values) => {
+      register({
+        name: values.name,
+        email: values.email,
+        role: "USER",
+        image: values.imageUrl ?? undefined,
+      });
     },
   });
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+      formik.setFieldValue("imageUrl", file);
+    }
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-6">
@@ -52,6 +51,24 @@ const RegisterForm = ({ role }: RegisterFormProps) => {
         <p className="text-sm text-muted-foreground">
           Fill in your details to create your account
         </p>
+      </div>
+
+      {/* Image Upload */}
+      <div className="space-y-2">
+        <Label htmlFor="imageUrl">Profile Picture</Label>
+        <Input
+          id="imageUrl"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+        {selectedImage && (
+          <img
+            src={selectedImage}
+            alt="Preview"
+            className="mx-auto h-32 w-32 rounded-full object-cover"
+          />
+        )}
       </div>
 
       <div className="space-y-4">
@@ -95,39 +112,6 @@ const RegisterForm = ({ role }: RegisterFormProps) => {
           />
           {formik.touched.email && formik.errors.email && (
             <p className="text-xs text-red-500">{formik.errors.email}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password" className="flex items-center gap-2">
-            <Lock size={16} />
-            Password
-          </Label>
-          <div className="relative">
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
-              className={cn(
-                formik.touched.password &&
-                  formik.errors.password &&
-                  "border-red-500",
-              )}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-          {formik.touched.password && formik.errors.password && (
-            <p className="text-xs text-red-500">{formik.errors.password}</p>
           )}
         </div>
       </div>
