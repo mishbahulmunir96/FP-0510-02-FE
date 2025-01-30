@@ -12,11 +12,14 @@ import BankDetail from "./components/BankDetail";
 import InputElementDetail from "./components/InputElementDetail";
 import PropertyRules from "./components/PropertyRules";
 import ReservationCard from "./components/ReservationCard";
+import { useSession } from "next-auth/react";
 
 const TransactionPage = () => {
+  const { data: session } = useSession();
+
   const [paymentMethod, setPaymentMethod] = useState("");
   return (
-    <main className="w-full px-16 py-20">
+    <main className="w-full px-16">
       <div className="flex w-full justify-between">
         <div className="w-[60%] border-r">
           <div className="mb-8">
