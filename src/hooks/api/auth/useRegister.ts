@@ -51,7 +51,7 @@ const useRegister = () => {
       return data;
     },
     onSuccess: () => {
-      toast.success("Registration successful");
+      toast.success("send email success. Please check your email.");
       router.push("/login");
     },
     onError: (error: AxiosError<any>) => {
