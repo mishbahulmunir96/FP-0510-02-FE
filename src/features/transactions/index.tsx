@@ -15,8 +15,6 @@ import ReservationCard from "./components/ReservationCard";
 import { useSession } from "next-auth/react";
 
 const TransactionPage = () => {
-  const { data: session } = useSession();
-
   const [paymentMethod, setPaymentMethod] = useState("");
   return (
     <main className="w-full px-16">
