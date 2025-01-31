@@ -28,20 +28,25 @@ const verifySchema = Yup.object().shape({
       "Password must contain at least one special character",
     )
     .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Confirm password is required"),
 });
 
 export default function VerifyForm({ token }: { token: string }) {
   const { mutate: verify, isPending } = useVerify();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       token,
       password: "",
+      confirmPassword: "",
     },
     validationSchema: verifySchema,
     onSubmit: (values) => {
-      verify(values);
+      verify({ token: values.token, password: values.password });
     },
   });
 
@@ -98,6 +103,30 @@ export default function VerifyForm({ token }: { token: string }) {
               className="text-sm text-red-500"
             >
               {formik.errors.password}
+            </motion.p>
+          )}
+          <div className="relative">
+            <Input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm your password"
+              {...formik.getFieldProps("confirmPassword")}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 transform"
+            >
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+            <motion.p
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-red-500"
+            >
+              {formik.errors.confirmPassword}
             </motion.p>
           )}
           <div className="space-y-2">
