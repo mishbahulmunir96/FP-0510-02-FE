@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Transaction } from "@/types/transaction";
 import { format } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 
 interface TransactionListCardProps {
   transaction: Transaction;
@@ -64,7 +65,9 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
                 Duration: {transaction.duration} nights
               </p>
             </div>
-            <Button className="w-full">See Details</Button>
+            <Button className="w-full">
+              <Link href={`/transactions/${transaction.id}`}>See Detail</Link>
+            </Button>
           </div>
         </div>
       </div>
