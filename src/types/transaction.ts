@@ -1,15 +1,25 @@
 export interface Transaction {
   id: number;
   uuid: string;
+  userId: number;
   totalPrice: number;
+  paymentMethode: "MANUAL" | "OTOMATIS";
+  status:
+    | "WAITING_FOR_PAYMENT"
+    | "WAITING_FOR_PAYMENT_CONFIRMATION"
+    | "CANCELLED"
+    | "PROCESSED";
+  paymentProof: string | null;
+  checkInDate: string | null;
+  checkOutDate: string | null;
   duration: number;
-  createdAt: string;
-  updatedAt: string;
-  checkIn: string | null;
-  checkOut: string | null;
+  updatedAt: string | null;
   reservations: {
-    roomType: string;
+    roomType: "Deluxe" | "Standard" | "Suite";
+    roomPrice: number;
     propertyTitle: string;
     propertyLocation: string;
+    roomImages: string[];
+    roomFacilities: string[];
   }[];
 }
