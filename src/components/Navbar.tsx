@@ -25,49 +25,49 @@ const Navbar = () => {
   const { data: session, status } = useSession();
 
   // Protected routes configuration
-  const protectedRoutes = {
-    tenant: [
-      "/tenant/dashboard",
-      "/tenant/manage-properties",
-      "/tenant/transactions",
-      "/tenant/reports",
-    ],
-    user: ["/profile", "/settings", "/compare"],
-  };
+  // const protectedRoutes = {
+  //   tenant: [
+  //     "/tenant/dashboard",
+  //     "/tenant/manage-properties",
+  //     "/tenant/transactions",
+  //     "/tenant/reports",
+  //   ],
+  //   user: ["/profile", "/settings", "/compare"],
+  // };
 
   const hideNavbarRoutes = ["/tenant/dashboard", "/tenant/manage-properties"];
 
   // Check if current user is a tenant
   const isTenant = session?.user?.role === "tenant";
 
-  // Authorization check and redirect
-  useEffect(() => {
-    if (status === "authenticated") {
-      // Redirect tenant trying to access user routes
-      if (isTenant && protectedRoutes.user.includes(pathName)) {
-        toast.error(
-          "Access denied. Tenant accounts cannot access user features.",
-        );
-        router.push("/tenant/dashboard");
-        return;
-      }
+  // // Authorization check and redirect
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     // Redirect tenant trying to access user routes
+  //     if (isTenant && protectedRoutes.user.includes(pathName)) {
+  //       toast.error(
+  //         "Access denied. Tenant accounts cannot access user features.",
+  //       );
+  //       router.push("/tenant/dashboard");
+  //       return;
+  //     }
 
-      // Redirect user trying to access tenant routes
-      if (!isTenant && protectedRoutes.tenant.includes(pathName)) {
-        toast.error(
-          "Access denied. Please register as a tenant to access these features.",
-        );
-        router.push("/");
-        return;
-      }
-    } else if (
-      status === "unauthenticated" &&
-      [...protectedRoutes.tenant, ...protectedRoutes.user].includes(pathName)
-    ) {
-      toast.error("Please log in to access this feature.");
-      router.push("/login");
-    }
-  }, [pathName, status, isTenant]);
+  //     // Redirect user trying to access tenant routes
+  //     if (!isTenant && protectedRoutes.tenant.includes(pathName)) {
+  //       toast.error(
+  //         "Access denied. Please register as a tenant to access these features.",
+  //       );
+  //       router.push("/");
+  //       return;
+  //     }
+  //   } else if (
+  //     status === "unauthenticated" &&
+  //     [...protectedRoutes.tenant, ...protectedRoutes.user].includes(pathName)
+  //   ) {
+  //     toast.error("Please log in to access this feature.");
+  //     router.push("/login");
+  //   }
+  // }, [pathName, status, isTenant]);
 
   if (hideNavbarRoutes.includes(pathName)) {
     return null;
