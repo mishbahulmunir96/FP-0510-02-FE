@@ -1,11 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import useGetTransactionByUser from "@/hooks/api/transaction/useGetTransactionsByUser";
 import { Transaction } from "@/types/transaction";
@@ -15,6 +10,7 @@ import { useState } from "react";
 import TransactionFilters from "./component/TransactionFilter";
 import TransactionListCard from "./component/TransactionListCard";
 import TransactionListSkeleton from "./component/TransactionListSkeleton";
+import TransactionPagination from "./component/TransactionPagination";
 
 interface TransactionResponse {
   data: Transaction[];
@@ -124,7 +120,7 @@ const TransactionListPage = () => {
   const transactions: Transaction[] = transactionsResponse?.data ?? [];
 
   return (
-    <main className="space-y-6 px-20">
+    <main className="mb-8 space-y-6 px-20">
       <div className="mb-8 space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -162,48 +158,12 @@ const TransactionListPage = () => {
             ))}
           </div>
 
-          {totalPages > 1 && (
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(Math.max(1, page - 1))}
-                    disabled={page === 1 || isFetching}
-                  >
-                    Previous
-                  </Button>
-                </PaginationItem>
-
-                {[...Array(totalPages)].map((_, index) => (
-                  <PaginationItem key={index + 1}>
-                    <Button
-                      variant={page === index + 1 ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handlePageChange(index + 1)}
-                      disabled={isFetching}
-                    >
-                      {index + 1}
-                    </Button>
-                  </PaginationItem>
-                ))}
-
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      handlePageChange(Math.min(totalPages, page + 1))
-                    }
-                    disabled={page === totalPages || isFetching}
-                  >
-                    Next
-                  </Button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
+          <TransactionPagination
+            currentPage={page}
+            totalPages={totalPages}
+            isLoading={isFetching}
+            onPageChange={handlePageChange}
+          />
         </>
       )}
     </main>

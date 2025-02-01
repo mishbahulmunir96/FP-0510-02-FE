@@ -1,8 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { formatStatus, getStatusColor } from "@/types/status";
 import { Transaction } from "@/types/transaction";
 import { format } from "date-fns";
+import { Hotel, MoveLeft, MoveRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,7 +18,7 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
   return (
     <Card className="overflow-hidden rounded-md">
       <div className="flex flex-col sm:flex-row">
-        <div className="relative h-48 w-full flex-shrink-0 sm:h-auto sm:w-48">
+        <div className="relative m-4 h-48 w-full flex-shrink-0 overflow-hidden rounded-md sm:h-auto sm:w-48">
           <Image
             alt={firstReservation.propertyTitle}
             className="object-cover"
@@ -31,24 +33,39 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
                 {firstReservation.propertyTitle}
               </h3>
               <p className="font-medium">{firstReservation.roomType}</p>
-              <p className="text-sm text-muted-foreground">
-                Check In:{" "}
-                {transaction.checkIn
-                  ? format(new Date(transaction.checkIn), "dd MMM yyyy")
-                  : "-"}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Check Out:{" "}
-                {transaction.checkOut
-                  ? format(new Date(transaction.checkOut), "dd MMM yyyy")
-                  : "-"}
-              </p>
+              <div className="flex items-center justify-between pt-2">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Check-in</p>
+                  <p className="text-sm font-medium">
+                    {transaction.checkInDate
+                      ? format(
+                          new Date(transaction.checkInDate),
+                          "EE, MMM dd yyyy",
+                        )
+                      : "No Check-in Date"}
+                  </p>
+                </div>
+
+                <Hotel className="h-5 w-5 text-muted-foreground" />
+
+                <div className="space-y-1 text-right">
+                  <p className="text-sm text-muted-foreground">Check-out</p>
+                  <p className="text-sm font-medium">
+                    {transaction.checkOutDate
+                      ? format(
+                          new Date(transaction.checkOutDate),
+                          "EE, MMM dd yy",
+                        )
+                      : "No Check-out Date"}
+                  </p>
+                </div>
+              </div>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary" className="text-xs">
                   {firstReservation.propertyLocation}
                 </Badge>
-                <Badge variant="secondary" className="text-xs">
-                  {firstReservation.propertyTitle}
+                <Badge className={`${getStatusColor(transaction.status)}`}>
+                  {formatStatus(transaction.status)}
                 </Badge>
               </div>
             </div>
@@ -65,7 +82,7 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
                 Duration: {transaction.duration} nights
               </p>
             </div>
-            <Button className="w-full">
+            <Button className="w-full bg-blue-600 hover:bg-blue-700">
               <Link href={`/transactions/${transaction.id}`}>See Detail</Link>
             </Button>
           </div>
