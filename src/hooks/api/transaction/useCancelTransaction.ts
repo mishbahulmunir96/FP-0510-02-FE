@@ -33,7 +33,7 @@ const useCancelTransaction = () => {
         queryKey: ["transactions"],
       });
 
-      router.push(`/transactions/${data.id}`);
+      router.refresh();
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to cancel transaction");

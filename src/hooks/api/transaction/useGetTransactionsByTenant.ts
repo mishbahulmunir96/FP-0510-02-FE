@@ -15,7 +15,7 @@ const useGetTransactionsByTenant = (
   const { axiosInstance } = useAxios();
 
   return useQuery<TransactionResponse>({
-    queryKey: ["TransactionsByTenant", page, take, filters],
+    queryKey: ["transactionsByTenant", page, take, filters],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/transactions/tenant`, {
         params: {

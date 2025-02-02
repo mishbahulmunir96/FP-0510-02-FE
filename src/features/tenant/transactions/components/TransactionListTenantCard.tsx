@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatStatus, getStatusColor } from "@/types/status";
 import { Transaction } from "@/types/transactionByTenant";
 import { format } from "date-fns";
@@ -19,8 +20,32 @@ const TransactionListTenantCard = ({
 
   return (
     <Card className="overflow-hidden rounded-md">
-      <div className="flex flex-col sm:flex-row">
-        <div className="relative m-4 h-48 w-full flex-shrink-0 overflow-hidden rounded-md sm:h-auto sm:w-48">
+      <div className="flex items-center justify-between border-b bg-blue-50 px-4 py-1 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={transaction.customer.imageUrl} alt="@shadcn" />
+            <AvatarFallback>
+              <Image
+                src="/images/profile_default.jpg"
+                alt={transaction.customer.name}
+                fill
+                className="object-cover"
+              />
+            </AvatarFallback>
+          </Avatar>
+          <span className="first-letter:capitalize">
+            {transaction.customer.name}
+          </span>
+        </div>
+        <span className="flex w-1/2 flex-col md:w-72 md:flex-row md:justify-between md:gap-1">
+          <span className="text-nowrap">Transaction number:</span>
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {transaction.uuid}
+          </span>
+        </span>
+      </div>
+      <div className="flex flex-col md:flex-row">
+        <div className="relative my-4 ml-4 h-48 w-80 overflow-hidden rounded-md md:h-auto md:w-48">
           <Image
             alt={firstReservation.propertyTitle}
             className="object-cover"
@@ -72,12 +97,15 @@ const TransactionListTenantCard = ({
               </div>
             </div>
           </div>
-          <div className="flex flex-col justify-between border-t p-4 text-right sm:border-l sm:border-t-0">
+
+          <div className="flex flex-col justify-between border-t p-4 text-right md:border-none">
             <div className="space-y-1">
               <p className="text-2xl font-bold">
                 {transaction.totalPrice.toLocaleString("id-ID", {
                   style: "currency",
                   currency: "IDR",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
                 })}
               </p>
               <p className="text-sm text-muted-foreground">
@@ -85,7 +113,9 @@ const TransactionListTenantCard = ({
               </p>
             </div>
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
-              <Link href={`/transactions/${transaction.id}`}>See Detail</Link>
+              <Link href={`/tenant/transactions/${transaction.id}`}>
+                See Detail
+              </Link>
             </Button>
           </div>
         </div>

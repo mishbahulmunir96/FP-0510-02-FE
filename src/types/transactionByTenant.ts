@@ -1,27 +1,51 @@
+export enum PaymentMethod {
+  MANUAL = "MANUAL",
+  OTOMATIS = "OTOMATIS",
+}
+
+export enum PaymentStatus {
+  WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT",
+  WAITING_FOR_PAYMENT_CONFIRMATION = "WAITING_FOR_PAYMENT_CONFIRMATION",
+  CANCELLED = "CANCELLED",
+  PROCESSED = "PROCESSED",
+}
+
+export enum RoomType {
+  Deluxe = "Deluxe",
+  Standard = "Standard",
+  Suite = "Suite",
+}
+
+export interface Customer {
+  name: string;
+  email: string;
+  imageUrl: string;
+}
+
+export interface Reservation {
+  roomType: RoomType;
+  propertyTitle: string;
+  roomPrice: number;
+  propertyLocation: string;
+  roomImages: (string | null)[];
+  roomFacilities: string[];
+  peakSeasonDays: number;
+  peakSeasonPrice: number | null;
+}
+
 export interface Transaction {
   id: number;
   uuid: string;
-  userId: number;
+  customer: Customer;
   totalPrice: number;
-  paymentMethode: "MANUAL" | "OTOMATIS";
-  status:
-    | "WAITING_FOR_PAYMENT"
-    | "WAITING_FOR_PAYMENT_CONFIRMATION"
-    | "CANCELLED"
-    | "PROCESSED";
+  paymentMethode: PaymentMethod;
+  status: PaymentStatus;
   paymentProof: string | null;
   checkInDate: string | null;
   checkOutDate: string | null;
   duration: number;
   updatedAt: string | null;
-  reservations: {
-    roomType: "Deluxe" | "Standard" | "Suite";
-    roomPrice: number;
-    propertyTitle: string;
-    propertyLocation: string;
-    roomImages: string[];
-    roomFacilities: string[];
-  }[];
+  reservations: Reservation[];
 }
 
 export interface TransactionResponse {

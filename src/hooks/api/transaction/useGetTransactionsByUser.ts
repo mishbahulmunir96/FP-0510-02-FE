@@ -32,7 +32,7 @@ const useGetTransactionByUser = (
   const { axiosInstance } = useAxios();
 
   return useQuery<TransactionResponse>({
-    queryKey: ["TransactionsByUser", userId, page, filters],
+    queryKey: ["transactions", userId, page, filters],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/transactions`, {
         params: {

@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { formatStatus, getStatusColor } from "@/types/status";
 import { Transaction } from "@/types/transaction";
 import { format } from "date-fns";
-import { Hotel, MoveLeft, MoveRight } from "lucide-react";
+import { Hotel } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
