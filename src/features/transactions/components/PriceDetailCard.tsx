@@ -1,19 +1,11 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Transaction } from "@/types/transaction";
 import Image from "next/image";
 
 interface PriceDetailCardProps {
-  data: {
-    duration: number;
-    totalPrice: number;
-    reservations: Array<{
-      propertyTitle: string;
-      roomType: string;
-      roomFacilities: string[];
-      roomPrice: number;
-    }>;
-  };
+  data: Transaction;
 }
 
 const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
@@ -83,16 +75,16 @@ const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
               </span>
             </div>
             <div className="flex justify-between">
-              <span>Peak Price</span>
-              <span>₹0</span>
+              <span>Peak Season Price</span>
+              <span>{data.reservations[0].peakSeasonPrice || 0}</span>
             </div>
             <div className="flex justify-between">
               <span>stay</span>
               <span>{data.duration} nights</span>
             </div>
             <div className="flex justify-between">
-              <span>Day of peak season</span>
-              <span>0</span>
+              <span>Peak Season Days</span>
+              <span>{data.reservations[0].peakSeasonDays}</span>
             </div>
             <div className="flex justify-between border-t pt-2 font-medium">
               <span>Total</span>

@@ -21,5 +21,14 @@ export interface Transaction {
     propertyLocation: string;
     roomImages: string[];
     roomFacilities: string[];
+    peakSeasonDays: number;
+    peakSeasonPrice: number;
+    tenant: {
+      name: string;
+      imageUrl: string | null;
+      phoneNumber: string | null;
+      bankName: string;
+      bankNumber: string;
+    };
   }[];
 }

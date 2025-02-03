@@ -25,7 +25,7 @@ const TransactionDetailTenantPage: FC<TransactionDetailTenantPageProps> = ({
   if (!data) return null;
 
   return (
-    <main className="mb-8 flex flex-col px-4 md:flex-row md:justify-between md:px-16">
+    <main className="flex flex-col px-4 py-8 md:flex-row md:justify-between md:px-16">
       <div className="md:hidden">
         <PriceDetailTenantCard data={data} />
       </div>
