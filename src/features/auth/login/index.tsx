@@ -86,7 +86,11 @@ const LoginPage = () => {
                   </div>
 
                   {/* Tombol Login */}
-                  <Button type="submit" className="w-full" disabled={isPending}>
+                  <Button
+                    type="submit"
+                    className="w-full bg-sky-600"
+                    disabled={isPending}
+                  >
                     {isPending ? "Loading..." : "Login"}
                   </Button>
 

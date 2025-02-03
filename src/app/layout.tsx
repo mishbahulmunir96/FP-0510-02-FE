@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { amarante, poppins } from "./utils/font";
+import NextAuthProvider from "@/providers/NextAuthProvider";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
-import NextAuthProvider from "@/providers/NextAuthProvider";
+import "./globals.css";
+import { poppins } from "./utils/font";
 export const metadata: Metadata = {
   title:
     "MAKÉT | Makelar Ticket. Access Your Favorite Events with a Single Click!",
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} ${amarante.className}antialiased`}>
+      <body className={`${poppins.className} antialiased`}>
         <NextAuthProvider>
           <NuqsProvider>
             <ReactQueryProvider>{children}</ReactQueryProvider>

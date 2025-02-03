@@ -5,16 +5,14 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
-import { jumbotronItems } from "../const";
-import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
+import Image from "next/image";
+import { jumbotronItems } from "../const";
 
 const Jumbotron = () => {
   return (
-    <div className="mb-8 sm:mb-12 md:mb-20">
+    <div className="mb-8 sm:mb-12 md:mb-14">
       <Carousel
         className="w-full"
         plugins={[
@@ -29,12 +27,12 @@ const Jumbotron = () => {
         <CarouselContent>
           {jumbotronItems.map((item, index) => (
             <CarouselItem key={index}>
-              <div className="p-0 sm:p-1">
-                <Card className="overflow-hidden">
+              <div className="p-2 sm:p-4">
+                <Card className="overflow-hidden shadow-lg">
                   <CardContent className="relative h-[280px] w-full overflow-hidden rounded-lg sm:h-[320px] md:h-[400px] lg:h-[480px]">
                     {/* Background image */}
                     <Image
-                      src={item.imageUrl}
+                      src={item.imageUrl || "/placeholder.svg"}
                       alt={`jumbotron-${index}`}
                       fill
                       className="object-cover"
@@ -42,8 +40,8 @@ const Jumbotron = () => {
                       priority={index === 0}
                     />
 
-                    {/* Overlay Text */}
-                    <div className="absolute bottom-4 left-4 right-4 bg-black/40 p-4 text-white backdrop-blur-sm sm:bottom-6 sm:left-6 sm:right-auto sm:rounded-md">
+                    {/* Gradient Overlay with Caption */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
                       <h3 className="mb-1 text-xl font-semibold sm:text-2xl">
                         {item.title}
                       </h3>
@@ -55,10 +53,6 @@ const Jumbotron = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-
-        {/* Navigasi next / prev. Di-hide di layar kecil */}
-        <CarouselPrevious className="hidden xl:flex" />
-        <CarouselNext className="hidden xl:flex" />
       </Carousel>
     </div>
   );
