@@ -33,15 +33,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google") {
         const accessToken = account?.access_token;
 
+        // Panggil API backend untuk login dengan google
         const { data } = await axiosInstance.post("/auth/login/google", {
           accessToken,
         });
 
+        // Set properti user berdasarkan response backend
         user.id = data.data.id;
         user.name = data.data.name;
         user.role = data.data.role;
         user.provider = data.data.provider;
         user.token = data.token;
+        user.email = data.data.email;
+        user.imageUrl = data.data.imageUrl;
+
+        // Pastikan pengguna yang login dengan Google langsung dianggap verified
+        user.isVerified = true;
       }
       return true;
     },

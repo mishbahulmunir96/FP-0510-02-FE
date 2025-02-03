@@ -1,5 +1,3 @@
-// const.ts (contoh)
-// Kita gabungkan gambar + teks overlay di satu array
 export const jumbotronItems = [
   {
     imageUrl:
