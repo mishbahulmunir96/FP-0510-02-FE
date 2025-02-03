@@ -120,7 +120,7 @@ const TransactionListPage = () => {
   const transactions: Transaction[] = transactionsResponse?.data ?? [];
 
   return (
-    <main className="mb-8 space-y-6 px-20">
+    <main className="mb-8 space-y-6 px-4 md:px-20">
       <div className="mb-8 space-y-4">
         <div className="flex items-center justify-between">
           <div>
