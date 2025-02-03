@@ -8,7 +8,7 @@ const useGetTransactionByUser = (transactionId: number) => {
   const { axiosInstance } = useAxios();
 
   return useQuery<Transaction, Error>({
-    queryKey: ["TransactionDetail", transactionId],
+    queryKey: ["transaction", transactionId],
     queryFn: async () => {
       const { data } = await axiosInstance.get<Transaction>(
         `/transactions/${transactionId}`,
