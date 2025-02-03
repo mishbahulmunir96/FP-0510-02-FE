@@ -78,7 +78,7 @@ const ForgotPasswordComponent = () => {
             <Button
               type="submit"
               className={cn(
-                "w-full transition-all duration-200",
+                "w-full bg-sky-600 transition-all duration-200",
                 "hover:translate-y-[-1px] active:translate-y-[1px]",
                 isPending && "cursor-not-allowed opacity-50",
               )}
