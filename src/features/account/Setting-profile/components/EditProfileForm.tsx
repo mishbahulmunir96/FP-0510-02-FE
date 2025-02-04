@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,20 +12,23 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "@/components/ui/use-toast";
 import { Icons } from "./icons";
 import useUpdateProfile from "@/hooks/api/account/useUpdateProfile";
+import useChangePassword from "@/hooks/api/account/useChangePassword";
+import { useChangeEmail } from "@/hooks/api/account/useChangeEmail";
 
-const EditProfileForm: React.FC = () => {
-  const { data: session, status, update: sessionUpdate } = useSession();
+const EditProfileForm = () => {
+  const { data: session, status } = useSession();
   const updateProfileMutation = useUpdateProfile();
+  const changePasswordMutation = useChangePassword();
+  const { mutate, isPending } = useChangeEmail();
 
-  // Gunakan state dengan tipe data yang sesuai
-  const [name, setName] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>(
-    "/images/placeholder.png",
-  );
-  const [profileFile, setProfileFile] = useState<File | null>(null);
-  const [email, setEmail] = useState<string>("");
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profileImage, setProfileImage] = useState("/images/placeholder.png");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   useEffect(() => {
     if (session?.user) {
       setName(session.user.name || "");
@@ -37,100 +40,63 @@ const EditProfileForm: React.FC = () => {
       );
       setIsEmailVerified(session.user.isVerified || false);
     }
-  }, [session]);
+  }, [session]); // Pastikan session ada di dependency array
 
-  if (status === "loading") return <div>Loading session...</div>;
-  if (!session) return <div>Please log in to update your profile.</div>;
+  if (status === "loading") return <div>Loading...</div>;
+  if (!session) return <div>Please sign in</div>;
 
   const handlePersonalUpdate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    updateProfileMutation.mutate({ name, imageFile });
+  };
 
-    if (!name.trim()) {
+  const handlePasswordUpdate = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
       toast({
-        title: "Validation Error",
-        description: "Name is required",
+        title: "Error",
+        description: "All password fields are required",
         variant: "destructive",
       });
       return;
     }
 
-    updateProfileMutation.mutate(
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    changePasswordMutation.mutate(
       {
-        name: name.trim(),
-        imageFile: profileFile,
+        oldPassword: currentPassword,
+        newPassword,
+        confirmPassword,
       },
       {
-        onSuccess: (response) => {
-          if (response.data) {
-            toast({
-              title: "Success",
-              description: response.message,
-            });
-
-            // Update local state
-            setName(response.data.name);
-            setProfileImage(response.data.imageUrl);
-            setIsEmailVerified(response.data.isVerified);
-
-            // Update session jika tersedia
-            if (sessionUpdate) {
-              sessionUpdate({
-                ...session,
-                user: {
-                  ...session.user,
-                  name: response.data.name,
-                  image: response.data.imageUrl,
-                  imageUrl: response.data.imageUrl,
-                  isVerified: response.data.isVerified,
-                },
-              });
-            }
-          }
+        onSuccess: () => {
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
         },
       },
     );
   };
 
-  const handleProfileImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload a valid image file",
-          variant: "destructive",
-        });
-        return;
-      }
+  const handleEmailUpdate = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    mutate({ email: formData.get("email") as string });
+  };
 
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      if (file.size > maxSize) {
-        toast({
-          title: "File too large",
-          description: "Image size should not exceed 5MB",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-      setProfileFile(file);
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
     }
-  };
-
-  const handlePasswordUpdate = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Implementasi nanti
-  };
-
-  const handleEmailUpdate = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Implementasi nanti
-  };
-
-  const handleResendVerification = async () => {
-    // Implementasi nanti
   };
 
   return (
@@ -171,6 +137,8 @@ const EditProfileForm: React.FC = () => {
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="email">Email</TabsTrigger>
         </TabsList>
+
+        {/* Personal Info */}
         <TabsContent value="personal">
           <Card>
             <CardHeader>
@@ -208,6 +176,8 @@ const EditProfileForm: React.FC = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Security */}
         <TabsContent value="security">
           <Card>
             <CardHeader>
@@ -221,29 +191,49 @@ const EditProfileForm: React.FC = () => {
                     id="currentPassword"
                     type="password"
                     placeholder="Enter current password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">New Password</Label>
                   <Input
                     id="newPassword"
                     type="password"
                     placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirm New Password</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
                     placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
-                <Button type="submit">Update Password</Button>
+
+                <Button
+                  type="submit"
+                  disabled={changePasswordMutation.isPending}
+                  className="w-full"
+                >
+                  {changePasswordMutation.isPending && (
+                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Update Password
+                </Button>
               </form>
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Email */}
         <TabsContent value="email">
           <Card>
             <CardHeader>
@@ -255,13 +245,20 @@ const EditProfileForm: React.FC = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <Button type="submit">Update Email</Button>
+                <Button type="submit" disabled={isPending} className="w-full">
+                  {isPending && (
+                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Update Email
+                </Button>
               </form>
+
               {!isEmailVerified && (
                 <div className="mt-4">
                   <Alert>
@@ -270,11 +267,7 @@ const EditProfileForm: React.FC = () => {
                       Please verify your email address to access all features.
                     </AlertDescription>
                   </Alert>
-                  <Button
-                    variant="outline"
-                    onClick={handleResendVerification}
-                    className="mt-2"
-                  >
+                  <Button variant="outline" className="mt-2 w-full">
                     Resend Verification Email
                   </Button>
                 </div>

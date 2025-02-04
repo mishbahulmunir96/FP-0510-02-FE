@@ -29,6 +29,7 @@ const useAxios = () => {
       async (err) => {
         if (err?.response.status === 401) {
           await signOut();
+          queryClient.removeQueries();
         }
 
         return Promise.reject(err);
