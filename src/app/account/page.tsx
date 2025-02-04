@@ -1,6 +1,6 @@
 import LandingPageLayout from "@/components/LandingPageLayout";
-import ProfilePage from "@/features/account";
-import ProfileSettingsPage from "@/features/account";
+import ProfilePage from "@/features/account/Setting-profile";
+import ProfileSettingsPage from "@/features/account/Setting-profile";
 import React from "react";
 
 const Profile = () => {
