@@ -9,6 +9,8 @@ export interface Property {
   longitude: string;
   status: "PUBLISHED" | "DRAFT";
   isDeleted: boolean;
+  // Jika memang hanya mengizinkan nilai berikut, union type ini sudah tepat.
+  // Jika ada kemungkinan nilai lain, pertimbangkan untuk menggantinya dengan string.
   category: "Hotel" | "Villa" | "Apartment";
   tenantId: number;
   createdAt: string; // ISO date string
@@ -45,7 +47,8 @@ export interface Tenant {
   phoneNumber?: string;
   userId: number;
   bankName: string;
-  bankNumber: number;
+  // Disesuaikan menjadi string jika backend mengembalikan data string
+  bankNumber: string;
   balance: number;
   role: "TENANT";
   isDeleted: boolean;
@@ -89,7 +92,9 @@ export interface RoomFacility {
 export interface PeakSeasonRate {
   id: number;
   price: number;
-  date: string;
+  // Menggunakan startDate dan endDate sesuai dengan schema
+  startDate: string;
+  endDate: string;
   isDeleted: boolean;
   roomId: number;
   createdAt: string;

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/axios";
-import { Property } from "../../../types/property"; // Pastikan path sesuai
+import { Property } from "../../../types/property"; // Pastikan path sesuai dengan struktur project kamu
 import { PageableResponse, PaginationQueries } from "../../../types/pagination";
 
 interface GetPropertiesQuery extends PaginationQueries {
