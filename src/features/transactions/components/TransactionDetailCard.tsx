@@ -10,6 +10,10 @@ import TransactionPaymentSection from "./TransactionPaymentSection";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Transaction } from "@/types/transaction";
 import { AvatarFallback } from "@radix-ui/react-avatar";
+import { Button } from "@/components/ui/button";
+import ReviewModal from "./ReviewModal";
+import useGetReviewByTransaction from "@/hooks/api/review/useGetReviewByTransaction";
+import ViewReviewModal from "./viewReviewModal";
 
 interface TransactionDetailCardProps {
   data: Transaction;
@@ -26,26 +30,23 @@ const TransactionDetailCard = ({
   isUploading,
   isCancelling,
 }: TransactionDetailCardProps) => {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isViewReviewModalOpen, setIsViewReviewModalOpen] = useState(false);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      setSelectedFile(file);
-    }
-  };
+  const { data: reviewData, isLoading: isLoadingReview } =
+    useGetReviewByTransaction(data.id);
+
+  console.log(reviewData);
+
+  const showReviewButton = data.status === "CHECKED_OUT" && !reviewData;
+  const showViewReviewButton = data.status === "CHECKED_OUT" && reviewData;
 
   const isUploadDisabled =
     data.status === "CANCELLED" ||
     data.status === "PROCESSED" ||
-    data.status === "WAITING_FOR_PAYMENT_CONFIRMATION";
+    data.status === "WAITING_FOR_PAYMENT_CONFIRMATION" ||
+    data.status === "CHECKED_IN" ||
+    data.status === "CHECKED_OUT";
 
   const isCancelDisabled =
     data.status !== "WAITING_FOR_PAYMENT" || isCancelling;
@@ -153,6 +154,29 @@ const TransactionDetailCard = ({
           onCancelTransaction={onCancelTransaction}
         />
 
+        {showReviewButton && (
+          <div className="pt-4">
+            <Button
+              onClick={() => setIsReviewModalOpen(true)}
+              variant="outline"
+            >
+              Give a Review
+            </Button>
+          </div>
+        )}
+
+        {showViewReviewButton && (
+          <div className="pt-4">
+            <Button
+              onClick={() => setIsViewReviewModalOpen(true)}
+              className="w-full"
+              variant="secondary"
+            >
+              View Review
+            </Button>
+          </div>
+        )}
+
         <div className="flex justify-between pt-2">
           <span className="rounded-full bg-secondary px-3 py-1 text-sm">
             {data.duration} Night
@@ -165,6 +189,20 @@ const TransactionDetailCard = ({
             {formatStatus(data.status)}
           </span>
         </div>
+
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          paymentId={data.id}
+        />
+
+        {reviewData && (
+          <ViewReviewModal
+            isOpen={isViewReviewModalOpen}
+            onClose={() => setIsViewReviewModalOpen(false)}
+            review={reviewData}
+          />
+        )}
       </CardContent>
     </Card>
   );
