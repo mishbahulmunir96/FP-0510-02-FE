@@ -1,6 +1,7 @@
 import LandingPageLayout from "@/components/LandingPageLayout";
 import ProfilePage from "@/features/account/Setting-profile";
 import ProfileSettingsPage from "@/features/account/Setting-profile";
+import UserAuthGuard from "@/hoc/userAuthGuard";
 import React from "react";
 
 const Profile = () => {
@@ -13,4 +14,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default UserAuthGuard(Profile);
