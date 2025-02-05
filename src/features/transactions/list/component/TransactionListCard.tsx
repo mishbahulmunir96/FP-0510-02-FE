@@ -17,6 +17,30 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
 
   return (
     <Card className="overflow-hidden rounded-md">
+      {/* <div className="flex items-center justify-between border-b bg-blue-50 px-4 py-1 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={transaction.customer.imageUrl} alt="@shadcn" />
+            <AvatarFallback>
+              <Image
+                src="/images/profile_default.jpg"
+                alt={transaction.customer.name}
+                fill
+                className="object-cover"
+              />
+            </AvatarFallback>
+          </Avatar>
+          <span className="first-letter:capitalize">
+            {transaction.customer.name}
+          </span>
+        </div>
+        <span className="flex w-1/2 flex-col md:w-72 md:flex-row md:justify-between md:gap-1">
+          <span className="text-nowrap">Transaction number:</span>
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {transaction.uuid}
+          </span>
+        </span>
+      </div> */}
       <div className="flex flex-col sm:flex-row">
         <div className="relative m-4 h-48 w-full flex-shrink-0 overflow-hidden rounded-md sm:h-auto sm:w-48">
           <Image

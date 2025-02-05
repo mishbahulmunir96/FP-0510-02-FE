@@ -33,7 +33,7 @@ const TransactionDetailPage: FC<TransactionDetailPageProps> = ({
   if (!data) return null;
 
   return (
-    <main className="flex justify-between px-16">
+    <main className="flex justify-between px-16 py-8">
       <div className="flex w-3/5 flex-col gap-4">
         <TransactionDetailCard
           data={data}

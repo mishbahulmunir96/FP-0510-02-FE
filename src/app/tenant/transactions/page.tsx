@@ -1,6 +1,7 @@
-import Transaction from "@/app/transactions/page";
+"use client";
 import LandingPageLayout from "@/components/LandingPageLayout";
 import TransactionListTenantPage from "@/features/tenant/transactions";
+import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 import React from "react";
 
 const TenantTransactionsList = () => {
@@ -11,4 +12,4 @@ const TenantTransactionsList = () => {
   );
 };
 
-export default TenantTransactionsList;
+export default TenantAuthGuard(TenantTransactionsList);

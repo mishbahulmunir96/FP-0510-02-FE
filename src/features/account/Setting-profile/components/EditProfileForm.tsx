@@ -100,7 +100,9 @@ const EditProfileForm = () => {
   };
 
   return (
-    <div className="container mx-auto space-y-8 p-4">
+
+    <div className="container mx-auto h-svh space-y-8 p-4">
+
       <Card>
         <CardHeader>
           <CardTitle>Profile Settings</CardTitle>
