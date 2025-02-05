@@ -8,7 +8,9 @@ export interface Transaction {
     | "WAITING_FOR_PAYMENT"
     | "WAITING_FOR_PAYMENT_CONFIRMATION"
     | "CANCELLED"
-    | "PROCESSED";
+    | "PROCESSED"
+    | "CHECKED_IN"
+    | "CHECKED_OUT";
   paymentProof: string | null;
   checkInDate: string | null;
   checkOutDate: string | null;

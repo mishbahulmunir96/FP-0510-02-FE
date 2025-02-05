@@ -11,12 +11,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import useGetReviewByTenant from "@/hooks/api/review/useGetReviewByTenant";
 import useApproveTransactionByTenant from "@/hooks/api/transaction/useApproveTransactionByTenant";
 import { formatStatus, getStatusColor } from "@/types/status";
 import { Transaction } from "@/types/transactionByTenant";
 import { format } from "date-fns";
 import { Check, Eye, Hotel, MapPin, X } from "lucide-react";
 import Image from "next/image";
+import ReviewCard from "./ReviewCard";
 
 interface TransactionDetailTenantCardProps {
   data: Transaction;
@@ -27,6 +29,7 @@ const TransactionDetailTenantCard = ({
 }: TransactionDetailTenantCardProps) => {
   const firstReservation = data.reservations[0];
 
+  const { data: reviewData } = useGetReviewByTenant(data.id);
   const approveTransaction = useApproveTransactionByTenant();
 
   const handleApproval = (isApproved: boolean) => {
@@ -197,6 +200,13 @@ const TransactionDetailTenantCard = ({
               <Check className="mr-2 h-4 w-4" />
               Approve
             </Button>
+          </div>
+        )}
+
+        {reviewData && (
+          <div className="space-y-2">
+            <h4 className="font-medium">Customer Review</h4>
+            <ReviewCard review={reviewData} />
           </div>
         )}
       </CardContent>
