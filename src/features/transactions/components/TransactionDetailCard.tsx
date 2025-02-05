@@ -7,22 +7,12 @@ import { Hotel, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import TransactionPaymentSection from "./TransactionPaymentSection";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Transaction } from "@/types/transaction";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 interface TransactionDetailCardProps {
-  data: {
-    totalPrice: number;
-    checkInDate: string | null;
-    checkOutDate: string | null;
-    duration: number;
-    status: string;
-    paymentMethode: string;
-    paymentProof: string | null;
-    reservations: Array<{
-      roomType: string;
-      propertyTitle: string;
-      propertyLocation: string;
-    }>;
-  };
+  data: Transaction;
   onUploadProof: (file: File) => void;
   onCancelTransaction: () => void;
   isUploading: boolean;
@@ -50,18 +40,6 @@ const TransactionDetailCard = ({
       reader.readAsDataURL(file);
       setSelectedFile(file);
     }
-  };
-
-  const handleUpload = () => {
-    if (!selectedFile) return;
-    onUploadProof(selectedFile);
-    setSelectedFile(null);
-    setPreviewUrl(null);
-  };
-
-  const handleCancelOrder = () => {
-    onCancelTransaction();
-    setShowCancelDialog(false);
   };
 
   const isUploadDisabled =
@@ -108,6 +86,36 @@ const TransactionDetailCard = ({
               <MapPin className="h-4 w-4" />
               {data.reservations[0].propertyLocation}
             </p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="font-medium">Tenant</h4>
+          <div className="rounded-lg bg-secondary p-4">
+            <div className="flex items-center gap-4">
+              <Avatar>
+                <AvatarImage
+                  src={
+                    data.reservations[0].tenant.imageUrl ||
+                    "/images/profile_default.jpg"
+                  }
+                  alt={data.reservations[0].tenant.name}
+                />
+                <AvatarFallback>
+                  <Image
+                    src="/images/profile_default.jpg"
+                    alt={data.reservations[0].tenant.name}
+                    fill
+                    className="object-cover"
+                  />
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">
+                  {data.reservations[0].tenant.name}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
