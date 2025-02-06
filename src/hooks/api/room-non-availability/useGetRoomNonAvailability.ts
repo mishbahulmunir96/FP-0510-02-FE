@@ -18,7 +18,7 @@ const useRoomNonAvailabilities = (
     queryFn: async () => {
       const { data } = await axiosInstance.get<
         PageableResponse<RoomNonAvailability>
-      >("/roomNonAvailabilities", { params: queries });
+      >("/room-non-availabilities", { params: queries });
       return data;
     },
   });
