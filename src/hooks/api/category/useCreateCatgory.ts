@@ -18,7 +18,7 @@ const useCreateCategory = (propertyCategoryId: number) => {
   return useMutation({
     mutationFn: async (payload: CreateCategoryPayload) => {
       const { data } = await axiosInstance.post(
-        `/categories//create-category${propertyCategoryId}`,
+        `/categories/create-category${propertyCategoryId}`,
         payload,
       );
       return data;
