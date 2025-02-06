@@ -9,9 +9,7 @@ export interface Property {
   longitude: string;
   status: "PUBLISHED" | "DRAFT";
   isDeleted: boolean;
-  // Jika memang hanya mengizinkan nilai berikut, union type ini sudah tepat.
-  // Jika ada kemungkinan nilai lain, pertimbangkan untuk menggantinya dengan string.
-  category: "Hotel" | "Villa" | "Apartment";
+  propertyCategoryId: number;
   tenantId: number;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
@@ -20,6 +18,7 @@ export interface Property {
   propertyFacility: PropertyFacility[];
   tenant: Tenant;
   room: Room[];
+  PropertyCategory?: PropertyCategory[]; // Opsional: detail kategori
 }
 
 export interface PropertyImage {
@@ -47,7 +46,6 @@ export interface Tenant {
   phoneNumber?: string;
   userId: number;
   bankName: string;
-  // Disesuaikan menjadi string jika backend mengembalikan data string
   bankNumber: string;
   balance: number;
   role: "TENANT";
@@ -69,6 +67,8 @@ export interface Room {
   roomImage: RoomImage[];
   roomFacility: RoomFacility[];
   peakSeasonRate: PeakSeasonRate[];
+  roomNonAvailability?: RoomNonAvailability[];
+  reservation?: Reservation[];
 }
 
 export interface RoomImage {
@@ -92,11 +92,41 @@ export interface RoomFacility {
 export interface PeakSeasonRate {
   id: number;
   price: number;
-  // Menggunakan startDate dan endDate sesuai dengan schema
   startDate: string;
   endDate: string;
   isDeleted: boolean;
   roomId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RoomNonAvailability {
+  id: number;
+  startDate: string;
+  endDate: string;
+  isDeleted: boolean;
+  reason?: string;
+  roomId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Reservation {
+  id: number;
+  uuid: string;
+  roomId: number;
+  paymentId: number;
+  price: number;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PropertyCategory {
+  id: number;
+  name: string;
+  tenantId: number;
   createdAt: string;
   updatedAt: string;
 }

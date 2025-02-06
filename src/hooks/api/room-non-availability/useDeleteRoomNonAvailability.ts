@@ -6,26 +6,21 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-interface CreateCategoryPayload {
-  name: string;
-}
-
-const useCreateCategory = (propertyCategoryId: number) => {
+const useDeleteRoomNonAvailability = () => {
   const router = useRouter();
   const { axiosInstance } = useAxios();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (payload: CreateCategoryPayload) => {
-      const { data } = await axiosInstance.post(
-        `/categories/create-category${propertyCategoryId}`,
-        payload,
+    mutationFn: async (id: number) => {
+      const { data } = await axiosInstance.delete(
+        `/room-non-availabilities/delete/${id}`,
       );
       return data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["categorylist"] });
-      toast.success("Create Category success");
+      queryClient.invalidateQueries({ queryKey: ["roomNonAvailabilities"] });
+      toast.success("Delete Room Non Availability Success");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);
@@ -33,4 +28,4 @@ const useCreateCategory = (propertyCategoryId: number) => {
   });
 };
 
-export default useCreateCategory;
+export default useDeleteRoomNonAvailability;
