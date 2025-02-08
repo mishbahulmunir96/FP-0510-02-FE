@@ -17,7 +17,7 @@ const useGetProperties = (queries: GetPropertiesQuery) => {
     queryKey: ["properties", queries],
     queryFn: async () => {
       const { data } = await axiosInstance.get<PageableResponse<Property>>(
-        "/properties",
+        "/property",
         {
           params: queries,
         },

@@ -1,6 +1,9 @@
 // src/types/property.ts
 
 export interface Property {
+  propertyCategory: any;
+  city(province: (province: any, city: any) => unknown, city: any): unknown;
+  province(province: any, city: any): unknown;
   id: number;
   slug: string;
   title: string;
@@ -22,6 +25,7 @@ export interface Property {
 }
 
 export interface PropertyImage {
+  isDeleted: any;
   id: number;
   imageUrl?: string;
   propertyId: number;
@@ -55,6 +59,7 @@ export interface Tenant {
 }
 
 export interface Room {
+  name: string;
   id: number;
   type: "Deluxe" | "Standard" | "Suite";
   stock: number;
