@@ -78,7 +78,7 @@ const PropertyCard: FC<PropertyCardProps> = ({ property }) => {
       : 0;
 
   return (
-    <Link href={`/properties/${property.id}`} className="block">
+    <Link href={`/property/${property.slug}`} className="block">
       <Card className="overflow-hidden">
         <CardHeader className="relative h-60 w-full p-0">
           <Image
@@ -94,7 +94,7 @@ const PropertyCard: FC<PropertyCardProps> = ({ property }) => {
               variant="default"
               className="rounded-md bg-sky-200 px-2 py-1 text-xs text-sky-400"
             >
-              {property.category}
+              {property.propertyCategory.name}
             </Badge>
           </div>
           <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-4">

@@ -9,6 +9,11 @@ export interface PageableResponse<T> {
   meta: any;
   message: string;
   data: {
+    map(
+      arg0: (
+        category: import("./property").PropertyCategory,
+      ) => import("react").JSX.Element,
+    ): import("react").ReactNode;
     data: T[];
     meta: {
       total: number;

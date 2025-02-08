@@ -6,12 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetProperty = (slug: string) => {
   const { axiosInstance } = useAxios();
-
   return useQuery({
     queryKey: ["property", slug],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<Property>(`/property/${slug}`);
-
+      const { data } = await axiosInstance.get<Property>(`/property/${slug}`); // Changed from properties to property
       return data;
     },
   });

@@ -1,6 +1,7 @@
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import NuqsProvider from "@/providers/NuqsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import "leaflet/dist/leaflet.css";
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "./globals.css";

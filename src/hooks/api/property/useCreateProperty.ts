@@ -39,7 +39,7 @@ const useCreateProperty = () => {
       createPropertyForm.append("imageUrl", payload.imageUrl!);
 
       const { data } = await axiosInstance.post(
-        "/properties/create-property",
+        "/property/create-property",
         createPropertyForm,
       );
       return data;
@@ -47,7 +47,7 @@ const useCreateProperty = () => {
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["property"] });
       toast.success("Create property success");
-      router.push("/dashboard/property/management");
+      router.push("/tenant/dashboard/");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);
