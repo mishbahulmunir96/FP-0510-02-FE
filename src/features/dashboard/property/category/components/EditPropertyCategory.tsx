@@ -15,11 +15,11 @@ import { useFormik } from "formik";
 import { FC, useState } from "react";
 import { PropertyCategorySchema } from "../schemas/PropertyCategoryScema";
 
-interface EditCategoryButton {
+interface EditPropertyCategory {
   id: number;
 }
 
-export const EditCategoryButton: FC<EditCategoryButton> = ({ id }) => {
+export const EditPropertyCategory: FC<EditPropertyCategory> = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync: updateCategory, isPending: pendingUpdate } =
     useUpdateCategory();

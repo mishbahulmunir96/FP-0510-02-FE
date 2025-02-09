@@ -16,7 +16,7 @@ import useGetCategory from "@/hooks/api/category/useGetCategory";
 import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
-import { EditCategoryButton } from "./Editcategory";
+import { EditPropertyCategory } from "../components/EditPropertyCategory";
 
 interface PropertyCategoryPageProps {
   propertyCategoryId: number;
@@ -83,7 +83,7 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
                     >
                       {pendingDelete ? "Deleting..." : "Delete"}
                     </Button>
-                    <EditCategoryButton id={category.id} />
+                    <EditPropertyCategory id={category.id} />
                   </TableCell>
                 </TableRow>
               );
