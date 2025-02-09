@@ -8,14 +8,14 @@ const PropertyManagementPage = () => {
   const actionButtons = [
     {
       href: "/tenant/dashboard/property/category",
-      label: "Property Category",
+      label: "Manage Category",
       icon: <FiList className="h-5 w-5" />,
       variant: "secondary" as const,
     },
     {
       href: "/tenant/dashboard/room/create",
-      label: "Create Room",
-      icon: <FiPlus className="h-5 w-5" />,
+      label: "Manage Room",
+      icon: <FiList className="h-5 w-5" />,
       variant: "secondary" as const,
     },
     {
