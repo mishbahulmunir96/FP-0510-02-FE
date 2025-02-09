@@ -129,6 +129,10 @@ export interface Reservation {
 }
 
 export interface PropertyCategory {
+  location: string;
+  status: string;
+  propertyCategory: any;
+  imageUrl: string;
   review: any;
   propertyImage: any;
   reviews: any;
