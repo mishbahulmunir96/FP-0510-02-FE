@@ -13,7 +13,7 @@ const useDeleteProperty = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.delete(`/properties/delete/${id}`);
+      const { data } = await axiosInstance.delete(`/property/delete/${id}`);
       return data;
     },
     onSuccess: (data) => {

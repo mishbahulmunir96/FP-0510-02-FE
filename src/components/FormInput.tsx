@@ -9,13 +9,16 @@ interface FormInputProps {
   name: string;
   label: string;
   type: string;
-  placeholder: string;
+
+  placeholder?: string;
   value: any;
   isError: boolean;
-  error: string | undefined;
+  error?: string;
   onChange: FormikHandlers["handleChange"];
   onBlur: FormikHandlers["handleBlur"];
   readOnly?: boolean;
+  className?: string; // Tambahkan ini
+  inputClassName?: string; // Optional: untuk styling input secara terpisah
 }
 
 const FormInput: FC<FormInputProps> = ({
@@ -29,9 +32,12 @@ const FormInput: FC<FormInputProps> = ({
   type,
   value,
   readOnly = false,
+  className,
+  inputClassName,
 }) => {
   return (
-    <div>
+    <div className={className}>
+
       <Label htmlFor={name}>{label}</Label>
       <Input
         name={name}
@@ -41,8 +47,12 @@ const FormInput: FC<FormInputProps> = ({
         onChange={onChange}
         onBlur={onBlur}
         readOnly={readOnly}
+        className={inputClassName}
       />
-      {isError ? <p className="text-xs text-red-500">{error}</p> : null}
+      {isError && error ? (
+        <p className="text-xs text-red-500">{error}</p>
+      ) : null}
+
     </div>
   );
 };

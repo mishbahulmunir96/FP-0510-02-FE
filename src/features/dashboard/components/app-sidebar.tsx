@@ -29,7 +29,9 @@ const menuItems = [
     submenu: [
       {
         title: "Manage Property",
-        url: "/tenant/dashboard/property/create",
+
+        url: "/tenant/dashboard/property/management",
+
         icon: Home,
       },
       {

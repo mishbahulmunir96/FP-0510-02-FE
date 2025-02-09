@@ -1,26 +1,37 @@
 "use client";
+
 import FormInput from "@/components/FormInput";
 import FormTextarea from "@/components/FormTextArea";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useCreateProperty from "@/hooks/api/property/useCreateProperty";
+import { Skeleton } from "@/components/ui/skeleton";
+import useDeleteProperty from "@/hooks/api/property/useDeleteProperty";
+import useGetPropertyTenant from "@/hooks/api/property/useGetPropertyTenant";
+import useUpdateProperty from "@/hooks/api/property/useUpdateProperty";
 import { useFormik } from "formik";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { PropertyCategorySelect } from "./components/PropertyCategorySelect";
+import { ChangeEvent, FC, useRef, useState, useEffect } from "react";
+import { EditPropertyCategorySelect } from "../management/components/EditPropertyCategorySelect";
 import dynamic from "next/dynamic";
-import useCurrentLocation from "@/hooks/useCurrentLocation";
 import axios from "axios";
 
-const DynamicMapComponent = dynamic(
-  () => import("../../../../components/Map"),
-  { ssr: false },
-);
+const DynamicMapComponent = dynamic(() => import("@/components/Map"), {
+  ssr: false,
+});
 
-const CreatePropertyPage = () => {
-  const { mutateAsync: createProperty, isPending } = useCreateProperty();
-  const { currentLat, currentLng, error } = useCurrentLocation();
+interface PropertyDetailPageProps {
+  propertyId: number;
+}
+
+const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
+  const { mutateAsync: updateProperty, isPending } =
+    useUpdateProperty(propertyId);
+  const { mutateAsync: deleteProperty, isPending: deletePending } =
+    useDeleteProperty();
+  const { data, isPending: dataIsPending } = useGetPropertyTenant(propertyId);
+  const [selectedImage, setSelectedImage] = useState("");
+  const imageRef = useRef<HTMLInputElement>(null);
   const [selectedPosition, setSelectedPosition] = useState<[string, string]>([
     "0",
     "0",
@@ -28,41 +39,29 @@ const CreatePropertyPage = () => {
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      slug: "",
-      description: "",
-      latitude: selectedPosition[0],
-      longitude: selectedPosition[1],
+      title: data?.title || "",
+      slug: data?.slug || "",
+      description: data?.description || "",
+      latitude: data?.latitude || "",
+      longitude: data?.longitude || "",
+      location: data?.location || "",
       imageUrl: null,
-      propertyCategoryId: null,
-      location: "",
+      propertyCategoryId: data?.propertyCategory?.id || null,
     },
     onSubmit: async (values) => {
-      await createProperty({
+      await updateProperty({
         ...values,
         propertyCategoryId: Number(values.propertyCategoryId),
       });
     },
+    enableReinitialize: true,
   });
 
-  const [selectedImage, setSelectedImage] = useState("");
-
-  const imageRef = useRef<HTMLInputElement>(null);
-  const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length) {
-      formik.setFieldValue("imageUrl", files[0]);
-      setSelectedImage(URL.createObjectURL(files[0]));
+  useEffect(() => {
+    if (data) {
+      setSelectedPosition([data.latitude, data.longitude]);
     }
-  };
-
-  const removeSelectedImage = () => {
-    formik.setFieldValue("imageUrl", null);
-    setSelectedImage("");
-    if (imageRef.current) {
-      imageRef.current.value = "";
-    }
-  };
+  }, [data]);
 
   const fetchAddress = async (lat: string, lng: string) => {
     try {
@@ -83,27 +82,11 @@ const CreatePropertyPage = () => {
       formik.setValues((prevValues) => ({
         ...prevValues,
         location: location,
-        address: data.results[0].formatted,
-        city: results.county || results.city,
-        district:
-          results.city_district || results.municipality || results.suburb,
       }));
     } catch (err) {
       console.error("Error fetching address:", err);
     }
   };
-
-  useEffect(() => {
-    if (currentLat && currentLng) {
-      setSelectedPosition([currentLat, currentLng]);
-      formik.setValues((prevValues) => ({
-        ...prevValues,
-        latitude: currentLat,
-        longitude: currentLng,
-      }));
-      fetchAddress(currentLat, currentLng);
-    }
-  }, [currentLat, currentLng]);
 
   const handlePositionChange = (lat: string, lng: string) => {
     setSelectedPosition([lat, lng]);
@@ -113,6 +96,22 @@ const CreatePropertyPage = () => {
       longitude: lng,
     }));
     fetchAddress(lat, lng);
+  };
+
+  const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length) {
+      formik.setFieldValue("imageUrl", files[0]);
+      setSelectedImage(URL.createObjectURL(files[0]));
+    }
+  };
+
+  const removeSelectedImage = () => {
+    formik.setFieldValue("imageUrl", null);
+    setSelectedImage("");
+    if (imageRef.current) {
+      imageRef.current.value = "";
+    }
   };
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -133,10 +132,28 @@ const CreatePropertyPage = () => {
     formik.setFieldValue("slug", value);
   };
 
+  if (dataIsPending) {
+    return (
+      <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        <Skeleton className="h-[300px] w-full overflow-hidden rounded-2xl bg-slate-200" />
+        <Skeleton className="h-[300px] w-full overflow-hidden rounded-2xl bg-slate-200" />
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        Error: Property data not found
+      </div>
+    );
+  }
+
   return (
     <div>
       <section className="container mx-auto max-w-7xl p-6">
         <form onSubmit={formik.handleSubmit} className="space-y-5">
+          {/* Image Section */}
           <div className="space-y-5">
             {selectedImage ? (
               <>
@@ -148,10 +165,19 @@ const CreatePropertyPage = () => {
                     className="object-cover"
                   />
                 </div>
-                <Button onClick={removeSelectedImage} variant={"destructive"}>
+                <Button onClick={removeSelectedImage} variant="destructive">
                   Remove Image
                 </Button>
               </>
+            ) : data.propertyImage?.[0]?.imageUrl ? (
+              <div className="relative h-[350px] w-full overflow-hidden rounded-lg">
+                <Image
+                  src={data.propertyImage[0].imageUrl}
+                  alt="Property Image"
+                  fill
+                  className="object-cover"
+                />
+              </div>
             ) : null}
             <div className="mx-auto max-w-xs">
               <Label>Property Image</Label>
@@ -163,6 +189,8 @@ const CreatePropertyPage = () => {
               />
             </div>
           </div>
+
+          {/* Basic Info */}
           <FormInput
             name="title"
             label="Property Name"
@@ -177,15 +205,18 @@ const CreatePropertyPage = () => {
           <FormInput
             name="slug"
             label="Slug"
-            placeholder="custom-url-slug"
             type="text"
+            placeholder="custom-url-slug"
             value={formik.values.slug}
             isError={!!formik.touched.slug && !!formik.errors.slug}
             error={formik.errors.slug}
             onBlur={formik.handleBlur}
             onChange={handleSlugChange}
           />
-          <PropertyCategorySelect setFieldValue={formik.setFieldValue} />
+          <EditPropertyCategorySelect
+            setFieldValue={formik.setFieldValue}
+            initialValue={data.propertyCategory?.id}
+          />
           <FormTextarea
             name="description"
             label="Description"
@@ -198,6 +229,8 @@ const CreatePropertyPage = () => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
+
+          {/* Map Section */}
           <div className="overflow-hidden rounded-md border-[1px]">
             <div className="h-[500px] w-full rounded-md">
               <DynamicMapComponent
@@ -206,12 +239,13 @@ const CreatePropertyPage = () => {
               />
             </div>
           </div>
+
+          {/* Location Info */}
           <div className="grid w-full grid-cols-3 items-end gap-7">
             <FormInput
               name="latitude"
               label="Latitude"
               type="text"
-              placeholder="latitude"
               value={formik.values.latitude}
               isError={!!formik.touched.latitude && !!formik.errors.latitude}
               error={formik.errors.latitude}
@@ -223,7 +257,6 @@ const CreatePropertyPage = () => {
               name="longitude"
               label="Longitude"
               type="text"
-              placeholder="longitude"
               value={formik.values.longitude}
               isError={!!formik.touched.longitude && !!formik.errors.longitude}
               error={formik.errors.longitude}
@@ -235,7 +268,6 @@ const CreatePropertyPage = () => {
               name="location"
               label="Location"
               type="text"
-              placeholder="Location"
               value={formik.values.location}
               isError={!!formik.touched.location && !!formik.errors.location}
               error={formik.errors.location}
@@ -244,9 +276,27 @@ const CreatePropertyPage = () => {
               readOnly
             />
           </div>
-          <div className="flex justify-end">
-            <Button disabled={isPending}>
-              {isPending ? "Loading..." : "Create"}
+
+          {/* Action Buttons */}
+          <div className="flex justify-between">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={async () => {
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete this property?",
+                  )
+                ) {
+                  await deleteProperty(propertyId);
+                }
+              }}
+              disabled={deletePending}
+            >
+              {deletePending ? "Deleting..." : "Delete"}
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Updating..." : "Update"}
             </Button>
           </div>
         </form>
@@ -255,4 +305,4 @@ const CreatePropertyPage = () => {
   );
 };
 
-export default CreatePropertyPage;
+export default UpdatePropertyPage;

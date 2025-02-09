@@ -5,7 +5,7 @@ const CreateProperty = () => {
   return (
     <div>
       <DashboardLayout>
-        <CreatePropertyPage />;
+        <CreatePropertyPage />
       </DashboardLayout>
     </div>
   );
