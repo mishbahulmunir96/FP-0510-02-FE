@@ -34,3 +34,22 @@ export interface Transaction {
     };
   }[];
 }
+
+export interface TransactionResponse {
+  data: Transaction[];
+  meta: {
+    page: number;
+    totalCount: number;
+    take: number;
+    total: number;
+  };
+}
+
+export type SortOrder = "asc" | "desc";
+
+export interface Filters {
+  sortBy: string;
+  sortOrder: SortOrder;
+  startDate?: Date;
+  endDate?: Date;
+}

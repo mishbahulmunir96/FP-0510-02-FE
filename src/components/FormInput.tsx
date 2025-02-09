@@ -9,6 +9,7 @@ interface FormInputProps {
   name: string;
   label: string;
   type: string;
+
   placeholder?: string;
   value: any;
   isError: boolean;
@@ -36,6 +37,7 @@ const FormInput: FC<FormInputProps> = ({
 }) => {
   return (
     <div className={className}>
+
       <Label htmlFor={name}>{label}</Label>
       <Input
         name={name}
@@ -50,6 +52,7 @@ const FormInput: FC<FormInputProps> = ({
       {isError && error ? (
         <p className="text-xs text-red-500">{error}</p>
       ) : null}
+
     </div>
   );
 };
