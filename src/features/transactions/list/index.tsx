@@ -2,34 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import useGetTransactionByUser from "@/hooks/api/transaction/useGetTransactionsByUser";
-import { Transaction } from "@/types/transaction";
+import { Filters, SortOrder, Transaction } from "@/types/transaction";
 import { signIn, useSession } from "next-auth/react";
 import { createParser, useQueryStates } from "nuqs";
 import { useState } from "react";
-import TransactionFilters from "./component/TransactionFilter";
 import TransactionListCard from "./component/TransactionListCard";
 import TransactionListSkeleton from "./component/TransactionListSkeleton";
-import TransactionPagination from "./component/TransactionPagination";
-
-interface TransactionResponse {
-  data: Transaction[];
-  meta: {
-    total: number;
-    totalCount: number;
-    page: number;
-    take: number;
-  };
-}
-
-type SortOrder = "asc" | "desc";
-
-interface Filters {
-  sortBy: string;
-  sortOrder: SortOrder;
-  startDate?: Date;
-  endDate?: Date;
-}
+import TransactionPagination from "../../../components/TransactionPagination";
+import useGetTransactionsByUser from "@/hooks/api/transaction/useGetTransactionsByUser";
+import TransactionFilters from "@/components/TransactionFilter";
 
 const numberParser = createParser({
   parse: (value: string) => parseInt(value, 10),
@@ -74,7 +55,12 @@ const TransactionListPage = () => {
     error,
     isError,
     isFetching,
-  } = useGetTransactionByUser(session?.user?.id as number, page, take, filters);
+  } = useGetTransactionsByUser(
+    session?.user?.id as number,
+    page,
+    take,
+    filters,
+  );
 
   if (status === "loading" || isLoading) {
     return <TransactionListSkeleton />;

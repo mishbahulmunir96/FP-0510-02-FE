@@ -1,38 +1,19 @@
 "use client";
 
-import { Transaction } from "@/types/transaction";
+import { Filters, TransactionResponse } from "@/types/transaction";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../useAxios";
 
-type SortOrder = "asc" | "desc";
-
-interface TransactionFilters {
-  sortBy: string;
-  sortOrder: SortOrder;
-  startDate?: Date;
-  endDate?: Date;
-}
-
-interface TransactionResponse {
-  data: Transaction[];
-  meta: {
-    total: number;
-    totalCount: number;
-    page: number;
-    take: number;
-  };
-}
-
-const useGetTransactionByUser = (
+const useGetTransactionsByUser = (
   userId: number,
   page: number,
   take: number,
-  filters?: TransactionFilters,
+  filters?: Filters,
 ) => {
   const { axiosInstance } = useAxios();
 
   return useQuery<TransactionResponse>({
-    queryKey: ["transactions", userId, page, filters],
+    queryKey: ["transactions", userId, page, take, filters],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/transactions`, {
         params: {
@@ -50,4 +31,4 @@ const useGetTransactionByUser = (
   });
 };
 
-export default useGetTransactionByUser;
+export default useGetTransactionsByUser;
