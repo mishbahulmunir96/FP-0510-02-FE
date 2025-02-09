@@ -14,15 +14,18 @@ export const useGetPropertiesTenant = (queries: GetPropertyQueries) => {
   const { axiosInstance } = useAxios();
 
   return useQuery({
-    queryKey: ["properties", queries],
+    queryKey: ["tenant-properties", queries],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<PageableResponse<Property>>(
-        "/properties/tenant",
-        {
-          params: queries,
-        },
-      );
-      return data;
+      try {
+        const { data } = await axiosInstance.get<PageableResponse<Property>>(
+          "/property/tenant",
+          { params: queries },
+        );
+        return data;
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+        throw error;
+      }
     },
   });
 };

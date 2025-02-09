@@ -39,7 +39,7 @@ const useUpdateProperty = (id: number) => {
       editPropertyForm.append("imageUrl", payload.imageUrl!);
 
       const { data } = await axiosInstance.patch(
-        `/properties/update-property/${id}`,
+        `/property/update-property/${id}`,
         editPropertyForm,
       );
       return data;

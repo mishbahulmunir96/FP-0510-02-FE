@@ -9,6 +9,7 @@ export interface PageableResponse<T> {
   meta: any;
   message: string;
   data: {
+    length: any;
     map(
       arg0: (
         category: import("./property").PropertyCategory,

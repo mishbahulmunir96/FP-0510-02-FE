@@ -129,6 +129,11 @@ export interface Reservation {
 }
 
 export interface PropertyCategory {
+  review: any;
+  propertyImage: any;
+  reviews: any;
+  title: string;
+  propertyImages: any;
   id: number;
   name: string;
   tenantId: number;
