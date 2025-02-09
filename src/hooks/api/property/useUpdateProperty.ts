@@ -47,7 +47,7 @@ const useUpdateProperty = (id: number) => {
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["property"] });
       toast.success("Update property success");
-      router.push("/dashboard/property/management");
+      router.push("tenant/dashboard/");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);

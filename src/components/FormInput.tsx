@@ -9,7 +9,6 @@ interface FormInputProps {
   name: string;
   label: string;
   type: string;
-
   placeholder?: string;
   value: any;
   isError: boolean;
@@ -52,7 +51,6 @@ const FormInput: FC<FormInputProps> = ({
       {isError && error ? (
         <p className="text-xs text-red-500">{error}</p>
       ) : null}
-
     </div>
   );
 };

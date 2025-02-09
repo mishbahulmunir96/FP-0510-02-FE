@@ -12,13 +12,14 @@ import {
 
 import useDeleteProperty from "@/hooks/api/property/useDeleteProperty";
 import { useSession } from "next-auth/react";
-import { EditPropertyButton } from "./EditProperty";
+
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import Pagination from "@/components/PaginationSection";
 import { useState } from "react";
 import { useGetPropertiesTenant } from "@/hooks/api/property/useGetPropertiesTenant";
+import { EditPropertyCategory } from "../../category/components/EditPropertyCategory";
 
 const PropertyList = () => {
   const session = useSession();
@@ -80,7 +81,7 @@ const PropertyList = () => {
               </TableCell>
               <TableCell>{property.location}</TableCell>
               <TableCell className="space-x-2">
-                <EditPropertyButton id={property.id} />
+                <EditPropertyCategory id={property.id} />
                 <Button
                   variant="destructive"
                   size="sm"
