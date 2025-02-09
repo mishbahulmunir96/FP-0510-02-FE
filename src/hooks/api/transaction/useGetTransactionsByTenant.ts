@@ -1,16 +1,14 @@
 "use client";
 
+import { TransactionResponse } from "@/types/transactionByTenant";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../useAxios";
-import {
-  TransactionFilters,
-  TransactionResponse,
-} from "@/types/transactionByTenant";
+import { Filters } from "@/types/transaction";
 
 const useGetTransactionsByTenant = (
   page: number = 1,
   take: number = 10,
-  filters?: TransactionFilters,
+  filters?: Filters,
 ) => {
   const { axiosInstance } = useAxios();
 
@@ -23,6 +21,8 @@ const useGetTransactionsByTenant = (
           take,
           sortBy: filters?.sortBy || "createdAt",
           sortOrder: filters?.sortOrder || "desc",
+          startDate: filters?.startDate?.toISOString(),
+          endDate: filters?.endDate?.toISOString(),
         },
       });
       return data;

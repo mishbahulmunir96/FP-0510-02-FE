@@ -2,22 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import TransactionFilters from "@/features/transactions/list/component/TransactionFilter";
+import TransactionFilters from "@/components/TransactionFilter";
 import TransactionListSkeleton from "@/features/transactions/list/component/TransactionListSkeleton";
-import TransactionPagination from "@/features/transactions/list/component/TransactionPagination";
+import TransactionPagination from "@/components/TransactionPagination";
 import useGetTransactionsByTenant from "@/hooks/api/transaction/useGetTransactionsByTenant";
 import { createParser, useQueryStates } from "nuqs";
 import { useState } from "react";
 import TransactionListTenantCard from "./components/TransactionListTenantCard";
-
-type SortOrder = "asc" | "desc";
-
-interface Filters {
-  sortBy: string;
-  sortOrder: SortOrder;
-  startDate?: Date;
-  endDate?: Date;
-}
+import { Filters, SortOrder } from "@/types/transaction";
 
 const numberParser = createParser({
   parse: (value: string) => parseInt(value, 10),
