@@ -13,11 +13,12 @@ const PropertyManagementPage = () => {
       variant: "secondary" as const,
     },
     {
-      href: "/tenant/dashboard/room/create",
-      label: "Manage Room",
+      href: "/tenant/dashboard/property/room",
+      label: "Manage Rooms",
       icon: <FiList className="h-5 w-5" />,
       variant: "secondary" as const,
     },
+
     {
       href: "/tenant/dashboard/peak-season",
       label: "Peak Season Rate",

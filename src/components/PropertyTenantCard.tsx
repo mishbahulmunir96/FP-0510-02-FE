@@ -60,14 +60,10 @@ const PropertyTenantCard: FC<PropertyCardProps> = ({
                   Update Property
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() =>
-                    router.push(
-                      `/tenant/dashboard/room/create?propertyId=${id}`,
-                    )
-                  }
+                  onClick={() => router.push(`/tenant/dashboard/property/room`)}
                 >
                   <FiEdit className="mr-2 h-4 w-4" />
-                  Update Room
+                  Manage Room
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

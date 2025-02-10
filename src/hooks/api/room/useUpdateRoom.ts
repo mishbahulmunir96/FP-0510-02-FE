@@ -12,6 +12,9 @@ interface UpdateRoomPayload {
   price: number;
   guest: number;
   propertyId: number;
+  imageUrl?: File;
+  facilityTitle?: string;
+  facilityDescription?: string;
 }
 
 const useUpdateRoom = (id: number) => {
@@ -21,25 +24,36 @@ const useUpdateRoom = (id: number) => {
 
   return useMutation({
     mutationFn: async (payload: UpdateRoomPayload) => {
-      const editRoomForm = new FormData();
+      const formData = new FormData();
 
-      // Karena field room pada schema adalah "type" bukan "name"
-      editRoomForm.append("type", payload.type);
-      editRoomForm.append("stock", String(payload.stock));
-      editRoomForm.append("price", String(payload.price));
-      editRoomForm.append("guest", String(payload.guest));
-      editRoomForm.append("propertyId", String(payload.propertyId));
+      formData.append("type", payload.type);
+      formData.append("stock", String(payload.stock));
+      formData.append("price", String(payload.price));
+      formData.append("guest", String(payload.guest));
+      formData.append("propertyId", String(payload.propertyId));
+
+      if (payload.imageUrl) {
+        formData.append("imageUrl", payload.imageUrl);
+      }
+
+      if (payload.facilityTitle) {
+        formData.append("facilityTitle", payload.facilityTitle);
+      }
+
+      if (payload.facilityDescription) {
+        formData.append("facilityDescription", payload.facilityDescription);
+      }
 
       const { data } = await axiosInstance.patch(
         `/rooms/update-room/${id}`,
-        editRoomForm,
+        formData,
       );
       return data;
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["room"] });
       toast.success("Update room success");
-      router.push("/dashboard/property/room");
+      router.push("/tenant/dashboard/property/room");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data || "Update room failed");

@@ -13,13 +13,13 @@ const useDeleteRoom = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.patch(`/rooms/delete-room/${id}`);
+      const { data } = await axiosInstance.delete(`/rooms/delete-room/${id}`);
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["room"] });
       toast.success("Delete Room success");
-      router.push("/dashboard/property/room");
+      router.push("/tenant/dashboard/property/room");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data || "Delete Room failed");

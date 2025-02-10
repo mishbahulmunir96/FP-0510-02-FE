@@ -29,7 +29,7 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
   const [page, setPage] = useState(1);
   const { data, isPending } = useGetCategory({
     userId: session.data?.user.id,
-    take: 10,
+    take: 7,
   });
 
   const onPageChange = ({ selected }: { selected: number }) => {
@@ -96,9 +96,7 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
           take={data.meta.take}
           total={data.meta.total}
           page={page}
-          onChangePage={function (page: number): void {
-            throw new Error("Function not implemented.");
-          }}
+          onChangePage={(newPage: number) => setPage(newPage)}
         />
       </div>
     </>
