@@ -1,4 +1,3 @@
-// features/tenant/statistics/components/charts/RevenueChart.tsx
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { formatRupiah } from "@/lib/utils";
@@ -24,9 +23,19 @@ export const RevenueChart = ({
     endDate,
     propertyId,
   });
+
   const series = [
     {
       name: "Pendapatan",
+      type: "area",
+      data:
+        data?.peakBookingPeriods.map(
+          (period) => period.totalBookings * 100000,
+        ) || [], // Simulasi data pendapatan
+    },
+    {
+      name: "Transaksi",
+      type: "area",
       data:
         data?.peakBookingPeriods.map((period) => period.totalBookings) || [],
     },
@@ -37,9 +46,16 @@ export const RevenueChart = ({
     chart: {
       fontFamily: "sans-serif",
       height: 350,
-      type: "area",
+      type: "line",
       toolbar: {
         show: false,
+      },
+      stacked: false,
+      parentHeightOffset: 0,
+    },
+    plotOptions: {
+      area: {
+        fillTo: "origin",
       },
     },
     stroke: {
@@ -62,7 +78,7 @@ export const RevenueChart = ({
     },
     markers: {
       size: 4,
-      colors: "#fff",
+      colors: ["#fff"],
       strokeColors: ["#4318FF", "#80CAEE"],
       strokeWidth: 2,
       hover: {
@@ -85,69 +101,115 @@ export const RevenueChart = ({
         },
       },
     },
-    yaxis: {
-      labels: {
-        style: {
-          colors: "#64748B",
-          fontSize: "12px",
-          fontWeight: 400,
+    yaxis: [
+      {
+        title: {
+          text: "Pendapatan",
+          style: {
+            fontSize: "12px",
+            fontWeight: 400,
+            color: "#4318FF",
+          },
         },
-        formatter: (value) => formatRupiah(value),
+        labels: {
+          style: {
+            colors: "#4318FF",
+          },
+          formatter: (value) => formatRupiah(value),
+        },
+      },
+      {
+        opposite: true,
+        title: {
+          text: "Jumlah Transaksi",
+          style: {
+            fontSize: "12px",
+            fontWeight: 400,
+            color: "#80CAEE",
+          },
+        },
+        labels: {
+          style: {
+            colors: "#80CAEE",
+          },
+        },
+      },
+    ],
+    fill: {
+      type: "gradient",
+      gradient: {
+        type: "vertical",
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.2,
+        stops: [0, 100],
       },
     },
-    fill: {
-      opacity: 0.1,
+    dataLabels: {
+      enabled: false,
     },
     tooltip: {
-      theme: "light",
-      y: {
-        formatter: (value) => formatRupiah(value),
+      shared: true,
+      intersect: false,
+      y: [
+        {
+          formatter: (value) => formatRupiah(value),
+        },
+        {
+          formatter: (value) => value.toFixed(0) + " transaksi",
+        },
+      ],
+    },
+    legend: {
+      show: true,
+      position: "top",
+      horizontalAlign: "right",
+      fontFamily: "sans-serif",
+      fontSize: "14px",
+      offsetY: 8,
+      markers: {
+        size: 8,
+        offsetX: 0,
+        offsetY: 0,
+        shape: "circle",
+      },
+      itemMargin: {
+        horizontal: 15,
+        vertical: 8,
       },
     },
   };
 
   return (
     <div className="border-stroke shadow-default col-span-8 rounded-sm border bg-white p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-        <div className="flex gap-5">
-          <div className="flex items-center">
-            <span className="mr-2 h-3 w-3 rounded-full bg-blue-600"></span>
-            <div>
-              <p className="text-sm font-semibold text-blue-600">
-                Total Pendapatan
-              </p>
-              <p className="text-xs text-gray-500">
-                {startDate.toLocaleDateString()} -{" "}
-                {endDate.toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="inline-flex rounded-lg bg-gray-50 p-1">
-          <button className="rounded-lg bg-white px-3 py-1 text-sm font-medium shadow-sm">
-            Hari
-          </button>
-          <button className="rounded-lg px-3 py-1 text-sm font-medium text-gray-600 hover:bg-white hover:shadow-sm">
-            Minggu
-          </button>
-          <button className="rounded-lg px-3 py-1 text-sm font-medium text-gray-600 hover:bg-white hover:shadow-sm">
-            Bulan
-          </button>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">
+            Tren Pendapatan & Transaksi
+          </h2>
+          <p className="mt-1 text-sm text-gray-600">
+            {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
+          </p>
         </div>
       </div>
 
-      <div>
-        <div id="revenueChart" className="-ml-5">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="area"
-            height={350}
-            width={"100%"}
-          />
-        </div>
+      <div className="relative mt-4 min-h-[400px]">
+        <ReactApexChart
+          options={options}
+          series={series}
+          type="area"
+          height={350}
+          width="100%"
+        />
+
+        {data && data.peakBookingPeriods.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+            <p className="text-gray-500">Tidak ada data untuk ditampilkan</p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+export default RevenueChart;

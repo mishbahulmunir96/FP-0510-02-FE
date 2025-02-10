@@ -19,7 +19,7 @@ const useTransactionReport = (params: TransactionReportParams) => {
         params: {
           startDate: params.startDate.toISOString(),
           endDate: params.endDate.toISOString(),
-          ...(params.propertyId && { propertyId: params.propertyId }),
+          propertyId: params.propertyId || undefined, // Pastikan propertyId dikirim ke backend
         },
       });
       return data.data;

@@ -1,3 +1,4 @@
+"use client";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
 import { formatRupiah } from "@/lib/utils";
 
