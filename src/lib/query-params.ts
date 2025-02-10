@@ -1,6 +1,6 @@
 // lib/query-params.ts
 import { createParser } from "nuqs";
-import { addDays } from "date-fns";
+import { addDays, subYears } from "date-fns";
 
 type FilterType = "date-range" | "month-year";
 
@@ -15,13 +15,14 @@ const dateParser = createParser({
 });
 
 const filterTypeParser = createParser({
-  parse: (value: string): FilterType =>
-    value === "month-year" ? "month-year" : "date-range",
-  serialize: (value: FilterType) => value,
+  parse: (value: string): "date-range" | "month-year" | "year-only" =>
+    value === "month-year"
+      ? "month-year"
+      : value === "year-only"
+        ? "year-only"
+        : "date-range",
+  serialize: (value: "date-range" | "month-year" | "year-only") => value,
 });
-
-// Buat tipe custom untuk propertyId
-type PropertyId = number | null;
 type PropertyIdParam = "all" | number;
 
 // Modifikasi propertyIdParser
@@ -36,7 +37,7 @@ const propertyIdParser = createParser<PropertyIdParam>({
 
 export const statisticQueryStates = {
   filterType: filterTypeParser.withDefault("date-range" as const),
-  startDate: dateParser.withDefault(addDays(new Date(), -30).toISOString()),
+  startDate: dateParser.withDefault(subYears(new Date(), 1).toISOString()),
   endDate: dateParser.withDefault(new Date().toISOString()),
   month: numberParser.withDefault(new Date().getMonth() + 1),
   year: numberParser.withDefault(new Date().getFullYear()),

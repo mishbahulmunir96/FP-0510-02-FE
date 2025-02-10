@@ -1,4 +1,4 @@
-import React from "react";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -7,14 +7,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
-import { addDays } from "date-fns";
+import { subYears } from "date-fns";
 import DateRangePicker from "./DateRangePicker";
+import { useState } from "react";
 
 interface StatisticFiltersProps {
-  filterType: "date-range" | "month-year"; // Update this type
+  filterType: "date-range" | "month-year" | "year-only";
   startDate: Date;
   endDate: Date;
   selectedMonth: number;
@@ -25,7 +25,7 @@ interface StatisticFiltersProps {
   onMonthChange: (month: number) => void;
   onYearChange: (year: number) => void;
   onPropertyChange: (propertyId: number | null) => void;
-  onFilterTypeChange: (type: "date-range" | "month-year") => void; // Update this type
+  onFilterTypeChange: (type: "date-range" | "month-year" | "year-only") => void;
 }
 
 const months = [
@@ -60,84 +60,78 @@ export const StatisticFilters = ({
   onPropertyChange,
   onFilterTypeChange,
 }: StatisticFiltersProps) => {
-  // Get property list untuk dropdown
+  const [selectValue, setSelectValue] = useState(
+    selectedProperty?.toString() ?? "all",
+  );
+
   const { data: properties } = usePropertyReport({
-    startDate: addDays(new Date(), -30),
-    endDate: new Date(),
+    startDate: startDate ? startDate : subYears(new Date(), 1),
+    endDate: endDate ? endDate : new Date(),
   });
 
-  return (
-    <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <Tabs
-          value={filterType}
-          onValueChange={(value) =>
-            onFilterTypeChange(value as "date-range" | "month-year")
-          }
-          className="w-full sm:w-auto"
-        >
-          <TabsList className="grid w-full grid-cols-2 sm:w-[400px]">
-            <TabsTrigger value="date-range">Range Tanggal</TabsTrigger>
-            <TabsTrigger value="month-year">Bulan & Tahun</TabsTrigger>
-          </TabsList>
-        </Tabs>
-
-        <Select
-          value={selectedProperty?.toString() ?? "all"}
-          onValueChange={(value) =>
-            onPropertyChange(value === "all" ? null : Number(value))
-          }
-        >
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue placeholder="Pilih Property" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Semua Property</SelectItem>
-            {properties?.map((property) => (
-              <SelectItem
-                key={property.propertyId}
-                value={property.propertyId.toString()}
+  // Dalam fungsi renderFilter, perbaiki case "year-only":
+  const renderFilter = () => {
+    switch (filterType) {
+      case "date-range":
+        return (
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={onStartDateChange}
+            onEndDateChange={onEndDateChange}
+          />
+        );
+      case "month-year":
+        return (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-2">
+              <Label className="w-16">Bulan</Label>
+              <Select
+                value={selectedMonth.toString()}
+                onValueChange={(value) => onMonthChange(Number(value))}
               >
-                {property.propertyName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+                <SelectTrigger className="w-full sm:w-[160px]">
+                  <SelectValue placeholder="Pilih Bulan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {months.map((month) => (
+                      <SelectItem
+                        key={month.value}
+                        value={month.value.toString()}
+                      >
+                        {month.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
 
-      {filterType === "date-range" ? (
-        <DateRangePicker
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={onStartDateChange}
-          onEndDateChange={onEndDateChange}
-        />
-      ) : (
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-2">
-            <Label className="w-16">Bulan</Label>
-            <Select
-              value={selectedMonth.toString()}
-              onValueChange={(value) => onMonthChange(Number(value))}
-            >
-              <SelectTrigger className="w-full sm:w-[160px]">
-                <SelectValue placeholder="Pilih Bulan" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {months.map((month) => (
-                    <SelectItem
-                      key={month.value}
-                      value={month.value.toString()}
-                    >
-                      {month.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              <Label className="w-16">Tahun</Label>
+              <Select
+                value={selectedYear.toString()}
+                onValueChange={(value) => onYearChange(Number(value))}
+              >
+                <SelectTrigger className="w-full sm:w-[120px]">
+                  <SelectValue placeholder="Pilih Tahun" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {years.map((year) => (
+                      <SelectItem key={year} value={year.toString()}>
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-
+        );
+      case "year-only":
+        return (
           <div className="flex items-center gap-2">
             <Label className="w-16">Tahun</Label>
             <Select
@@ -158,8 +152,63 @@ export const StatisticFilters = ({
               </SelectContent>
             </Select>
           </div>
-        </div>
-      )}
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <Tabs
+          value={filterType}
+          onValueChange={(value) =>
+            onFilterTypeChange(
+              value as "date-range" | "month-year" | "year-only",
+            )
+          }
+          className="w-full sm:w-auto"
+        >
+          <TabsList className="grid w-full grid-cols-3 sm:w-[500px]">
+            <TabsTrigger value="date-range">Range Tanggal</TabsTrigger>
+            <TabsTrigger value="month-year">Bulan & Tahun</TabsTrigger>
+            <TabsTrigger value="year-only">Tahun</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <Select
+          defaultValue="all"
+          value={selectedProperty?.toString() ?? "all"}
+          onValueChange={(value) =>
+            onPropertyChange(value === "all" ? null : Number(value))
+          }
+        >
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue defaultValue="all">
+              {selectedProperty
+                ? properties?.find((p) => p.propertyId === selectedProperty)
+                    ?.propertyName
+                : "Semua Property"}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">Semua Property</SelectItem>
+              {properties?.map((property) => (
+                <SelectItem
+                  key={property.propertyId}
+                  value={property.propertyId.toString()}
+                >
+                  {property.propertyName}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {renderFilter()}
     </div>
   );
 };

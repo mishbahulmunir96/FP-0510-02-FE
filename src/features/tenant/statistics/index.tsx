@@ -1,7 +1,7 @@
 // features/tenant/statistics/index.tsx
 "use client";
 
-import { addDays } from "date-fns";
+import { subYears } from "date-fns";
 import { useQueryStates } from "nuqs";
 import { statisticQueryStates } from "@/lib/query-params";
 import { StatCards } from "./components/StatCharts";
@@ -17,7 +17,9 @@ const StatisticPage = () => {
     queryStates;
 
   // Handle filter type change
-  const handleFilterTypeChange = (type: "date-range" | "month-year") => {
+  const handleFilterTypeChange = (
+    type: "date-range" | "month-year" | "year-only",
+  ) => {
     if (type === "month-year") {
       const firstDayOfMonth = new Date(year, month - 1, 1);
       const lastDayOfMonth = new Date(year, month, 0);
@@ -27,6 +29,16 @@ const StatisticPage = () => {
         filterType: type,
         startDate: firstDayOfMonth.toISOString(),
         endDate: lastDayOfMonth.toISOString(),
+      });
+    } else if (type === "year-only") {
+      const firstDayOfYear = new Date(year, 0, 1);
+      const lastDayOfYear = new Date(year, 11, 31);
+
+      setQueryStates({
+        ...queryStates,
+        filterType: type,
+        startDate: firstDayOfYear.toISOString(),
+        endDate: lastDayOfYear.toISOString(),
       });
     } else {
       setQueryStates({
@@ -57,15 +69,27 @@ const StatisticPage = () => {
   };
 
   const handleYearChange = (newYear: number) => {
-    const firstDayOfMonth = new Date(newYear, month - 1, 1);
-    const lastDayOfMonth = new Date(newYear, month, 0);
+    if (filterType === "year-only") {
+      const firstDayOfYear = new Date(newYear, 0, 1);
+      const lastDayOfYear = new Date(newYear, 11, 31);
 
-    setQueryStates({
-      ...queryStates,
-      year: newYear,
-      startDate: firstDayOfMonth.toISOString(),
-      endDate: lastDayOfMonth.toISOString(),
-    });
+      setQueryStates({
+        ...queryStates,
+        year: newYear,
+        startDate: firstDayOfYear.toISOString(),
+        endDate: lastDayOfYear.toISOString(),
+      });
+    } else {
+      const firstDayOfMonth = new Date(newYear, month - 1, 1);
+      const lastDayOfMonth = new Date(year, month, 0);
+
+      setQueryStates({
+        ...queryStates,
+        year: newYear,
+        startDate: firstDayOfMonth.toISOString(),
+        endDate: lastDayOfMonth.toISOString(),
+      });
+    }
   };
 
   const handlePropertyChange = (newPropertyId: number | null) => {
@@ -80,7 +104,7 @@ const StatisticPage = () => {
       <div className="mb-6">
         <StatisticFilters
           filterType={filterType}
-          startDate={startDate ? new Date(startDate) : addDays(new Date(), -30)}
+          startDate={startDate ? new Date(startDate) : subYears(new Date(), 1)}
           endDate={endDate ? new Date(endDate) : new Date()}
           selectedMonth={month}
           selectedYear={year}
@@ -99,9 +123,7 @@ const StatisticPage = () => {
       </div>
 
       <StatCards
-        startDate={
-          new Date(startDate || addDays(new Date(), -30).toISOString())
-        }
+        startDate={new Date(startDate || subYears(new Date(), 1).toISOString())}
         endDate={new Date(endDate || new Date().toISOString())}
         propertyId={Number(propertyId)}
       />
@@ -109,28 +131,28 @@ const StatisticPage = () => {
       <div className="2xl:mt-7.5 2xl:gap-7.5 mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6">
         <RevenueChart
           startDate={
-            new Date(startDate || addDays(new Date(), -30).toISOString())
+            new Date(startDate || subYears(new Date(), 1).toISOString())
           }
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
         />
         <PaymentDistributionChart
           startDate={
-            new Date(startDate || addDays(new Date(), -30).toISOString())
+            new Date(startDate || subYears(new Date(), 1).toISOString())
           }
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
         />
         <MetricsChart
           startDate={
-            new Date(startDate || addDays(new Date(), -30).toISOString())
+            new Date(startDate || subYears(new Date(), 1).toISOString())
           }
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
         />
         <TopPropertiesTable
           startDate={
-            new Date(startDate || addDays(new Date(), -30).toISOString())
+            new Date(startDate || subYears(new Date(), 1).toISOString())
           }
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
