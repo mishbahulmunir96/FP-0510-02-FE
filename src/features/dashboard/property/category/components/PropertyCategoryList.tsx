@@ -17,7 +17,6 @@ import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
 import { EditPropertyCategory } from "../components/EditPropertyCategory";
-
 interface PropertyCategoryPageProps {
   propertyCategoryId: number;
 }
@@ -30,6 +29,7 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
   const { data, isPending } = useGetCategory({
     userId: session.data?.user.id,
     take: 7,
+
   });
 
   const onPageChange = ({ selected }: { selected: number }) => {

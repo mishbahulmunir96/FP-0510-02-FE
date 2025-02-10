@@ -18,7 +18,6 @@ const PropertyManagementPage = () => {
       icon: <FiList className="h-5 w-5" />,
       variant: "secondary" as const,
     },
-
     {
       href: "/tenant/dashboard/peak-season",
       label: "Peak Season Rate",
