@@ -34,7 +34,7 @@ const menuItems = [
       },
       {
         title: "Manage Room",
-        url: "/tenant/dashboard/room",
+        url: "/tenant/dashboard/property/room",
         icon: Bed,
       },
       {

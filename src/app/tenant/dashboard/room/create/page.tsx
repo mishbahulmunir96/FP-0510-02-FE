@@ -1,15 +1,14 @@
 import DashboardLayout from "@/features/dashboard/dashboardLayout";
-import React from "react";
+import CreateRoomPage from "@/features/dashboard/property/room/create";
 
-const Dashboard = () => {
+const CreateRoom = () => {
   return (
     <div>
-
       <DashboardLayout>
-        <DashboardLayout children={undefined} />
+        <CreateRoomPage />
       </DashboardLayout>
     </div>
   );
 };
 
-export default Dashboard;
+export default CreateRoom;

@@ -36,7 +36,6 @@ const FormInput: FC<FormInputProps> = ({
 }) => {
   return (
     <div className={className}>
-
       <Label htmlFor={name}>{label}</Label>
       <Input
         name={name}

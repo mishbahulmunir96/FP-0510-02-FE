@@ -129,6 +129,14 @@ export interface Reservation {
 }
 
 export interface PropertyCategory {
+  type: string;
+  property: any;
+  roomFacility: any;
+  roomImage: any;
+  price: number;
+  stock: number;
+  roomImages: any;
+  guest: number;
   location: string;
   status: string;
   propertyCategory: any;
