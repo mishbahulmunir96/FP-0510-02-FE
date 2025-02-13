@@ -1,13 +1,7 @@
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
 import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
 import { formatRupiah } from "@/lib/utils";
-import {
-  Building2,
-  ShoppingCart,
-  Users,
-  Percent,
-  DollarSign,
-} from "lucide-react";
+import { Building2, DollarSign, Percent, ShoppingCart } from "lucide-react";
 import CardDataStats from "./CardDataStats";
 
 interface StatCardsProps {
@@ -26,14 +20,44 @@ export const StatCards = ({
     endDate,
     propertyId,
   });
-  const { data: transactionData } = useTransactionReport({
+  const { data: currentData } = useTransactionReport({
     startDate,
     endDate,
     propertyId,
   });
-  const totalRevenue = transactionData?.totalRevenue || 0;
-  const totalTransactions = transactionData?.totalTransactions || 0;
+
+  // Hitung tanggal untuk periode sebelumnya
+  const previousStartDate = new Date(startDate);
+  const previousEndDate = new Date(endDate);
+  const diff = endDate.getTime() - startDate.getTime();
+  previousStartDate.setTime(previousStartDate.getTime() - diff);
+  previousEndDate.setTime(previousEndDate.getTime() - diff);
+
+  const { data: previousData } = useTransactionReport({
+    startDate: previousStartDate,
+    endDate: previousEndDate,
+    propertyId,
+  });
+
+  // Hitung persentase perubahan
+  const currentRevenue = currentData?.totalRevenue || 0;
+  const previousRevenue = previousData?.totalRevenue || 0;
+  const revenueChange =
+    previousRevenue === 0
+      ? 100
+      : Number(
+          (
+            ((currentRevenue - previousRevenue) / previousRevenue) *
+            100
+          ).toFixed(2),
+        );
+  const totalTransactions = currentData?.totalTransactions || 0;
   const totalProperties = propertyData?.length || 0;
+  const totalRooms =
+    propertyData?.reduce((total, property) => {
+      return total + property.totalRooms;
+    }, 0) || 0;
+
   const averageOccupancy = propertyData
     ? propertyData.reduce((acc, curr) => acc + curr.occupancyRate, 0) /
       propertyData.length
@@ -43,9 +67,10 @@ export const StatCards = ({
     <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6">
       <CardDataStats
         title="Total Pendapatan"
-        total={formatRupiah(totalRevenue)}
-        rate={`${transactionData?.paymentStatusBreakdown.successRate || 0}%`}
-        levelUp
+        total={formatRupiah(currentRevenue)}
+        rate={`${Math.abs(revenueChange)}%`}
+        levelUp={revenueChange > 0}
+        levelDown={revenueChange < 0}
       >
         <DollarSign className="h-5 w-5" />
       </CardDataStats>
@@ -53,7 +78,7 @@ export const StatCards = ({
       <CardDataStats
         title="Total Transaksi"
         total={totalTransactions.toString()}
-        rate={`${transactionData?.averageBookingDuration || 0} hari`}
+        rate={`${currentData?.averageBookingDuration || 0} hari`}
         levelUp
       >
         <ShoppingCart className="h-5 w-5" />
@@ -62,7 +87,7 @@ export const StatCards = ({
       <CardDataStats
         title="Total Property"
         total={totalProperties.toString()}
-        rate={`${propertyData?.[0]?.bestPerformingRooms.length || 0} kamar`}
+        rate={`${totalRooms} kamar`}
         levelUp
       >
         <Building2 className="h-5 w-5" />

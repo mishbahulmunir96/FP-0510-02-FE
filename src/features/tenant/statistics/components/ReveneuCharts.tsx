@@ -2,6 +2,7 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { formatRupiah } from "@/lib/utils";
 import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
+import { format } from "date-fns";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -28,10 +29,7 @@ export const RevenueChart = ({
     {
       name: "Pendapatan",
       type: "area",
-      data:
-        data?.peakBookingPeriods.map(
-          (period) => period.totalBookings * 100000,
-        ) || [], // Simulasi data pendapatan
+      data: data?.peakBookingPeriods.map((period) => period.totalRevenue) || [],
     },
     {
       name: "Transaksi",
@@ -86,7 +84,21 @@ export const RevenueChart = ({
       },
     },
     xaxis: {
-      categories: data?.peakBookingPeriods.map((period) => period.date) || [],
+      categories:
+        data?.peakBookingPeriods.map((period) => {
+          const diffInDays = Math.ceil(
+            (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+          );
+
+          if (diffInDays <= 7) {
+            return format(new Date(period.date), "dd MMM");
+          } else if (diffInDays <= 31) {
+            const [, weekNumber] = period.date.split("-W");
+            return `Minggu ${weekNumber}`;
+          } else {
+            return format(new Date(period.date + "-01"), "MMM yyyy");
+          }
+        }) || [],
       axisBorder: {
         show: false,
       },
@@ -115,7 +127,12 @@ export const RevenueChart = ({
           style: {
             colors: "#4318FF",
           },
-          formatter: (value) => formatRupiah(value),
+          formatter: (value) => {
+            if (value >= 1000) {
+              return `Rp ${(value / 1000).toFixed(0)}k`;
+            }
+            return `Rp ${value}`;
+          },
         },
       },
       {
@@ -193,7 +210,7 @@ export const RevenueChart = ({
         </div>
       </div>
 
-      <div className="relative mt-4 min-h-[400px]">
+      <div className="relative mt-4 min-h-[400px] pt-4">
         <ReactApexChart
           options={options}
           series={series}

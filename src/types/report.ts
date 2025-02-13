@@ -4,6 +4,7 @@ export interface RoomDetail {
   totalBookings: number;
   totalRevenue: number;
   averageStayDuration: number;
+  stock: number;
 }
 
 export interface PropertyReport {
@@ -15,6 +16,7 @@ export interface PropertyReport {
   averageRating: number;
   roomDetails: RoomDetail[];
   bestPerformingRooms: RoomDetail[];
+  totalRooms: number;
 }
 
 export interface PaymentMethodDistribution {
@@ -37,9 +39,10 @@ export interface PaymentStatusBreakdown {
   totalPending: number;
 }
 
-export interface PeakBookingPeriod {
+export interface PeriodData {
   date: string;
   totalBookings: number;
+  totalRevenue: number;
 }
 
 export interface TransactionReport {
@@ -48,7 +51,11 @@ export interface TransactionReport {
   averageTransactionValue: number;
   paymentMethodDistribution: PaymentMethodDistribution;
   paymentStatusBreakdown: PaymentStatusBreakdown;
-  peakBookingPeriods: PeakBookingPeriod[];
+  peakBookingPeriods: {
+    date: string;
+    totalBookings: number;
+    totalRevenue: number;
+  }[];
   averageBookingDuration: number;
   averageBookingLeadTime: number;
 }

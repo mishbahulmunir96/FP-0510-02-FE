@@ -4,7 +4,7 @@ import TransactionPage from "@/features/transactions";
 const Transaction = () => {
   return (
     <LandingPageLayout>
-      <TransactionPage />;
+      <TransactionPage />
     </LandingPageLayout>
   );
 };

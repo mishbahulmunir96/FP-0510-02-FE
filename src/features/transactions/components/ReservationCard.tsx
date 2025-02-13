@@ -1,191 +1,245 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import useCreateReservation from "@/hooks/api/transaction/useCreateReservation";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { id } from "date-fns/locale";
+import { Star } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import SelectGuest from "./SelectGuest";
-import { before } from "node:test";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-type DateRange = {
-  from: Date | undefined;
-  to?: Date | undefined;
-};
+interface ReservationCardProps {
+  roomId: number;
+  roomType: string;
+  pricePerNight: number;
+  checkIn: Date;
+  checkOut: Date;
+  roomImage: string;
+  paymentMethod: string;
+  isLoggedIn: boolean;
+  peakSeasonRates: {
+    id: number;
+    startDate: string;
+    endDate: string;
+    price: number;
+  }[];
+}
 
-const useDateRange = () => {
-  const [dateRange, setDateRange] = useState<DateRange>({
-    from: undefined,
-    to: undefined,
+const ReservationCard = ({
+  roomId,
+  roomType,
+  pricePerNight,
+  checkIn,
+  checkOut,
+  roomImage,
+  paymentMethod,
+  isLoggedIn,
+  peakSeasonRates,
+}: ReservationCardProps) => {
+  const createReservation = useCreateReservation();
+  const router = useRouter();
+
+  const { data: reviewsData } = useGetReviewsByRoom({
+    roomId,
+    page: 1,
+    take: 1, // Kita hanya butuh metadata saja
   });
 
-  const handleDateSelect = (newDateRange: DateRange | undefined) => {
-    if (
-      newDateRange &&
-      newDateRange.from &&
-      newDateRange.to &&
-      newDateRange.from > newDateRange.to
-    ) {
-      setDateRange({ from: newDateRange.from, to: undefined });
-    } else if (newDateRange !== undefined) {
-      setDateRange(newDateRange);
-    }
+  // Fungsi untuk menentukan label rating
+  const getRatingLabel = (rating: number) => {
+    if (rating >= 4.5) return "Outstanding";
+    if (rating >= 4) return "Very Good";
+    if (rating >= 3.5) return "Good";
+    if (rating >= 3) return "Fair";
+    return "Average";
   };
 
-  return { dateRange, setDateRange, handleDateSelect };
-};
+  // Fungsi untuk menentukan warna background rating
+  const getRatingColor = (rating: number) => {
+    if (rating >= 4.5) return "bg-green-600";
+    if (rating >= 4) return "bg-green-500";
+    if (rating >= 3.5) return "bg-yellow-500";
+    if (rating >= 3) return "bg-yellow-400";
+    return "bg-gray-500";
+  };
 
-const today = new Date();
-const disabledDay = [{ before: today }];
+  const calculatePricing = () => {
+    const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    let totalPrice = 0;
+    let peakSeasonDays = 0;
+    let peakSeasonRatePerNight = 0;
+    let basePrice = pricePerNight;
 
-const ReservationCard = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { dateRange, setDateRange, handleDateSelect } = useDateRange();
+    for (let i = 0; i < nights; i++) {
+      const currentDate = new Date(checkIn);
+      currentDate.setDate(currentDate.getDate() + i);
+      currentDate.setHours(0, 0, 0, 0);
 
-  const buttonClasses = (date: Date | undefined) =>
-    cn(
-      "w-full justify-start text-left font-normal",
-      !date && "text-muted-foreground",
-    );
+      const isPeakSeason = peakSeasonRates.some((rate) => {
+        const startDate = new Date(rate.startDate);
+        const endDate = new Date(rate.endDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+
+        return currentDate >= startDate && currentDate <= endDate;
+      });
+
+      if (isPeakSeason) {
+        const peakRate = peakSeasonRates.find((rate) => {
+          const startDate = new Date(rate.startDate);
+          const endDate = new Date(rate.endDate);
+          startDate.setHours(0, 0, 0, 0);
+          endDate.setHours(0, 0, 0, 0);
+          return currentDate >= startDate && currentDate <= endDate;
+        });
+
+        if (peakRate) {
+          peakSeasonDays++;
+          peakSeasonRatePerNight = peakRate.price;
+          totalPrice += peakRate.price;
+        }
+      } else {
+        totalPrice += basePrice;
+      }
+    }
+
+    return {
+      totalPrice,
+      nights,
+      basePrice,
+      peakSeasonDays,
+      peakSeasonRatePerNight,
+    };
+  };
+
+  const {
+    totalPrice,
+    nights,
+    basePrice,
+    peakSeasonDays,
+    peakSeasonRatePerNight,
+  } = calculatePricing();
+
+  const handleReservation = () => {
+    if (!isLoggedIn) {
+      toast.error("Please login first");
+      router.push("/login");
+      return;
+    }
+
+    if (!paymentMethod) {
+      toast.error("Please select payment method");
+      return;
+    }
+
+    createReservation.mutate({
+      roomId,
+      startDate: checkIn,
+      endDate: checkOut,
+      paymentMethode: paymentMethod === "auto" ? "OTOMATIS" : "MANUAL",
+    });
+  };
 
   return (
     <div className="mt-10 w-full md:w-[35%]">
       <Card className="w-full space-y-6 p-6">
         <div className="relative h-40 overflow-hidden rounded-md">
           <Image
-            src="/images/room.avif"
-            alt="Another view of bedroom"
+            src={roomImage}
+            alt={`${roomType} room view`}
             fill
             className="object-cover"
           />
         </div>
 
-        <div className="space-y-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-[#ff5722]">
-              Rp 157.000
-            </span>
-            <span className="text-base text-muted-foreground">/ night</span>
-          </div>
-        </div>
-
-        <div className="rounded-lg border">
-          <div className="mx-auto w-full">
-            <div className="flex gap-2">
-              <Popover open={isOpen} onOpenChange={setIsOpen}>
-                <PopoverTrigger asChild>
-                  <div className="flex w-full justify-between divide-x">
-                    <div
-                      className={`${buttonClasses(dateRange.from)} flex h-full cursor-pointer flex-col gap-1 p-2`}
-                      onClick={() => setIsOpen(true)}
-                      aria-label="Pilih tanggal check-in"
+        <div className="space-y-2 border-b">
+          <div>
+            <h3 className="font-semibold">{roomType} Room</h3>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                {reviewsData?.meta.averageRating ? (
+                  <>
+                    <span
+                      className={`flex rounded ${getRatingColor(reviewsData.meta.averageRating)} px-1.5 py-0.5 text-sm font-medium text-white`}
                     >
-                      <span className="text-xs font-semibold">CHECK-IN</span>
-                      <div className="flex text-xs">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {dateRange.from
-                          ? format(dateRange.from, "dd/MM/yyyy")
-                          : "DD/MM/YYYY"}
-                      </div>
-                    </div>
-
-                    <div
-                      className={`${buttonClasses(dateRange.to)} flex h-full cursor-pointer flex-col gap-1 p-2`}
-                      onClick={() => setIsOpen(true)}
-                      aria-label="Pilih tanggal check-out"
-                    >
-                      <span className="text-xs font-semibold">CHECK-OUT</span>
-                      <div className="flex text-xs">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {dateRange.to
-                          ? format(dateRange.to, "dd/MM/yyyy")
-                          : "DD/MM/YYYY"}
-                      </div>
-                    </div>
-                  </div>
-                </PopoverTrigger>
-
-                <PopoverContent className="w-auto p-0" align="start">
-                  <div className="flex flex-col">
-                    <Calendar
-                      mode="range"
-                      defaultMonth={new Date()}
-                      selected={dateRange}
-                      onSelect={handleDateSelect}
-                      numberOfMonths={2}
-                      showOutsideDays={false}
-                      initialFocus
-                      disabled={disabledDay}
-                      classNames={{
-                        months: "flex space-x-4",
-                        head_row: "flex justify-between",
-                        head_cell: "text-muted-foreground font-normal",
-                        cell: cn(
-                          "h-9 w-9 text-center text-sm p-0 relative",
-                          "[&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
-                        ),
-                        day: cn(
-                          "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-                          "hover:bg-accent hover:text-accent-foreground",
-                        ),
-                        day_selected:
-                          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-                        day_today: "bg-accent text-accent-foreground",
-                        day_outside: "text-muted-foreground opacity-50",
-                        day_disabled: "text-muted-foreground opacity-50",
-                        day_range_middle:
-                          "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                        day_hidden: "invisible",
-                      }}
-                    />
-
-                    <div className="flex items-center justify-end gap-2 border-t p-3">
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setDateRange({
-                            from: undefined,
-                            to: undefined,
-                          });
-                        }}
-                      >
-                        Hapus tanggal
-                      </Button>
-                      <Button onClick={() => setIsOpen(false)}>Tutup</Button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                      <Star
+                        className="h-4 w-4 text-yellow-400"
+                        fill="currentColor"
+                      />
+                      {reviewsData.meta.averageRating.toFixed(1)}
+                    </span>
+                    <span className="text-sm font-medium">
+                      {getRatingLabel(reviewsData.meta.averageRating)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    No rating yet
+                  </span>
+                )}
+              </div>
+              <span className="text-sm text-muted-foreground">
+                {reviewsData?.meta.total
+                  ? `${reviewsData.meta.total} ulasan`
+                  : "0 ulasan"}
+              </span>
             </div>
           </div>
-
-          <SelectGuest />
+          <div className="space-y-1 pt-2 text-sm text-muted-foreground">
+            <div className="flex justify-between">
+              <span>Check-in:</span>
+              <span>{format(checkIn, "EEE, dd MMM yyyy", { locale: id })}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Check-out:</span>
+              <span>
+                {format(checkOut, "EEE, dd MMM yyyy", { locale: id })}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <Button className="w-full bg-[#E31C5F] py-6 text-lg hover:bg-[#D91557]">
-          Pesan
+        <div className="space-y-4">
+          <h4 className="text-lg font-semibold">Price Details</h4>
+          <div className="space-y-1 text-sm">
+            <div className="flex items-center justify-between">
+              <span>Base Price</span>
+              <span>Rp {basePrice.toLocaleString("id-ID")},00</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>stay</span>
+              <span>
+                {nights} night{nights > 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Peak Season Price</span>
+              <span>Rp {peakSeasonRatePerNight.toLocaleString("id-ID")}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Peak Season Days</span>
+              <span>{peakSeasonDays}</span>
+            </div>
+            <div className="flex items-center justify-between border-t pt-2">
+              <span className="text-base font-semibold">Total</span>
+              <span className="text-base font-semibold">
+                Rp {totalPrice.toLocaleString("id-ID")},00
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <Button
+          className="w-full bg-blue-500 py-6 text-lg hover:bg-blue-600"
+          onClick={handleReservation}
+          disabled={createReservation.isPending}
+        >
+          {createReservation.isPending ? "Processing..." : "Pesan"}
         </Button>
-
-        <div className="space-y-4 pt-4">
-          <div className="flex items-center justify-between">
-            <a href="#" className="font-medium underline">
-              Rp 157.000 x 3 malam
-            </a>
-            <span className="font-medium">Rp12.720.000</span>
-          </div>
-          <div className="flex items-center justify-between border-t pt-4">
-            <span className="text-base font-bold">Total pembayaran</span>
-            <span className="font-bold">Rp14.219.134</span>
-          </div>
-        </div>
       </Card>
     </div>
   );

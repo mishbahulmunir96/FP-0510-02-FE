@@ -5,7 +5,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   return (
     <div>
       <LandingPageLayout>
-        <PropertyDetailPage propertySlug={params.slug} />;
+        <PropertyDetailPage propertySlug={params.slug} />
       </LandingPageLayout>
     </div>
   );

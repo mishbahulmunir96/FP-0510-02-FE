@@ -74,6 +74,13 @@ export interface Room {
   peakSeasonRate: PeakSeasonRate[];
   roomNonAvailability?: RoomNonAvailability[];
   reservation?: Reservation[];
+  // === added by misbah =====
+  property: {
+    id: number;
+    title: string;
+    description: string;
+    location: string;
+  }; // === end ===
 }
 
 export interface RoomImage {

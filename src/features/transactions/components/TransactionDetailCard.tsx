@@ -36,8 +36,6 @@ const TransactionDetailCard = ({
   const { data: reviewData, isLoading: isLoadingReview } =
     useGetReviewByTransaction(data.id);
 
-  console.log(reviewData);
-
   const showReviewButton = data.status === "CHECKED_OUT" && !reviewData;
   const showViewReviewButton = data.status === "CHECKED_OUT" && reviewData;
 
