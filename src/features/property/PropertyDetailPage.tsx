@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import PropertyDetailCard from "@/components/PropertyDetailCard";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { MapPin, Users, BedDouble, Wifi, Coffee } from "lucide-react";
 import useGetProperty from "@/hooks/api/property/useGetProperty";
-import PropertyDetailCard from "@/components/PropertyDetailCard";
-import ReservationCard from "../transactions/components/ReservationCard";
-import dynamic from "next/dynamic";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Coffee, MapPin, Wifi } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useState } from "react";
+import { RoomPriceCalendar } from "./components/RoomPriceCalendar";
+import { useRouter } from "next/navigation";
+import {
+  standardizeToCheckInTime,
+  standardizeToCheckOutTime,
+} from "@/utils/date";
 
 // Definisi tipe untuk Property
 interface Property {
@@ -56,6 +61,13 @@ interface Property {
   }>;
 }
 
+// === added by misbah ===
+type DateRange = {
+  from: Date | undefined;
+  to?: Date | undefined;
+};
+// === end ===
+
 // Dynamic import untuk Map component
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
@@ -84,13 +96,44 @@ export default function PropertyDetailPage({
 }: {
   propertySlug: string;
 }) {
+  const router = useRouter();
   const { data: property, isPending } = useGetProperty(propertySlug);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  // === added by misbah ===
+  const [selectedRoomId, setSelectedRoomId] = useState<string>("");
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: undefined,
+    to: undefined,
+  });
+  // === end ===
 
   if (isPending) return <LoadingSkeleton />;
   if (!property) return <div>Property not found</div>;
 
   const availableRooms = property.room.filter((room) => !room.isDeleted);
+
+  // === added by misbah ===
+  const selectedRoom = availableRooms.find(
+    (room) => room.id.toString() === selectedRoomId,
+  );
+
+  const handleBooking = () => {
+    if (!selectedRoom || !dateRange.from || !dateRange.to) return;
+
+    const checkInDate = standardizeToCheckInTime(dateRange.from);
+    const checkOutDate = standardizeToCheckOutTime(dateRange.to);
+
+    const params = new URLSearchParams({
+      roomId: selectedRoom.id.toString(),
+      checkIn: checkInDate.toISOString(),
+      checkOut: checkOutDate.toISOString(),
+      propertyId: property.id.toString(),
+      propertySlug: propertySlug,
+    });
+
+    router.push(`/transactions?${params.toString()}`);
+  };
+  // === end ===
 
   const handlePositionChange = (lat: string, lng: string) => {
     console.log("Position changed:", lat, lng);
@@ -134,7 +177,6 @@ export default function PropertyDetailPage({
             </div>
           </div>
 
-          {/* Property Details Section */}
           <div className="space-y-6">
             <div>
               <div className="mb-2 flex items-center gap-2">
@@ -154,9 +196,24 @@ export default function PropertyDetailPage({
 
             <p className="text-muted-foreground">{property.description}</p>
 
-            <Button size="lg" className="w-full">
+            {/* === edit by misbah  ====*/}
+            <RoomPriceCalendar
+              rooms={availableRooms}
+              onRoomSelect={setSelectedRoomId}
+              selectedRoomId={selectedRoomId}
+              onDateChange={setDateRange}
+              dateRange={dateRange}
+            />
+
+            <Button
+              size="lg"
+              className="w-full"
+              disabled={!selectedRoomId || !dateRange.from || !dateRange.to}
+              onClick={handleBooking}
+            >
               Book Now
             </Button>
+            {/* === edit end ====*/}
           </div>
         </div>
 

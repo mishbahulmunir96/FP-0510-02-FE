@@ -143,13 +143,13 @@ const StatisticPage = () => {
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
         />
-        <MetricsChart
+        {/* <MetricsChart
           startDate={
             new Date(startDate || subYears(new Date(), 1).toISOString())
           }
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
-        />
+        /> */}
         <TopPropertiesTable
           startDate={
             new Date(startDate || subYears(new Date(), 1).toISOString())

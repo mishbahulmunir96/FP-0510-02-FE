@@ -1,25 +1,13 @@
-import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
+import { formatRupiah } from "@/lib/utils";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-
-interface PaymentMethodDistribution {
-  MANUAL: {
-    percentage: number;
-    count: number;
-  };
-  OTOMATIS: {
-    percentage: number;
-    count: number;
-  };
-}
-
-interface TransactionReportData {
-  paymentMethodDistribution: PaymentMethodDistribution;
-}
 
 interface PaymentDistributionChartProps {
   startDate: Date;
@@ -27,68 +15,93 @@ interface PaymentDistributionChartProps {
   propertyId?: number | null;
 }
 
+type DataType = "transactions" | "revenue";
+
 export const PaymentDistributionChart = ({
   startDate,
   endDate,
   propertyId,
 }: PaymentDistributionChartProps) => {
-  const { data, isLoading } = useTransactionReport({
+  const [dataType, setDataType] = useState<DataType>("transactions");
+
+  const { data: propertyData } = usePropertyReport({
     startDate,
     endDate,
     propertyId,
   });
-  const manualPercentage =
-    data?.paymentMethodDistribution?.MANUAL?.percentage ?? 0;
-  const otomatisPercentage =
-    data?.paymentMethodDistribution?.OTOMATIS?.percentage ?? 0;
 
-  const series = [manualPercentage, otomatisPercentage];
+  // Persiapkan data berdasarkan propertyId
+  const chartData = propertyId
+    ? // Jika propertyId ada, tampilkan data per room type
+      propertyData
+        ?.find((p) => p.propertyId === propertyId)
+        ?.roomDetails.map((room) => ({
+          name: room.roomType,
+          value:
+            dataType === "transactions"
+              ? room.totalBookings
+              : room.totalRevenue,
+        })) || []
+    : // Jika tidak ada propertyId, tampilkan data per property
+      propertyData?.map((property) => ({
+        name: property.propertyName,
+        value:
+          dataType === "transactions"
+            ? property.totalTransactions
+            : property.totalRevenue,
+      })) || [];
+
+  const series = chartData.map((item) => item.value);
+  const labels = chartData.map((item) => item.name);
 
   const options: ApexOptions = {
     chart: {
       type: "donut",
       fontFamily: "sans-serif",
     },
-    labels: ["Manual", "Otomatis"],
-    colors: ["#3C50E0", "#80CAEE"],
+    labels,
+    colors: ["#3C50E0", "#80CAEE", "#F0ABFC", "#FBBF24", "#34D399"],
     legend: {
-      show: false,
+      show: true,
+      position: "bottom",
+      fontSize: "14px",
+      fontFamily: "sans-serif",
+      markers: {
+        size: 12,
+        strokeWidth: 0,
+        offsetX: 0,
+        offsetY: 0,
+        shape: "circle",
+      },
+      itemMargin: {
+        horizontal: 15,
+        vertical: 8,
+      },
+      offsetY: 20,
     },
     plotOptions: {
       pie: {
         donut: {
-          size: "65%",
-          background: "transparent",
+          size: "50%",
           labels: {
             show: true,
-            name: {
-              show: true,
-              fontSize: "22px",
-              fontFamily: "sans-serif",
-              color: "#64748B",
-            },
-            value: {
-              show: true,
-              fontSize: "16px",
-              fontFamily: "sans-serif",
-              color: "#64748B",
-              formatter: function (val) {
-                return val + "%";
-              },
-            },
             total: {
               show: true,
-              label: "Total",
-              fontSize: "16px",
-              fontFamily: "sans-serif",
-              color: "#64748B",
+              label:
+                dataType === "transactions"
+                  ? "Total Transaksi"
+                  : "Total Pendapatan",
               formatter: function (w) {
-                return (
-                  w.globals.seriesTotals.reduce(
-                    (a: number, b: number) => a + b,
-                    0,
-                  ) + "%"
+                // Fix: Pastikan penjumlahan menggunakan number
+                const total = w.globals.seriesTotals.reduce(
+                  (a: number, b: number) => {
+                    return a + b;
+                  },
+                  0,
                 );
+                return dataType === "transactions"
+                  ? total.toString()
+                  : formatRupiah(total);
               },
             },
           },
@@ -96,53 +109,40 @@ export const PaymentDistributionChart = ({
       },
     },
     dataLabels: {
-      enabled: false,
+      formatter: function (value) {
+        return dataType === "transactions"
+          ? `${value} transaksi`
+          : formatRupiah(Number(value));
+      },
     },
-    responsive: [
-      {
-        breakpoint: 2600,
-        options: {
-          chart: {
-            width: 380,
-          },
-        },
-      },
-      {
-        breakpoint: 640,
-        options: {
-          chart: {
-            width: 200,
-          },
-        },
-      },
-    ],
     tooltip: {
-      enabled: true,
-      theme: "light",
       y: {
         formatter: function (value) {
-          return value + "%";
+          return dataType === "transactions"
+            ? `${value} transaksi`
+            : formatRupiah(Number(value));
         },
       },
     },
   };
 
-  if (isLoading) {
-    return (
-      <div className="border-stroke shadow-default col-span-4 rounded-sm border bg-white p-6">
-        <div className="flex h-[400px] items-center justify-center">
-          <p className="text-gray-500">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="border-stroke shadow-default relative col-span-4 rounded-sm border bg-white p-6">
       <div className="mb-4">
-        <h2 className="text-xl font-bold text-gray-800">
-          Distribusi Metode Pembayaran
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-800">
+            Distribusi {propertyId ? "Per Tipe Kamar" : "Per Property"}
+          </h2>
+          <Tabs
+            value={dataType}
+            onValueChange={(value) => setDataType(value as DataType)}
+          >
+            <TabsList>
+              <TabsTrigger value="transactions">Transaksi</TabsTrigger>
+              <TabsTrigger value="revenue">Pendapatan</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
         <p className="mt-1 text-sm text-gray-600">
           {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
         </p>
@@ -154,29 +154,12 @@ export const PaymentDistributionChart = ({
             options={options}
             series={series}
             type="donut"
-            height={350}
+            height={400}
           />
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-[#3C50E0]"></span>
-          <span className="text-sm font-medium text-gray-700">Manual</span>
-          <span className="text-sm text-gray-500">
-            ({manualPercentage.toFixed(1)}%)
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-[#80CAEE]"></span>
-          <span className="text-sm font-medium text-gray-700">Otomatis</span>
-          <span className="text-sm text-gray-500">
-            ({otomatisPercentage.toFixed(1)}%)
-          </span>
-        </div>
-      </div>
-
-      {data && series.every((value) => value === 0) && (
+      {chartData.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80">
           <p className="text-gray-500">Tidak ada data untuk ditampilkan</p>
         </div>

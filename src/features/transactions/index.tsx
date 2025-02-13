@@ -6,25 +6,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Car, Coffee, CreditCard, Wifi, Wind } from "lucide-react";
+import useGetRoom from "@/hooks/api/room/useGetRoom";
+import { ArrowLeft } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import BankDetail from "./components/BankDetail";
 import InputElementDetail from "./components/InputElementDetail";
 import PropertyRules from "./components/PropertyRules";
 import ReservationCard from "./components/ReservationCard";
-import { useSession } from "next-auth/react";
 
 const TransactionPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+
+  const roomId = searchParams.get("roomId");
+  const checkIn = searchParams.get("checkIn")
+    ? new Date(searchParams.get("checkIn")!)
+    : new Date();
+  const checkOut = searchParams.get("checkOut")
+    ? new Date(searchParams.get("checkOut")!)
+    : new Date();
+
+  const { data: roomDetail, isLoading, error } = useGetRoom(Number(roomId));
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading room details</div>;
+
+  const property = roomDetail?.property;
+
   return (
     <main className="w-full px-16">
       <div className="flex w-full justify-between">
-        <div className="w-[60%] border-r">
+        <div className="w-[60%] border-r py-8">
           <div className="mb-8">
             <div className="mb-4 flex flex-col gap-2">
               <ArrowLeft className="h-8 w-8" />
               <h1 className="text-2xl font-semibold text-slate-900">
-                <span>Book: </span>Atrium Premiere Hotel. Sleman, Yogyakarta
+                <span>Book: </span>
+                {property?.title}, {property?.location}
               </h1>
             </div>
           </div>
@@ -34,64 +55,25 @@ const TransactionPage = () => {
               Step 1: Personal data
             </h2>
             <div className="mb-4 space-y-4">
-              <InputElementDetail label="Name" placeholder="maria oza" />
+              <InputElementDetail
+                label="Name"
+                placeholder="john doe"
+                defaultValue={session?.user.name || ""}
+              />
               <InputElementDetail
                 label="Email address"
-                placeholder="oza@mail.com"
-              />
-              <InputElementDetail
-                label="Phone Number"
-                placeholder="081234567890"
+                placeholder="example@mail.com"
+                defaultValue={session?.user.email || ""}
               />
             </div>
           </div>
 
           <div className="mb-8 border-b">
             <h2 className="mb-4 text-[20px] font-semibold text-gray-700">
-              Step 2: Facilities
+              Step 2: Payment details
             </h2>
-
-            <div className="mb-4">
-              <div className="text-sm text-gray-700">
-                <h2 className="mb-1 text-base font-medium">Hotel facilities</h2>
-                <div className="mb-4 grid grid-cols-4 text-sm text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <Wifi className="h-4 w-4" />
-                    <span>Free WiFi</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Car className="h-4 w-4" />
-                    <span>Free parking</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-sm text-gray-700">
-                <h2 className="mb-1 text-base font-medium">Room facilities</h2>
-                <div className="mb-4 grid grid-cols-4 text-sm text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="h-4 w-4" />
-                    <span>Key card access</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Wind className="h-4 w-4" />
-                    <span>Air conditioning</span>
-                  </div>
-                  <div className="mb-2 flex items-center gap-2">
-                    <Coffee className="h-4 w-4" />
-                    <span className="text-sm">Breakfast included</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-8 border-b">
-            <h2 className="mb-4 text-[20px] font-semibold text-gray-700">
-              Step 3: Payment details
-            </h2>
-            <div className="mb-4 text-gray-700">
-              <label className="mb-2 block text-base font-medium">
+            <div className="mb-4 text-gray-600">
+              <label className="mb-2 block text-sm font-medium">
                 Choose payment method
               </label>
 
@@ -117,7 +99,17 @@ const TransactionPage = () => {
           <PropertyRules />
         </div>
 
-        <ReservationCard />
+        <ReservationCard
+          roomId={Number(roomId)}
+          roomType={roomDetail?.type || ""}
+          pricePerNight={roomDetail?.price || 0}
+          checkIn={checkIn}
+          checkOut={checkOut}
+          roomImage={roomDetail?.roomImage[0]?.imageUrl || "/images/room.avif"}
+          paymentMethod={paymentMethod}
+          isLoggedIn={!!session}
+          peakSeasonRates={roomDetail?.peakSeasonRate || []}
+        />
       </div>
     </main>
   );
