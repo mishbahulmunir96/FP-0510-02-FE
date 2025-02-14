@@ -9,37 +9,56 @@ import React from "react";
 
 const PropertyRules = () => {
   return (
-    <div className="text-gray-700">
-      <h2 className="mb-4 text-[20px] font-semibold">House rules</h2>
-      <div className="space-y-4">
-        <div className="flex w-[70%] justify-between">
-          <div className="flex flex-col gap-1 text-sm">
-            <div className="flex items-center gap-2">
-              <ClockArrowUp className="h-4 w-4" />
-              <span>Check-in time</span>
+    <div className="rounded-lg bg-white p-6 shadow-sm">
+      <h2 className="mb-6 text-xl font-semibold text-gray-800">House Rules</h2>
+
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+          <div className="rounded-lg bg-gray-50 p-4 transition-all duration-300 hover:bg-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="rounded-full bg-blue-100 p-2">
+                <ClockArrowUp className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium text-gray-700">Check-in Time</p>
+                <p className="text-sm text-gray-600">From 2 PM</p>
+              </div>
             </div>
-            <span className="ml-6">From 2 PM</span>
           </div>
-          <div className="flex flex-col gap-1 text-sm">
-            <div className="flex items-center gap-2">
-              <ClockArrowDown className="h-4 w-4" />
-              <span>Check-out time</span>
+
+          <div className="rounded-lg bg-gray-50 p-4 transition-all duration-300 hover:bg-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="rounded-full bg-blue-100 p-2">
+                <ClockArrowDown className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium text-gray-700">Check-out Time</p>
+                <p className="text-sm text-gray-600">Until 12 AM</p>
+              </div>
             </div>
-            <span className="ml-6">Until 12 AM</span>
           </div>
         </div>
-        <div className="flex gap-6 text-sm">
-          <div className="flex items-center gap-2">
-            <Ban className="h-4 w-4" />
-            <span>No pets allowed</span>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-4 transition-all duration-300 hover:bg-gray-100">
+            <div className="rounded-full bg-red-100 p-2">
+              <Ban className="h-5 w-5 text-red-600" />
+            </div>
+            <span className="font-medium text-gray-700">No pets allowed</span>
           </div>
-          <div className="flex items-center gap-2">
-            <CigaretteOff className="h-4 w-4" />
-            <span>No smoking</span>
+
+          <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-4 transition-all duration-300 hover:bg-gray-100">
+            <div className="rounded-full bg-red-100 p-2">
+              <CigaretteOff className="h-5 w-5 text-red-600" />
+            </div>
+            <span className="font-medium text-gray-700">No smoking</span>
           </div>
-          <div className="flex items-center gap-2">
-            <BeerOff className="h-4 w-4" />
-            <span>No partying</span>
+
+          <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-4 transition-all duration-300 hover:bg-gray-100">
+            <div className="rounded-full bg-red-100 p-2">
+              <BeerOff className="h-5 w-5 text-red-600" />
+            </div>
+            <span className="font-medium text-gray-700">No partying</span>
           </div>
         </div>
       </div>
