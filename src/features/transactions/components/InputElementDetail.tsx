@@ -13,12 +13,16 @@ const InputElementDetail: FC<InputElementDetailProps> = ({
   defaultValue,
 }) => {
   return (
-    <div>
-      <label className="text-sm font-medium text-gray-600">{label}</label>
+    <div className="group relative transition-all duration-300">
+      <label className="mb-2 block text-sm font-medium text-gray-700 transition-all group-focus-within:text-blue-600">
+        {label}
+      </label>
       <Input
         placeholder={placeholder}
-        className="w-[70%] rounded-full"
+        className="h-11 w-full rounded-lg border-gray-200 bg-white px-4 shadow-sm transition-all duration-300 placeholder:text-gray-400 hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 md:w-[70%]"
         defaultValue={defaultValue}
+        disabled
+        readOnly
       />
     </div>
   );
