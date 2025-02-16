@@ -21,7 +21,9 @@ export interface Transaction {
     roomPrice: number;
     propertyTitle: string;
     propertyLocation: string;
-    roomImages: string[];
+    roomImages: {
+      imageUrl: string | null;
+    }[];
     roomFacilities: string[];
     peakSeasonDays: number;
     peakSeasonPrice: number;

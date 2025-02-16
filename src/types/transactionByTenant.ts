@@ -29,7 +29,9 @@ export interface Reservation {
   propertyTitle: string;
   roomPrice: number;
   propertyLocation: string;
-  roomImages: (string | null)[];
+  roomImages: {
+    imageUrl: string | null;
+  }[];
   roomFacilities: string[];
   peakSeasonDays: number;
   peakSeasonPrice: number | null;
