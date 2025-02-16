@@ -18,6 +18,10 @@ import {
 
 const verifySchema = Yup.object().shape({
   token: Yup.string().required(),
+  name: Yup.string()
+    .required("Name is required")
+    .min(2, "Name must be at least 2 characters")
+    .matches(/^[a-zA-Z\s]*$/, "Name can only contain letters and spaces"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .matches(/[a-z]/, "Password must contain at least one lowercase letter")
@@ -41,12 +45,17 @@ export default function VerifyForm({ token }: { token: string }) {
   const formik = useFormik({
     initialValues: {
       token,
+      name: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: verifySchema,
     onSubmit: (values) => {
-      verify({ token: values.token, password: values.password });
+      verify({ 
+        token: values.token, 
+        password: values.password,
+        name: values.name 
+      });
     },
   });
 
@@ -81,6 +90,26 @@ export default function VerifyForm({ token }: { token: string }) {
       </CardHeader>
       <CardContent>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
+          {/* Name Input */}
+          <div>
+            <Input
+              type="text"
+              placeholder="Enter your name"
+              {...formik.getFieldProps("name")}
+              className="w-full"
+            />
+            {formik.touched.name && formik.errors.name && (
+              <motion.p
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-1 text-sm text-red-500"
+              >
+                {formik.errors.name}
+              </motion.p>
+            )}
+          </div>
+
+          {/* Password Input */}
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
@@ -105,6 +134,8 @@ export default function VerifyForm({ token }: { token: string }) {
               {formik.errors.password}
             </motion.p>
           )}
+
+          {/* Confirm Password Input */}
           <div className="relative">
             <Input
               type={showConfirmPassword ? "text" : "password"}
@@ -129,6 +160,8 @@ export default function VerifyForm({ token }: { token: string }) {
               {formik.errors.confirmPassword}
             </motion.p>
           )}
+
+          {/* Password Strength Indicator */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Password strength:</span>
@@ -163,6 +196,8 @@ export default function VerifyForm({ token }: { token: string }) {
               />
             </div>
           </div>
+
+          {/* Password Requirements */}
           <div className="space-y-2">
             <p className="text-sm font-medium">Password must contain:</p>
             <ul className="space-y-1 text-sm">

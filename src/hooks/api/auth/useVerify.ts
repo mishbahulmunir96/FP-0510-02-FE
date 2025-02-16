@@ -9,6 +9,7 @@ import { axiosInstance } from "@/lib/axios";
 interface VerifyPayload {
   token: string;
   password: string;
+  name: string;
 }
 
 export const useVerify = () => {

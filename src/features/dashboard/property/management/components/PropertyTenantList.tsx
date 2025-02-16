@@ -64,9 +64,6 @@ const PropertyTenantList = () => {
 
   return (
     <div className="container mx-auto max-w-7xl space-y-8 py-8">
-      <div className="flex items-center justify-between">
-        <h3 className="text-2xl font-semibold">Your Properties</h3>
-      </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {data.data.map((property) => (

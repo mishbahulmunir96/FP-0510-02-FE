@@ -14,7 +14,7 @@ const useDeleteRoomNonAvailability = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       const { data } = await axiosInstance.delete(
-        `/room-non-availabilities/delete/${id}`,
+        `/room-non-availabilities/${id}`,
       );
       return data;
     },

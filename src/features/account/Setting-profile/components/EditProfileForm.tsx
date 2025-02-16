@@ -9,6 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "@/components/ui/use-toast";
 import { Icons } from "./icons";
 import useUpdateProfile from "@/hooks/api/account/useUpdateProfile";
@@ -17,42 +28,71 @@ import { useChangeEmail } from "@/hooks/api/account/useChangeEmail";
 
 const EditProfileForm = () => {
   const { data: session, status } = useSession();
-  const updateProfileMutation = useUpdateProfile();
+  const { mutate: updateProfile, isPending: isUpdateProfilePending } = useUpdateProfile();
   const changePasswordMutation = useChangePassword();
-  const { mutate, isPending } = useChangeEmail();
+  const { mutate: changeEmail, isPending } = useChangeEmail();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [profileImage, setProfileImage] = useState("/images/placeholder.png");
+  // Display states
+  const [displayName, setDisplayName] = useState("");
+  const [displayEmail, setDisplayEmail] = useState("");
+  const [displayImage, setDisplayImage] = useState("/images/placeholder.png");
+  
+  // Form states
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  
+  // Password states
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   useEffect(() => {
     if (session?.user) {
-      setName(session.user.name || "");
-      setEmail(session.user.email || "");
-      setProfileImage(
-        session.user.imageUrl ||
-          session.user.image ||
-          "/images/placeholder.png",
-      );
+      setDisplayName(session.user.name || "");
+      setDisplayEmail(session.user.email || "");
+      setDisplayImage(session.user.imageUrl || session.user.image || "/images/placeholder.png");
+      setFormName(session.user.name || "");
+      setFormEmail(session.user.email || "");
       setIsEmailVerified(session.user.isVerified || false);
     }
-  }, [session]); // Pastikan session ada di dependency array
+  }, [session]);
 
   if (status === "loading") return <div>Loading...</div>;
   if (!session) return <div>Please sign in</div>;
 
-  const handlePersonalUpdate = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    updateProfileMutation.mutate({ name, imageFile });
+  const handlePersonalUpdate = async () => {
+    try {
+      await updateProfile(
+        { name: formName, imageFile },
+        {
+          onSuccess: () => {
+            setDisplayName(formName);
+            if (imageFile) {
+              const imageUrl = URL.createObjectURL(imageFile);
+              setDisplayImage(imageUrl);
+            }
+            toast({
+              title: "Success",
+              description: "Profile updated successfully",
+            });
+          },
+          onError: (error) => {
+            toast({
+              title: "Error",
+              description: "Failed to update profile",
+              variant: "destructive",
+            });
+          },
+        }
+      );
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
   };
 
-  const handlePasswordUpdate = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handlePasswordUpdate = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast({
         title: "Error",
@@ -82,15 +122,29 @@ const EditProfileForm = () => {
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
+          toast({
+            title: "Success",
+            description: "Password updated successfully",
+          });
         },
-      },
+      }
     );
   };
 
-  const handleEmailUpdate = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    mutate({ email: formData.get("email") as string });
+  const handleEmailUpdate = () => {
+    changeEmail(
+      { email: formEmail },
+      {
+        onSuccess: () => {
+          setDisplayEmail(formEmail);
+          setIsEmailVerified(false); // Set email as unverified when changed
+          toast({
+            title: "Success",
+            description: "Email updated successfully. Please verify your new email address.",
+          });
+        },
+      }
+    );
   };
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,9 +154,7 @@ const EditProfileForm = () => {
   };
 
   return (
-
     <div className="container mx-auto h-svh space-y-8 p-4">
-
       <Card>
         <CardHeader>
           <CardTitle>Profile Settings</CardTitle>
@@ -110,18 +162,18 @@ const EditProfileForm = () => {
         <CardContent>
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={profileImage} alt={name} />
+              <AvatarImage src={displayImage} alt={displayName} />
               <AvatarFallback>
-                {name
+                {displayName
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-2xl font-bold">{name}</h2>
+              <h2 className="text-2xl font-bold">{displayName}</h2>
               <p className="text-muted-foreground">
-                {email}{" "}
+                {displayEmail}{" "}
                 {isEmailVerified ? (
                   <span className="text-green-600">(Verified)</span>
                 ) : (
@@ -140,20 +192,19 @@ const EditProfileForm = () => {
           <TabsTrigger value="email">Email</TabsTrigger>
         </TabsList>
 
-        {/* Personal Info */}
         <TabsContent value="personal">
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handlePersonalUpdate} className="space-y-4">
+              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -165,28 +216,42 @@ const EditProfileForm = () => {
                     accept="image/*"
                   />
                 </div>
-                <Button
-                  type="submit"
-                  disabled={updateProfileMutation.isPending}
-                >
-                  {updateProfileMutation.isPending && (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Update Personal Info
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button disabled={isUpdateProfilePending}>
+                      {isUpdateProfilePending && (
+                        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Update Personal Info
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Update Profile</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to update your profile information?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handlePersonalUpdate}>
+                        Update
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </form>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Security */}
         <TabsContent value="security">
           <Card>
             <CardHeader>
               <CardTitle>Security Settings</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handlePasswordUpdate} className="space-y-4">
+              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-2">
                   <Label htmlFor="currentPassword">Current Password</Label>
                   <Input
@@ -197,7 +262,6 @@ const EditProfileForm = () => {
                     onChange={(e) => setCurrentPassword(e.target.value)}
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">New Password</Label>
                   <Input
@@ -208,7 +272,6 @@ const EditProfileForm = () => {
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirm New Password</Label>
                   <Input
@@ -219,61 +282,112 @@ const EditProfileForm = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
-
-                <Button
-                  type="submit"
-                  disabled={changePasswordMutation.isPending}
-                  className="w-full"
-                >
-                  {changePasswordMutation.isPending && (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Update Password
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="w-full"
+                      disabled={changePasswordMutation.isPending}
+                    >
+                      {changePasswordMutation.isPending && (
+                        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Update Password
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Change Password</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to change your password?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handlePasswordUpdate}>
+                        Update
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </form>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Email */}
         <TabsContent value="email">
           <Card>
             <CardHeader>
               <CardTitle>Email Settings</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleEmailUpdate} className="space-y-4">
+              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
                   />
                 </div>
-                <Button type="submit" disabled={isPending} className="w-full">
-                  {isPending && (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Update Email
-                </Button>
-              </form>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="w-full" disabled={isPending}>
+                      {isPending && (
+                        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Update Email
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Update Email</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to update your email address? You will need to verify your new email.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleEmailUpdate}>
+                        Update
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
 
-              {!isEmailVerified && (
-                <div className="mt-4">
-                  <Alert>
-                    <AlertTitle>Email not verified</AlertTitle>
-                    <AlertDescription>
-                      Please verify your email address to access all features.
-                    </AlertDescription>
-                  </Alert>
-                  <Button variant="outline" className="mt-2 w-full">
-                    Resend Verification Email
-                  </Button>
-                </div>
-              )}
+                {!isEmailVerified && (
+                  <div className="mt-4">
+                    <Alert>
+                      <AlertTitle>Email not verified</AlertTitle>
+                      <AlertDescription>
+                        Please verify your email address to access all features.
+                      </AlertDescription>
+                    </Alert>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" className="mt-2 w-full">
+                          Resend Verification Email
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Resend Verification Email</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to resend the verification email?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction>
+                            Send Email
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
+              </form>
             </CardContent>
           </Card>
         </TabsContent>

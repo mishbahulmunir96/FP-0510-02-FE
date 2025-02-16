@@ -11,6 +11,7 @@ interface GetPeakSeasonsQueries extends PaginationQueries {
   startDate?: Date;
   endDate?: Date;
   roomId?: number;
+  userId: number
 }
 
 export const useGetPeakSeasons = (queries: GetPeakSeasonsQueries) => {

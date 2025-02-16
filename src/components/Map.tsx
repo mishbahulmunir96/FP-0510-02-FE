@@ -11,8 +11,8 @@ import {
 import { useState } from "react";
 
 const pointerIcon = new L.Icon({
-  iconUrl: "/pin.png",
-  iconSize: [35, 43],
+  iconUrl: "/RateHavenLogo.png",
+  iconSize: [53, 43],
   iconAnchor: [20, 58],
   popupAnchor: [0, -60],
 });
