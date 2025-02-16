@@ -1,5 +1,7 @@
 // src/types/property.ts
 
+import { ReactNode } from "react";
+
 export interface Property {
   propertyCategory: any;
   city(province: (province: any, city: any) => unknown, city: any): unknown;
@@ -136,6 +138,11 @@ export interface Reservation {
 }
 
 export interface PropertyCategory {
+  reason: ReactNode;
+  endDate: any;
+  startDate: any;
+
+  room: any;
   type: string;
   property: any;
   roomFacility: any;

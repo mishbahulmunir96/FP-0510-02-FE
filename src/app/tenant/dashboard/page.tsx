@@ -5,9 +5,9 @@ const Dashboard = () => {
   return (
     <div>
 
-      <DashboardLayout>
+   
         <DashboardLayout children={undefined} />
-      </DashboardLayout>
+    
     </div>
   );
 };
