@@ -2,15 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../useAxios";
-import { Transaction } from "@/types/transaction";
+import { TransactionDetail } from "@/types/transaction";
 
 const useGetTransactionByUser = (transactionId: number) => {
   const { axiosInstance } = useAxios();
 
-  return useQuery<Transaction, Error>({
+  return useQuery<TransactionDetail, Error>({
     queryKey: ["transaction", transactionId],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<Transaction>(
+      const { data } = await axiosInstance.get<TransactionDetail>(
         `/transactions/${transactionId}`,
       );
       return data;

@@ -16,7 +16,6 @@ interface TransactionListCardProps {
 
 const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
   const firstReservation = transaction.reservations[0];
-  console.log(transaction);
   return (
     <Card className="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:shadow-md hover:ring-blue-100">
       <div className="flex items-center justify-between border-b bg-gradient-to-r from-gray-50 to-white px-4 py-3">
@@ -58,7 +57,7 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             fill
             src={
-              firstReservation?.roomImages?.[0]?.imageUrl || "/images/room.avif"
+              firstReservation?.roomImages[0]?.imageUrl || "/images/room.avif"
             }
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

@@ -1,5 +1,4 @@
-"use client";
-
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Carousel,
@@ -9,19 +8,20 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
-import { Transaction } from "@/types/transactionByTenant";
+import { TransactionDetail } from "@/types/transactionByTenant";
+import { Building2, Info } from "lucide-react";
 import Image from "next/image";
 
 interface PriceDetailTenantCardProps {
-  data: Transaction;
+  data: TransactionDetail;
 }
 
 const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
   const firstReservation = data.reservations[0];
 
   return (
-    <Card className="w-full">
-      <CardHeader className="space-y-3 p-4">
+    <Card className="overflow-hidden rounded-lg bg-white shadow-md">
+      <CardHeader className="space-y-4 p-4">
         <div className="relative">
           <Carousel className="w-full">
             <CarouselContent>
@@ -46,62 +46,96 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
             </div>
           </Carousel>
         </div>
+
         <div className="space-y-2">
-          <div className="text-sm text-muted-foreground">
-            {firstReservation.propertyTitle}
+          <div className="flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-blue-600" />
+            <h3 className="font-medium text-gray-900">
+              {firstReservation.roomType} Room
+            </h3>
           </div>
-          <h3 className="font-medium">
-            {firstReservation.roomType} Room
-            {firstReservation.roomFacilities[0] &&
-              ` - Include ${firstReservation.roomFacilities[0]}`}
-          </h3>
+          <p className="text-sm text-gray-500">
+            {firstReservation.propertyTitle}
+          </p>
+          {firstReservation.roomFacilities[0] && (
+            <Badge variant="secondary" className="mt-1">
+              Includes {firstReservation.roomFacilities[0]}
+            </Badge>
+          )}
         </div>
       </CardHeader>
+
       <Separator />
-      <CardContent className="space-y-4 p-4">
-        <div className="space-y-3">
-          <h4 className="font-medium">Price Details</h4>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Base Price</span>
-              <span>
-                {firstReservation.roomPrice.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Peak Season Price</span>
-              <span>
-                {firstReservation.peakSeasonPrice?.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                }) || 0}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Stay</span>
-              <span>{data.duration} nights</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Peak Season Days</span>
-              <span>{firstReservation.peakSeasonDays}</span>
-            </div>
-            <div className="flex justify-between border-t pt-2 font-medium">
-              <span>Total</span>
-              <span>
-                {data.totalPrice.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
-                })}
-              </span>
+
+      <CardContent className="space-y-6 p-4">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Info className="h-4 w-4 text-blue-600" />
+            <h4 className="font-medium text-gray-900">Price Breakdown</h4>
+          </div>
+
+          <div className="rounded-lg bg-gray-50 p-4">
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Base Price</span>
+                <span className="font-medium text-gray-900">
+                  {firstReservation.roomPrice.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}
+                </span>
+              </div>
+
+              {data.peakSeasonPrice && data.peakSeasonPrice > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Peak Season Price</span>
+                  <span className="font-medium text-gray-900">
+                    {data.peakSeasonPrice.toLocaleString("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </span>
+                </div>
+              )}
+
+              {/* Stay Duration */}
+              <div className="flex justify-between">
+                <span className="text-gray-600">Length of Stay</span>
+                <span className="font-medium text-gray-900">
+                  {data.duration} {data.duration === 1 ? "night" : "nights"}
+                </span>
+              </div>
+
+              {/* Peak Season Days */}
+              {data.peakSeasonDays > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Peak Season Days</span>
+                  <span className="font-medium text-gray-900">
+                    {data.peakSeasonDays} days
+                  </span>
+                </div>
+              )}
+
+              {/* Total Amount */}
+              <div className="border-t pt-3">
+                <div className="flex justify-between">
+                  <span className="font-medium text-gray-900">
+                    Total Amount
+                  </span>
+                  <span className="font-bold text-blue-600">
+                    {data.totalPrice.toLocaleString("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

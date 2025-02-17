@@ -1,5 +1,4 @@
 "use client";
-
 import { FC } from "react";
 import PriceDetailTenantCard from "./components/PriceDetailTenantCard";
 import TransactionDetailTenantCard from "./components/TransactionDetailTenantCard";
@@ -16,8 +15,13 @@ const TransactionDetailTenantPage: FC<TransactionDetailTenantPageProps> = ({
 
   if (isPending) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+          <p className="text-sm text-gray-500">
+            Loading transaction details...
+          </p>
+        </div>
       </div>
     );
   }
@@ -25,17 +29,32 @@ const TransactionDetailTenantPage: FC<TransactionDetailTenantPageProps> = ({
   if (!data) return null;
 
   return (
-    <main className="flex flex-col px-4 py-8 md:flex-row md:justify-between md:px-16">
-      <div className="md:hidden">
-        <PriceDetailTenantCard data={data} />
-      </div>
+    <main className="min-h-screen bg-gray-50 px-4 py-8 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Transaction Details
+          </h1>
+          <p className="text-sm text-gray-600">
+            Review booking information and manage customer requests
+          </p>
+        </div>
 
-      <div className="mt-4 flex w-full flex-col gap-4 md:mt-0 md:w-3/5">
-        <TransactionDetailTenantCard data={data} />
-      </div>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="lg:hidden">
+            <PriceDetailTenantCard data={data} />
+          </div>
 
-      <div className="hidden md:block md:w-[35%]">
-        <PriceDetailTenantCard data={data} />
+          <div className="w-full lg:w-2/3">
+            <TransactionDetailTenantCard data={data} />
+          </div>
+
+          <div className="hidden lg:block lg:w-1/3">
+            <div className="sticky top-6">
+              <PriceDetailTenantCard data={data} />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

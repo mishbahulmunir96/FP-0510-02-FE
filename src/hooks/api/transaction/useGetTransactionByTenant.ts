@@ -1,11 +1,11 @@
-import { Transaction } from "@/types/transactionByTenant";
+import { TransactionDetail } from "@/types/transactionByTenant";
 import useAxios from "../useAxios";
 import { useQuery } from "@tanstack/react-query";
 
 const useGetTransactionDetailByTenant = (id: number) => {
   const { axiosInstance } = useAxios();
 
-  return useQuery<Transaction>({
+  return useQuery<TransactionDetail>({
     queryKey: ["transactionDetailTenant", id],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/transactions/tenant/${id}`);
