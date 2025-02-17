@@ -59,7 +59,7 @@ export default function NavbarDashboard() {
           </div>
           <div className="overflow-hidden rounded-full ring-2 ring-gray-100">
             <Image
-              src="/placeholder.jpg"
+              src="/images/profile_default.jpg"
               alt="Profile"
               width={40}
               height={40}
