@@ -37,10 +37,12 @@ interface UpdateRoomPageProps {
 }
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Room name is required"),
   type: Yup.string()
     .oneOf(["Standard", "Deluxe", "Suite"], "Invalid room type")
     .required("Room type is required"),
+  name: Yup.string()
+    .required("Room name is required")
+    .min(3, "Name must be at least 3 characters"),
   stock: Yup.number()
     .required("Stock is required")
     .min(1, "Stock must be at least 1"),
@@ -66,8 +68,8 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
 
   const formik = useFormik({
     initialValues: {
-      name: data?.name || "",
       type: data?.type || "Standard",
+      name: data?.name || "",
       stock: data?.stock || 0,
       price: data?.price || 0,
       guest: data?.guest || 2,
@@ -83,6 +85,7 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
           ...values,
           propertyId: values.propertyId ?? 0,
           type: values.type as "Standard" | "Deluxe" | "Suite",
+          name: values.name,
           imageUrl: values.imageUrl ?? undefined,
         });
       } catch (error) {
@@ -234,17 +237,19 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
                 )}
               </div>
 
+              {/* Name Input */}
               <FormInput
-                name="name"
-                label="Room Name"
-                type="text"
-                placeholder="Room Name"
-                value={formik.values.name}
-                isError={!!formik.touched.name && !!formik.errors.name}
-                error={formik.errors.name}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
+  name="name"
+  label="Room Name"
+  placeholder="Enter room name"
+  type="text"  // Add this line to fix the error
+  value={formik.values.name}
+  isError={!!formik.touched.name && !!formik.errors.name}
+  error={formik.errors.name}
+  onBlur={formik.handleBlur}
+  onChange={formik.handleChange}
+/>
+
               <FormInput
                 name="stock"
                 label="Stock"

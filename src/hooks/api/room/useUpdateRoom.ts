@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 interface UpdateRoomPayload {
   type: "Deluxe" | "Standard" | "Suite";
+  name: string;
   stock: number;
   price: number;
   guest: number;
@@ -27,6 +28,7 @@ const useUpdateRoom = (id: number) => {
       const formData = new FormData();
 
       formData.append("type", payload.type);
+      formData.append("name", payload.name);
       formData.append("stock", String(payload.stock));
       formData.append("price", String(payload.price));
       formData.append("guest", String(payload.guest));

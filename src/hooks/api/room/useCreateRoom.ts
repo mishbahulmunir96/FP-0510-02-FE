@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 interface CreateRoomPayload {
   type: "Deluxe" | "Standard" | "Suite";
+  name: string;
   stock: number;
   price: number;
   guest: number;
@@ -27,6 +28,7 @@ const useCreateRoom = () => {
       const createRoomForm = new FormData();
 
       createRoomForm.append("type", payload.type);
+      createRoomForm.append("name", payload.name);
       createRoomForm.append("stock", String(payload.stock));
       createRoomForm.append("price", String(payload.price));
       createRoomForm.append("guest", String(payload.guest));
