@@ -30,6 +30,7 @@ interface TransactionPaymentSectionProps {
   isCancelDisabled: boolean;
   isUploading: boolean;
   isCancelling: boolean;
+  invoiceUrl: string | null;
   onUploadProof: (file: File) => void;
   onCancelTransaction: () => void;
 }
@@ -42,6 +43,7 @@ const TransactionPaymentSection = ({
   isCancelDisabled,
   isUploading,
   isCancelling,
+  invoiceUrl,
   onUploadProof,
   onCancelTransaction,
 }: TransactionPaymentSectionProps) => {
@@ -81,48 +83,65 @@ const TransactionPaymentSection = ({
       </div>
 
       <div className="space-y-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex-1">
-            <Label
-              htmlFor="payment-proof"
-              className={`block ${isUploadDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+        {paymentMethode === "OTOMATIS" &&
+          status === "WAITING_FOR_PAYMENT" &&
+          invoiceUrl && (
+            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+              <a href={invoiceUrl} target="_blank" rel="noopener noreferrer">
+                <CreditCard className="mr-2 h-4 w-4" />
+                Complete Payment
+              </a>
+            </Button>
+          )}
+
+        {paymentMethode === "MANUAL" && (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex-1">
+              <Label
+                htmlFor="payment-proof"
+                className={`block ${
+                  isUploadDisabled
+                    ? "cursor-not-allowed opacity-50"
+                    : "cursor-pointer"
+                }`}
+              >
+                <div className="flex items-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white p-3 transition-colors hover:bg-gray-50">
+                  <Upload className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">
+                    {isUploadDisabled
+                      ? "Upload not available"
+                      : "Upload Payment Proof"}
+                  </span>
+                </div>
+              </Label>
+              <Input
+                id="payment-proof"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileUpload}
+                disabled={isUploadDisabled}
+              />
+            </div>
+
+            <Button
+              onClick={handleUpload}
+              disabled={!selectedFile || isUploadDisabled || isUploading}
+              className="w-full sm:w-auto"
             >
-              <div className="flex items-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white p-3 transition-colors hover:bg-gray-50">
-                <Upload className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
-                  {isUploadDisabled
-                    ? "Upload not available"
-                    : "Upload Payment Proof"}
-                </span>
-              </div>
-            </Label>
-            <Input
-              id="payment-proof"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileUpload}
-              disabled={isUploadDisabled}
-            />
+              {isUploading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <span>Uploading...</span>
+                </div>
+              ) : (
+                "Submit Proof"
+              )}
+            </Button>
           </div>
+        )}
 
-          <Button
-            onClick={handleUpload}
-            disabled={!selectedFile || isUploadDisabled || isUploading}
-            className="w-full sm:w-auto"
-          >
-            {isUploading ? (
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                <span>Uploading...</span>
-              </div>
-            ) : (
-              "Submit Proof"
-            )}
-          </Button>
-        </div>
-
-        {(previewUrl || paymentProof) && paymentMethode !== "OTOMATIS" && (
+        {(previewUrl || paymentProof) && paymentMethode === "MANUAL" && (
           <Button
             variant="outline"
             size="sm"

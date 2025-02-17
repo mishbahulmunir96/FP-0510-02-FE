@@ -73,6 +73,7 @@ export interface TransactionDetail {
   paymentMethode: PaymentMethod;
   status: TransactionStatus;
   paymentProof: string | null;
+  invoiceUrl: string | null;
   checkInDate: string | null;
   checkOutDate: string | null;
   duration: number;

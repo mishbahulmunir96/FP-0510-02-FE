@@ -173,6 +173,7 @@ const TransactionDetailCard = ({
           }
           isUploading={isUploading}
           isCancelling={isCancelling}
+          invoiceUrl={data.invoiceUrl}
           onUploadProof={onUploadProof}
           onCancelTransaction={onCancelTransaction}
         />

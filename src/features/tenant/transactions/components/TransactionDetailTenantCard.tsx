@@ -28,6 +28,18 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import ReviewCard from "./ReviewCard";
+import useCancelTransactionByTenant from "@/hooks/api/transaction/useCancelTransactionsByTenant";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface TransactionDetailTenantCardProps {
   data: TransactionDetail;
@@ -39,12 +51,18 @@ const TransactionDetailTenantCard = ({
   const firstReservation = data.reservations[0];
   const { data: reviewData } = useGetReviewByTenant(data.id);
   const approveTransaction = useApproveTransactionByTenant();
+  const { mutate: cancelTransaction, isPending: isCancelling } =
+    useCancelTransactionByTenant();
 
   const handleApproval = (isApproved: boolean) => {
     approveTransaction.mutate({
       paymentId: data.id,
       isApproved,
     });
+  };
+
+  const handleCancel = () => {
+    cancelTransaction(data.id);
   };
 
   return (
@@ -259,6 +277,41 @@ const TransactionDetailTenantCard = ({
               Customer Review
             </h4>
             <ReviewCard review={reviewData} />
+          </div>
+        )}
+
+        {data.status === "WAITING_FOR_PAYMENT" && (
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="w-full sm:w-auto"
+                  disabled={isCancelling}
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Cancel Order
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will cancel the customer's order. This cannot be
+                    undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleCancel}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {isCancelling ? "Cancelling..." : "Yes, cancel order"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
       </CardContent>
