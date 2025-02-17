@@ -79,6 +79,7 @@ export interface Room {
   // === added by misbah =====
   property: {
     id: number;
+    slug: string;
     title: string;
     description: string;
     location: string;

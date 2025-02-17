@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
-import useCreateReservation from "@/hooks/api/transaction/useCreateReservation";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Star } from "lucide-react";
@@ -26,6 +25,8 @@ interface ReservationCardProps {
     endDate: string;
     price: number;
   }[];
+  onSubmit: (e?: React.FormEvent<HTMLFormElement>) => void;
+  isSubmitting: boolean;
 }
 
 const ReservationCard = ({
@@ -38,17 +39,16 @@ const ReservationCard = ({
   paymentMethod,
   isLoggedIn,
   peakSeasonRates,
+  onSubmit,
+  isSubmitting,
 }: ReservationCardProps) => {
-  const createReservation = useCreateReservation();
   const router = useRouter();
-
   const { data: reviewsData } = useGetReviewsByRoom({
     roomId,
     page: 1,
-    take: 1, // Kita hanya butuh metadata saja
+    take: 1,
   });
 
-  // Fungsi untuk menentukan label rating
   const getRatingLabel = (rating: number) => {
     if (rating >= 4.5) return "Outstanding";
     if (rating >= 4) return "Very Good";
@@ -57,7 +57,6 @@ const ReservationCard = ({
     return "Average";
   };
 
-  // Fungsi untuk menentukan warna background rating
   const getRatingColor = (rating: number) => {
     if (rating >= 4.5) return "bg-green-600";
     if (rating >= 4) return "bg-green-500";
@@ -84,7 +83,6 @@ const ReservationCard = ({
         const endDate = new Date(rate.endDate);
         startDate.setHours(0, 0, 0, 0);
         endDate.setHours(0, 0, 0, 0);
-
         return currentDate >= startDate && currentDate <= endDate;
       });
 
@@ -136,67 +134,59 @@ const ReservationCard = ({
       return;
     }
 
-    createReservation.mutate({
-      roomId,
-      startDate: checkIn,
-      endDate: checkOut,
-      paymentMethode: paymentMethod === "auto" ? "OTOMATIS" : "MANUAL",
-    });
+    onSubmit();
   };
 
   return (
-    <div className="mt-10 w-full md:w-[35%]">
-      <Card className="w-full space-y-6 p-6">
-        <div className="relative h-40 overflow-hidden rounded-md">
-          <Image
-            src={roomImage}
-            alt={`${roomType} room view`}
-            fill
-            className="object-cover"
-          />
-        </div>
+    <Card className="border-none bg-transparent shadow-none md:overflow-hidden md:rounded-lg md:bg-white md:shadow-lg">
+      <div className="relative h-48 w-full overflow-hidden rounded-lg md:rounded-none">
+        <Image
+          src={roomImage}
+          alt={`${roomType} room view`}
+          fill
+          className="object-cover"
+        />
+      </div>
 
-        <div className="space-y-2 border-b">
-          <div>
-            <h3 className="font-semibold">{roomType} Room</h3>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                {reviewsData?.meta.averageRating ? (
-                  <>
-                    <span
-                      className={`flex rounded ${getRatingColor(reviewsData.meta.averageRating)} px-1.5 py-0.5 text-sm font-medium text-white`}
-                    >
-                      <Star
-                        className="h-4 w-4 text-yellow-400"
-                        fill="currentColor"
-                      />
-                      {reviewsData.meta.averageRating.toFixed(1)}
-                    </span>
-                    <span className="text-sm font-medium">
-                      {getRatingLabel(reviewsData.meta.averageRating)}
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-sm text-muted-foreground">
-                    No rating yet
+      <div className="p-0 md:p-6">
+        <div className="mb-6 border-b-0 pb-6 md:border-b">
+          <h3 className="text-xl font-semibold text-gray-900">
+            {roomType} Room
+          </h3>
+
+          <div className="mt-2 flex items-center gap-3">
+            {reviewsData?.meta.averageRating ? (
+              <>
+                <span
+                  className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
+                >
+                  <Star className="h-4 w-4" fill="currentColor" />
+                  <span className="font-medium">
+                    {reviewsData.meta.averageRating.toFixed(1)}
                   </span>
-                )}
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {reviewsData?.meta.total
-                  ? `${reviewsData.meta.total} ulasan`
-                  : "0 ulasan"}
+                </span>
+                <span className="font-medium text-gray-700">
+                  {getRatingLabel(reviewsData.meta.averageRating)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  ({reviewsData.meta.total} reviews)
+                </span>
+              </>
+            ) : (
+              <span className="text-sm text-gray-500">No ratings yet</span>
+            )}
+          </div>
+
+          <div className="mt-4 space-y-2 rounded-lg bg-gray-50 p-4">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Check-in</span>
+              <span className="font-medium text-gray-900">
+                {format(checkIn, "EEE, dd MMM yyyy", { locale: id })}
               </span>
             </div>
-          </div>
-          <div className="space-y-1 pt-2 text-sm text-muted-foreground">
-            <div className="flex justify-between">
-              <span>Check-in:</span>
-              <span>{format(checkIn, "EEE, dd MMM yyyy", { locale: id })}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Check-out:</span>
-              <span>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Check-out</span>
+              <span className="font-medium text-gray-900">
                 {format(checkOut, "EEE, dd MMM yyyy", { locale: id })}
               </span>
             </div>
@@ -204,44 +194,69 @@ const ReservationCard = ({
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-lg font-semibold">Price Details</h4>
-          <div className="space-y-1 text-sm">
-            <div className="flex items-center justify-between">
-              <span>Base Price</span>
-              <span>Rp {basePrice.toLocaleString("id-ID")},00</span>
+          <h4 className="text-lg font-semibold text-gray-900">Price Details</h4>
+          <div className="space-y-3 rounded-lg bg-gray-50 p-4">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Base Price</span>
+              <span className="font-medium text-gray-900">
+                Rp {basePrice.toLocaleString("id-ID")}
+              </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span>stay</span>
-              <span>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Duration</span>
+              <span className="font-medium text-gray-900">
                 {nights} night{nights > 1 ? "s" : ""}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span>Peak Season Price</span>
-              <span>Rp {peakSeasonRatePerNight.toLocaleString("id-ID")}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Peak Season Days</span>
-              <span>{peakSeasonDays}</span>
-            </div>
-            <div className="flex items-center justify-between border-t pt-2">
-              <span className="text-base font-semibold">Total</span>
-              <span className="text-base font-semibold">
-                Rp {totalPrice.toLocaleString("id-ID")},00
-              </span>
+            {peakSeasonDays > 0 && (
+              <>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Peak Season Rate</span>
+                  <span className="font-medium text-gray-900">
+                    Rp {peakSeasonRatePerNight.toLocaleString("id-ID")}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Peak Season Days</span>
+                  <span className="font-medium text-gray-900">
+                    {peakSeasonDays}
+                  </span>
+                </div>
+              </>
+            )}
+            <div className="border-t pt-3">
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-900">Total Price</span>
+                <span className="text-lg font-semibold text-blue-600">
+                  Rp {totalPrice.toLocaleString("id-ID")}
+                </span>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <Button
-          className="w-full bg-blue-500 py-6 text-lg hover:bg-blue-600"
-          onClick={handleReservation}
-          disabled={createReservation.isPending}
-        >
-          {createReservation.isPending ? "Processing..." : "Pesan"}
-        </Button>
-      </Card>
-    </div>
+      <div className="center fixed bottom-0 left-0 right-0 z-10 w-full border-t bg-white/95 backdrop-blur-sm md:static md:border-none">
+        <div className="mx-auto flex max-w-7xl flex-col justify-center px-4 pb-8 pt-4 md:flex-row md:p-0">
+          <div className="mb-4 flex items-center justify-between md:hidden">
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-600">Total Price</span>
+              <span className="text-xl font-semibold text-gray-900">
+                Rp {totalPrice.toLocaleString("id-ID")}
+              </span>
+            </div>
+          </div>
+
+          <Button
+            className="h-12 w-full rounded-lg bg-blue-600 text-base font-semibold text-white transition-colors hover:bg-blue-700 disabled:bg-gray-300 md:mx-4 md:mb-4"
+            onClick={handleReservation}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing..." : "Book Now"}
+          </Button>
+        </div>
+      </div>
+    </Card>
   );
 };
 
