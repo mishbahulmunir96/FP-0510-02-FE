@@ -40,6 +40,7 @@ export interface Reservation {
 }
 
 export interface ReservationDetail {
+  roomId: number;
   roomType: RoomType;
   roomPrice: number;
   propertyTitle: string;
@@ -79,6 +80,7 @@ export interface TransactionDetail {
   duration: number;
   peakSeasonDays: number;
   peakSeasonPrice: number;
+  expiredAt: Date | null;
   updatedAt: string | null;
   reservations: ReservationDetail[];
 }

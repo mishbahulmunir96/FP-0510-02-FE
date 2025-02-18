@@ -7,6 +7,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import { getRatingColor, getRatingLabel } from "@/types/review";
 import { TransactionDetail } from "@/types/transaction";
 import { Shield, Star } from "lucide-react";
 import Image from "next/image";
@@ -16,7 +18,12 @@ interface PriceDetailCardProps {
 }
 
 const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
-  console.log("data", data);
+  const roomId = data.reservations[0].roomId;
+  const { data: reviewsData } = useGetReviewsByRoom({
+    roomId,
+    page: 1,
+    take: 1,
+  });
   return (
     <Card className="overflow-hidden rounded-lg bg-white shadow-md">
       <CardHeader className="border-b p-4">
@@ -42,7 +49,6 @@ const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
                 <CarouselNext className="relative h-8 w-8 bg-white/60 hover:bg-white/90" />
               </div>
             </div>
-            {/* <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div> */}
             <div className="absolute bottom-0 left-0 p-4">
               <h3 className="text-lg font-semibold text-white">
                 {data.reservations[0].propertyTitle}
@@ -60,15 +66,27 @@ const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
               Includes {data.reservations[0].roomFacilities[0]}
             </p>
           </div>
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <Badge className="bg-green-600">
-                <Star className="mr-1 h-3 w-3" /> 4.2
-              </Badge>
-              <span className="text-sm font-medium">Very Good</span>
-            </div>
-            <span className="text-sm text-gray-500">54 reviews</span>
+          <div className="mt-2 flex items-center gap-3">
+            {reviewsData?.meta.averageRating ? (
+              <>
+                <span
+                  className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
+                >
+                  <Star className="h-4 w-4" fill="currentColor" />
+                  <span className="font-medium">
+                    {reviewsData.meta.averageRating.toFixed(1)}
+                  </span>
+                </span>
+                <span className="font-medium text-gray-700">
+                  {getRatingLabel(reviewsData.meta.averageRating)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  ({reviewsData.meta.total} reviews)
+                </span>
+              </>
+            ) : (
+              <span className="text-sm text-gray-500">No ratings yet</span>
+            )}
           </div>
         </div>
       </CardHeader>

@@ -52,6 +52,7 @@ export interface Transaction {
 }
 
 export interface ReservationDetail {
+  roomId: number;
   roomType: RoomType;
   propertyTitle: string;
   roomPrice: number;

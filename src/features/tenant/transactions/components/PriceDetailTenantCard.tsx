@@ -8,8 +8,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
+import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import { getRatingColor, getRatingLabel } from "@/types/review";
 import { TransactionDetail } from "@/types/transactionByTenant";
-import { Building2, Info } from "lucide-react";
+import { Building2, Info, Star } from "lucide-react";
 import Image from "next/image";
 
 interface PriceDetailTenantCardProps {
@@ -18,6 +20,12 @@ interface PriceDetailTenantCardProps {
 
 const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
   const firstReservation = data.reservations[0];
+  const roomId = firstReservation.roomId;
+  const { data: reviewsData } = useGetReviewsByRoom({
+    roomId,
+    page: 1,
+    take: 1,
+  });
 
   return (
     <Card className="overflow-hidden rounded-lg bg-white shadow-md">
@@ -53,6 +61,28 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
             <h3 className="font-medium text-gray-900">
               {firstReservation.roomType} Room
             </h3>
+          </div>
+          <div className="mt-2 flex items-center gap-3">
+            {reviewsData?.meta.averageRating ? (
+              <>
+                <span
+                  className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
+                >
+                  <Star className="h-4 w-4" fill="currentColor" />
+                  <span className="font-medium">
+                    {reviewsData.meta.averageRating.toFixed(1)}
+                  </span>
+                </span>
+                <span className="font-medium text-gray-700">
+                  {getRatingLabel(reviewsData.meta.averageRating)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  ({reviewsData.meta.total} reviews)
+                </span>
+              </>
+            ) : (
+              <span className="text-sm text-gray-500">No ratings yet</span>
+            )}
           </div>
           <p className="text-sm text-gray-500">
             {firstReservation.propertyTitle}
