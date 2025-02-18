@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,22 +14,23 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PaymentMethod, TransactionStatus } from "@/types/transaction";
 import { AlertCircle, CreditCard, Eye, Upload, XCircle } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
 interface TransactionPaymentSectionProps {
-  paymentMethode: string;
+  paymentMethode: PaymentMethod;
   paymentProof: string | null;
-  status: string;
+  status: TransactionStatus;
   isUploadDisabled: boolean;
   isCancelDisabled: boolean;
   isUploading: boolean;
   isCancelling: boolean;
+  invoiceUrl: string | null;
   onUploadProof: (file: File) => void;
   onCancelTransaction: () => void;
 }
@@ -44,12 +43,14 @@ const TransactionPaymentSection = ({
   isCancelDisabled,
   isUploading,
   isCancelling,
+  invoiceUrl,
   onUploadProof,
   onCancelTransaction,
 }: TransactionPaymentSectionProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showPreviewDialog, setShowPreviewDialog] = useState(false);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -66,8 +67,6 @@ const TransactionPaymentSection = ({
   const handleUpload = () => {
     if (!selectedFile) return;
     onUploadProof(selectedFile);
-    setSelectedFile(null);
-    setPreviewUrl(null);
   };
 
   const handleCancelOrder = () => {
@@ -76,74 +75,99 @@ const TransactionPaymentSection = ({
   };
 
   return (
-    <div className="border-t pt-4">
-      <div className="mb-4 flex items-center gap-2">
+    <div className="space-y-4 rounded-lg border bg-gray-50/50 p-4">
+      <div className="flex items-center gap-2">
         <CreditCard className="h-5 w-5 text-blue-600" />
-        <span className="font-medium">Payment Method:</span>
-        <span>{paymentMethode}</span>
+        <span className="font-medium text-gray-900">Payment Method:</span>
+        <span className="text-gray-600">{paymentMethode}</span>
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <Label
-              htmlFor="payment-proof"
-              className={`cursor-pointer ${isUploadDisabled ? "opacity-50" : ""}`}
-            >
-              <div className="flex items-center gap-2 rounded-lg border-2 border-dashed p-2 hover:bg-secondary">
-                <Upload className="h-4 w-4" />
-                <span className="text-sm">
-                  {isUploadDisabled
-                    ? "Upload not available"
-                    : "Upload Payment Proof"}
-                </span>
-              </div>
-            </Label>
-            <Input
-              id="payment-proof"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileUpload}
-              disabled={isUploadDisabled}
-            />
-          </div>
-
-          {selectedFile && !isUploadDisabled && (
-            <Button
-              onClick={handleUpload}
-              disabled={isUploading}
-              className="w-32"
-            >
-              {isUploading ? "Uploading..." : "Submit Proof"}
+        {paymentMethode === "OTOMATIS" &&
+          status === "WAITING_FOR_PAYMENT" &&
+          invoiceUrl && (
+            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+              <a href={invoiceUrl} target="_blank" rel="noopener noreferrer">
+                <CreditCard className="mr-2 h-4 w-4" />
+                Complete Payment
+              </a>
             </Button>
           )}
-        </div>
 
-        {(previewUrl || paymentProof) && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Eye className="mr-2 h-4 w-4" />
-                View Proof
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Payment Proof</DialogTitle>
-              </DialogHeader>
-              <div className="mt-4">
-                <Image
-                  src={previewUrl || paymentProof || "/placeholder.svg"}
-                  alt="Payment Proof"
-                  width={400}
-                  height={300}
-                  className="rounded-lg object-cover"
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
+        {paymentMethode === "MANUAL" && (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex-1">
+              <Label
+                htmlFor="payment-proof"
+                className={`block ${
+                  isUploadDisabled
+                    ? "cursor-not-allowed opacity-50"
+                    : "cursor-pointer"
+                }`}
+              >
+                <div className="flex items-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white p-3 transition-colors hover:bg-gray-50">
+                  <Upload className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">
+                    {isUploadDisabled
+                      ? "Upload not available"
+                      : "Upload Payment Proof"}
+                  </span>
+                </div>
+              </Label>
+              <Input
+                id="payment-proof"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileUpload}
+                disabled={isUploadDisabled}
+              />
+            </div>
+
+            <Button
+              onClick={handleUpload}
+              disabled={!selectedFile || isUploadDisabled || isUploading}
+              className="w-full sm:w-auto"
+            >
+              {isUploading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <span>Uploading...</span>
+                </div>
+              ) : (
+                "Submit Proof"
+              )}
+            </Button>
+          </div>
         )}
+
+        {(previewUrl || paymentProof) && paymentMethode === "MANUAL" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowPreviewDialog(true)}
+            className="w-full sm:w-auto"
+          >
+            <Eye className="mr-2 h-4 w-4" />
+            View Payment Proof
+          </Button>
+        )}
+
+        <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Payment Proof</DialogTitle>
+            </DialogHeader>
+            <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-lg">
+              <Image
+                src={previewUrl || paymentProof || "/placeholder.svg"}
+                alt="Payment Proof"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
           <AlertDialogContent>
@@ -156,7 +180,7 @@ const TransactionPaymentSection = ({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isCancelling}>
-                Cancel
+                No, keep order
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleCancelOrder}
@@ -187,7 +211,7 @@ const TransactionPaymentSection = ({
         </Button>
 
         {status === "CANCELLED" && (
-          <div className="flex items-center gap-2 rounded-lg bg-red-100 p-3 text-sm text-red-800">
+          <div className="flex items-center gap-2 rounded-lg bg-red-50 p-4 text-sm text-red-700">
             <AlertCircle className="h-4 w-4" />
             This order has been cancelled
           </div>

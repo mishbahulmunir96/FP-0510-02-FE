@@ -33,23 +33,40 @@ const TransactionDetailPage: FC<TransactionDetailPageProps> = ({
   if (!data) return null;
 
   return (
-    <main className="flex justify-between px-16 py-8">
-      <div className="flex w-3/5 flex-col gap-4">
-        <TransactionDetailCard
-          data={data}
-          onUploadProof={(file) =>
-            uploadProof(
-              { transactionId, paymentProof: file },
-              { onSuccess: () => setSelectedFile(null) },
-            )
-          }
-          onCancelTransaction={() => cancelTransaction(transactionId)}
-          isUploading={isUploading}
-          isCancelling={isCancelling}
-        />
-      </div>
+    <main className="min-h-screen bg-gray-50 px-4 py-8 md:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Transaction Details
+          </h1>
+          <p className="text-sm text-gray-600">
+            Review your booking information and payment status
+          </p>
+        </div>
 
-      <PriceDetailCard data={data} />
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <div className="w-full lg:w-2/3">
+            <TransactionDetailCard
+              data={data}
+              onUploadProof={(file) =>
+                uploadProof(
+                  { transactionId, paymentProof: file },
+                  { onSuccess: () => setSelectedFile(null) },
+                )
+              }
+              onCancelTransaction={() => cancelTransaction(transactionId)}
+              isUploading={isUploading}
+              isCancelling={isCancelling}
+            />
+          </div>
+
+          <div className="w-full lg:w-1/3">
+            <div className="sticky top-6">
+              <PriceDetailCard data={data} />
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   );
 };

@@ -29,10 +29,11 @@ export interface Reservation {
   propertyTitle: string;
   roomPrice: number;
   propertyLocation: string;
-  roomImages: (string | null)[];
+  propertyImages: string[];
+  roomImages: {
+    imageUrl: string | null;
+  }[];
   roomFacilities: string[];
-  peakSeasonDays: number;
-  peakSeasonPrice: number | null;
 }
 
 export interface Transaction {
@@ -48,6 +49,34 @@ export interface Transaction {
   duration: number;
   updatedAt: string | null;
   reservations: Reservation[];
+}
+
+export interface ReservationDetail {
+  roomId: number;
+  roomType: RoomType;
+  propertyTitle: string;
+  roomPrice: number;
+  propertyLocation: string;
+  propertyImages: string[];
+  roomImages: string[];
+  roomFacilities: string[];
+}
+
+export interface TransactionDetail {
+  id: number;
+  uuid: string;
+  customer: Customer;
+  totalPrice: number;
+  paymentMethode: PaymentMethod;
+  status: PaymentStatus;
+  paymentProof: string | null;
+  checkInDate: string | null;
+  checkOutDate: string | null;
+  duration: number;
+  peakSeasonDays: number;
+  peakSeasonPrice: number | null;
+  updatedAt: string | null;
+  reservations: ReservationDetail[];
 }
 
 export interface TransactionResponse {

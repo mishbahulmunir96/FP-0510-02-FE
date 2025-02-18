@@ -26,7 +26,7 @@ export const formatStatus = (status: String) => {
     case "CANCELLED":
       return "Cancelled";
     case "PROCESSED":
-      return "Processed";
+      return "Paid";
     case "CHECKED_IN":
       return "Checked In";
     case "CHECKED_OUT":

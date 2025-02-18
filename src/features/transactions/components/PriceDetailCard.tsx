@@ -1,99 +1,159 @@
-"use client";
-
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Transaction } from "@/types/transaction";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import { getRatingColor, getRatingLabel } from "@/types/review";
+import { TransactionDetail } from "@/types/transaction";
+import { Shield, Star } from "lucide-react";
 import Image from "next/image";
 
 interface PriceDetailCardProps {
-  data: Transaction;
+  data: TransactionDetail;
 }
 
 const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
+  const roomId = data.reservations[0].roomId;
+  const { data: reviewsData } = useGetReviewsByRoom({
+    roomId,
+    page: 1,
+    take: 1,
+  });
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader className="space-y-3 p-4">
-        <div className="relative h-40 w-full overflow-hidden rounded-lg">
-          <Image
-            src="/images/room.avif"
-            alt={`${data.reservations[0].propertyTitle}`}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="space-y-2">
-          <div className="text-sm text-muted-foreground">
-            CVK Park Bosphorus...
-          </div>
-          <h3 className="font-medium">
-            {data.reservations[0].roomType} Room - Include{" "}
-            {data.reservations[0].roomFacilities[0]}
-          </h3>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <span className="rounded bg-green-600 px-1.5 py-0.5 text-sm font-medium text-white">
-                4.2
-              </span>
-              <span className="text-sm font-medium">Very Good</span>
+    <Card className="overflow-hidden rounded-lg bg-white shadow-md">
+      <CardHeader className="border-b p-4">
+        <div className="relative">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {data.reservations[0].roomImages.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="relative h-40 w-full overflow-hidden rounded-lg">
+                    <Image
+                      src={image || "/images/room.avif"}
+                      alt={`${data.reservations[0].propertyTitle} - Image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="absolute inset-y-14 left-14 right-14">
+              <div className="flex h-full items-center justify-between px-2">
+                <CarouselPrevious className="relative h-8 w-8 bg-white/60 hover:bg-white/90" />
+                <CarouselNext className="relative h-8 w-8 bg-white/60 hover:bg-white/90" />
+              </div>
             </div>
-            <span className="text-sm text-muted-foreground">54 reviews</span>
+            <div className="absolute bottom-0 left-0 p-4">
+              <h3 className="text-lg font-semibold text-white">
+                {data.reservations[0].propertyTitle}
+              </h3>
+            </div>
+          </Carousel>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          <div className="space-y-1">
+            <h3 className="font-medium text-gray-900">
+              {data.reservations[0].roomType} Room
+            </h3>
+            <p className="text-sm text-gray-500">
+              Includes {data.reservations[0].roomFacilities[0]}
+            </p>
+          </div>
+          <div className="mt-2 flex items-center gap-3">
+            {reviewsData?.meta.averageRating ? (
+              <>
+                <span
+                  className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
+                >
+                  <Star className="h-4 w-4" fill="currentColor" />
+                  <span className="font-medium">
+                    {reviewsData.meta.averageRating.toFixed(1)}
+                  </span>
+                </span>
+                <span className="font-medium text-gray-700">
+                  {getRatingLabel(reviewsData.meta.averageRating)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  ({reviewsData.meta.total} reviews)
+                </span>
+              </>
+            ) : (
+              <span className="text-sm text-gray-500">No ratings yet</span>
+            )}
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4 p-4">
-        <div className="flex items-center gap-2 text-sm">
-          <svg
-            viewBox="0 0 24 24"
-            className="h-4 w-4"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-              fill="#5C3EBA"
-            />
-            <path
-              d="M7.99995 12.0001L10.6666 14.6667L16 9.33341"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Your booking is protected by PhonePe
+
+      <CardContent className="space-y-6 p-4">
+        <div className="flex items-center gap-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-700">
+          <Shield className="h-4 w-4" />
+          <p>Your booking is protected by PhonePe</p>
         </div>
 
-        <div className="space-y-3">
-          <h4 className="font-medium">Price Details</h4>
-          <div className="space-y-2 text-sm">
+        <div className="space-y-4">
+          <h4 className="font-medium text-gray-900">Price Breakdown</h4>
+          <div className="space-y-3 rounded-lg bg-gray-50 p-4 text-sm">
             <div className="flex justify-between">
-              <span>Base Price</span>
-              <span>
+              <span className="text-gray-600">Base Price</span>
+              <span className="font-medium text-gray-900">
                 {data.reservations[0].roomPrice.toLocaleString("id-ID", {
                   style: "currency",
                   currency: "IDR",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
                 })}
               </span>
             </div>
+
+            {data.peakSeasonPrice > 0 && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Peak Season Price</span>
+                <span className="font-medium text-gray-900">
+                  {data.peakSeasonPrice.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}
+                </span>
+              </div>
+            )}
+
             <div className="flex justify-between">
-              <span>Peak Season Price</span>
-              <span>{data.reservations[0].peakSeasonPrice || 0}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>stay</span>
-              <span>{data.duration} nights</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Peak Season Days</span>
-              <span>{data.reservations[0].peakSeasonDays}</span>
-            </div>
-            <div className="flex justify-between border-t pt-2 font-medium">
-              <span>Total</span>
-              <span>
-                {data.totalPrice.toLocaleString("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                })}
+              <span className="text-gray-600">Length of Stay</span>
+              <span className="font-medium text-gray-900">
+                {data.duration} nights
               </span>
+            </div>
+
+            {data.peakSeasonDays > 0 && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Peak Season Days</span>
+                <span className="font-medium text-gray-900">
+                  {data.peakSeasonDays} days
+                </span>
+              </div>
+            )}
+
+            <div className="border-t pt-3">
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-900">Total Amount</span>
+                <span className="font-semibold text-blue-600">
+                  {data.totalPrice.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}
+                </span>
+              </div>
             </div>
           </div>
         </div>

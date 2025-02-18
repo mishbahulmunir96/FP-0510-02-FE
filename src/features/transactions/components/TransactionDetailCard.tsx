@@ -1,22 +1,21 @@
-"use client";
-
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import useGetReviewByTransaction from "@/hooks/api/review/useGetReviewByTransaction";
 import { formatStatus, getStatusColor } from "@/types/status";
+import { TransactionDetail } from "@/types/transaction";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 import { format } from "date-fns";
-import { Hotel, MapPin } from "lucide-react";
+import { Building2, CalendarDays, Hotel, MapPin, User } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import TransactionPaymentSection from "./TransactionPaymentSection";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Transaction } from "@/types/transaction";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import { Button } from "@/components/ui/button";
 import ReviewModal from "./ReviewModal";
-import useGetReviewByTransaction from "@/hooks/api/review/useGetReviewByTransaction";
+import TransactionPaymentSection from "./TransactionPaymentSection";
 import ViewReviewModal from "./viewReviewModal";
 
 interface TransactionDetailCardProps {
-  data: Transaction;
+  data: TransactionDetail;
   onUploadProof: (file: File) => void;
   onCancelTransaction: () => void;
   isUploading: boolean;
@@ -39,60 +38,67 @@ const TransactionDetailCard = ({
   const showReviewButton = data.status === "CHECKED_OUT" && !reviewData;
   const showViewReviewButton = data.status === "CHECKED_OUT" && reviewData;
 
-  const isUploadDisabled =
-    data.status === "CANCELLED" ||
-    data.status === "PROCESSED" ||
-    data.status === "WAITING_FOR_PAYMENT_CONFIRMATION" ||
-    data.status === "CHECKED_IN" ||
-    data.status === "CHECKED_OUT";
-
-  const isCancelDisabled =
-    data.status !== "WAITING_FOR_PAYMENT" || isCancelling;
-
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader className="space-y-0 pb-4">
-        <div className="flex items-start justify-between">
-          <h2 className="text-xl font-medium">
-            {data.reservations[0].roomType} Room
-          </h2>
+    <Card className="overflow-hidden rounded-lg bg-white shadow-md">
+      <CardHeader className="border-b bg-gray-50/50 p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold text-gray-900">
+              {data.reservations[0].roomType} Room
+            </h2>
+            <Badge variant="outline" className={getStatusColor(data.status)}>
+              {formatStatus(data.status)}
+            </Badge>
+          </div>
           <div className="text-right">
-            <span className="text-2xl font-semibold text-blue-600">
-              {data.totalPrice.toLocaleString("id-Id", {
+            <span className="block text-sm text-gray-500">Total Amount</span>
+            <span className="text-2xl font-bold text-blue-600">
+              {data.totalPrice.toLocaleString("id-ID", {
                 style: "currency",
                 currency: "IDR",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
               })}
             </span>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="h-12 w-12 overflow-hidden rounded-md">
-            <Image
-              src="/images/room.avif"
-              alt="tenant Image"
-              width={48}
-              height={48}
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="space-y-1">
-            <h3 className="font-medium">
-              {data.reservations[0].propertyTitle}
-            </h3>
-            <p className="flex items-center gap-1 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4" />
-              {data.reservations[0].propertyLocation}
-            </p>
+
+      <CardContent className="space-y-6 p-6">
+        {/* Property Details */}
+        <div className="rounded-lg border bg-gray-50/50 p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg">
+              <Image
+                src={data.reservations[0].propertyImages[0]}
+                alt="Property"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-blue-600" />
+                <h3 className="font-medium text-gray-900">
+                  {data.reservations[0].propertyTitle}
+                </h3>
+              </div>
+              <p className="flex items-center gap-2 text-sm text-gray-600">
+                <MapPin className="h-4 w-4" />
+                {data.reservations[0].propertyLocation}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <h4 className="font-medium">Tenant</h4>
-          <div className="rounded-lg bg-secondary p-4">
+        <div className="space-y-3">
+          <h4 className="flex items-center gap-2 font-medium text-gray-900">
+            <User className="h-4 w-4 text-blue-600" />
+            Guest Information
+          </h4>
+          <div className="rounded-lg border p-4">
             <div className="flex items-center gap-4">
-              <Avatar>
+              <Avatar className="h-12 w-12">
                 <AvatarImage
                   src={
                     data.reservations[0].tenant.imageUrl ||
@@ -101,42 +107,51 @@ const TransactionDetailCard = ({
                   alt={data.reservations[0].tenant.name}
                 />
                 <AvatarFallback>
-                  <Image
-                    src="/images/profile_default.jpg"
-                    alt={data.reservations[0].tenant.name}
-                    fill
-                    className="object-cover"
-                  />
+                  {data.reservations[0].tenant.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium">
+                <p className="font-medium text-gray-900">
                   {data.reservations[0].tenant.name}
                 </p>
+                <p className="text-sm text-gray-500">Primary Guest</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-2">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Check-in</p>
-            <p className="font-medium">
-              {data.checkInDate
-                ? format(new Date(data.checkInDate), "EE, MMM dd yyyy")
-                : "No Check-in Date"}
-            </p>
-          </div>
+        <div className="space-y-3">
+          <h4 className="flex items-center gap-2 font-medium text-gray-900">
+            <CalendarDays className="h-4 w-4 text-blue-600" />
+            Stay Details
+          </h4>
+          <div className="rounded-lg border p-4">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+              <div className="text-center sm:text-left">
+                <p className="text-sm text-gray-500">Check-in</p>
+                <p className="font-medium text-gray-900">
+                  {data.checkInDate
+                    ? format(new Date(data.checkInDate), "EEE, MMM dd yyyy")
+                    : "Not set"}
+                </p>
+              </div>
 
-          <Hotel className="h-5 w-5 text-muted-foreground" />
+              <Hotel className="h-5 w-5 rotate-90 text-gray-400 sm:rotate-0" />
 
-          <div className="space-y-1 text-right">
-            <p className="text-sm text-muted-foreground">Check-out</p>
-            <p className="font-medium">
-              {data.checkOutDate
-                ? format(new Date(data.checkOutDate), "EE, MMM dd yyyy")
-                : "No Check-out Date"}
-            </p>
+              <div className="text-center sm:text-right">
+                <p className="text-sm text-gray-500">Check-out</p>
+                <p className="font-medium text-gray-900">
+                  {data.checkOutDate
+                    ? format(new Date(data.checkOutDate), "EEE, MMM dd yyyy")
+                    : "Not set"}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <Badge variant="secondary" className="text-sm">
+                {data.duration} Night Stay
+              </Badge>
+            </div>
           </div>
         </div>
 
@@ -144,49 +159,48 @@ const TransactionDetailCard = ({
           paymentMethode={data.paymentMethode}
           paymentProof={data.paymentProof}
           status={data.status}
-          isUploadDisabled={isUploadDisabled}
-          isCancelDisabled={isCancelDisabled}
+          isUploadDisabled={
+            data.status === "CANCELLED" ||
+            data.status === "PROCESSED" ||
+            data.status === "WAITING_FOR_PAYMENT_CONFIRMATION" ||
+            data.status === "CHECKED_IN" ||
+            data.status === "CHECKED_OUT" ||
+            (data.paymentMethode === "OTOMATIS" &&
+              data.status === "WAITING_FOR_PAYMENT")
+          }
+          isCancelDisabled={
+            data.status !== "WAITING_FOR_PAYMENT" || isCancelling
+          }
           isUploading={isUploading}
           isCancelling={isCancelling}
+          invoiceUrl={data.invoiceUrl}
           onUploadProof={onUploadProof}
           onCancelTransaction={onCancelTransaction}
         />
 
-        {showReviewButton && (
-          <div className="pt-4">
-            <Button
-              onClick={() => setIsReviewModalOpen(true)}
-              variant="outline"
-            >
-              Give a Review
-            </Button>
+        {(showReviewButton || showViewReviewButton) && (
+          <div className="border-t pt-6">
+            {showReviewButton && (
+              <Button
+                onClick={() => setIsReviewModalOpen(true)}
+                variant="outline"
+                className="w-full"
+              >
+                Write a Review
+              </Button>
+            )}
+
+            {showViewReviewButton && (
+              <Button
+                onClick={() => setIsViewReviewModalOpen(true)}
+                variant="secondary"
+                className="w-full"
+              >
+                View Your Review
+              </Button>
+            )}
           </div>
         )}
-
-        {showViewReviewButton && (
-          <div className="pt-4">
-            <Button
-              onClick={() => setIsViewReviewModalOpen(true)}
-              className="w-full"
-              variant="secondary"
-            >
-              View Review
-            </Button>
-          </div>
-        )}
-
-        <div className="flex justify-between pt-2">
-          <span className="rounded-full bg-secondary px-3 py-1 text-sm">
-            {data.duration} Night
-          </span>
-          <span
-            className={`rounded-full px-3 py-1 text-sm ${getStatusColor(
-              data.status,
-            )}`}
-          >
-            {formatStatus(data.status)}
-          </span>
-        </div>
 
         <ReviewModal
           isOpen={isReviewModalOpen}

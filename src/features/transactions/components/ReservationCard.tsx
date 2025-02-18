@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import { getRatingColor, getRatingLabel } from "@/types/review";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Star } from "lucide-react";
@@ -48,22 +49,6 @@ const ReservationCard = ({
     page: 1,
     take: 1,
   });
-
-  const getRatingLabel = (rating: number) => {
-    if (rating >= 4.5) return "Outstanding";
-    if (rating >= 4) return "Very Good";
-    if (rating >= 3.5) return "Good";
-    if (rating >= 3) return "Fair";
-    return "Average";
-  };
-
-  const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return "bg-green-600";
-    if (rating >= 4) return "bg-green-500";
-    if (rating >= 3.5) return "bg-yellow-500";
-    if (rating >= 3) return "bg-yellow-400";
-    return "bg-gray-500";
-  };
 
   const calculatePricing = () => {
     const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());

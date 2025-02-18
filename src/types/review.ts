@@ -46,3 +46,19 @@ export interface UseRoomReviewsParams {
   sortOrder?: "asc" | "desc";
   enabled?: boolean;
 }
+
+export const getRatingLabel = (rating: number) => {
+  if (rating >= 4.5) return "Outstanding";
+  if (rating >= 4) return "Very Good";
+  if (rating >= 3.5) return "Good";
+  if (rating >= 3) return "Fair";
+  return "Average";
+};
+
+export const getRatingColor = (rating: number) => {
+  if (rating >= 4.5) return "bg-green-600";
+  if (rating >= 4) return "bg-green-500";
+  if (rating >= 3.5) return "bg-yellow-500";
+  if (rating >= 3) return "bg-yellow-400";
+  return "bg-gray-500";
+};

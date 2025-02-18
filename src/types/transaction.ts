@@ -1,38 +1,88 @@
+export enum TransactionStatus {
+  WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT",
+  WAITING_FOR_PAYMENT_CONFIRMATION = "WAITING_FOR_PAYMENT_CONFIRMATION",
+  CANCELLED = "CANCELLED",
+  PROCESSED = "PROCESSED",
+  CHECKED_IN = "CHECKED_IN",
+  CHECKED_OUT = "CHECKED_OUT",
+}
+
+export enum PaymentMethod {
+  MANUAL = "MANUAL",
+  OTOMATIS = "OTOMATIS",
+}
+
+export enum RoomType {
+  Deluxe = "Deluxe",
+  Standard = "Standard",
+  Suite = "Suite",
+}
+
+export interface Tenant {
+  name: string;
+  imageUrl: string | null;
+  phoneNumber: string | null;
+  bankName: string;
+  bankNumber: string;
+}
+
+export interface Reservation {
+  roomType: RoomType;
+  roomPrice: number;
+  propertyTitle: string;
+  propertyLocation: string;
+  propertyImages: string[];
+  roomImages: {
+    imageUrl: string | null;
+  }[];
+  roomFacilities: string[];
+  tenant: Tenant;
+}
+
+export interface ReservationDetail {
+  roomId: number;
+  roomType: RoomType;
+  roomPrice: number;
+  propertyTitle: string;
+  propertyLocation: string;
+  propertyImages: string[];
+  roomImages: string[];
+  roomFacilities: string[];
+  tenant: Tenant;
+}
+
 export interface Transaction {
   id: number;
   uuid: string;
   userId: number;
   totalPrice: number;
-  paymentMethode: "MANUAL" | "OTOMATIS";
-  status:
-    | "WAITING_FOR_PAYMENT"
-    | "WAITING_FOR_PAYMENT_CONFIRMATION"
-    | "CANCELLED"
-    | "PROCESSED"
-    | "CHECKED_IN"
-    | "CHECKED_OUT";
+  paymentMethode: PaymentMethod;
+  status: TransactionStatus;
   paymentProof: string | null;
   checkInDate: string | null;
   checkOutDate: string | null;
   duration: number;
   updatedAt: string | null;
-  reservations: {
-    roomType: "Deluxe" | "Standard" | "Suite";
-    roomPrice: number;
-    propertyTitle: string;
-    propertyLocation: string;
-    roomImages: string[];
-    roomFacilities: string[];
-    peakSeasonDays: number;
-    peakSeasonPrice: number;
-    tenant: {
-      name: string;
-      imageUrl: string | null;
-      phoneNumber: string | null;
-      bankName: string;
-      bankNumber: string;
-    };
-  }[];
+  reservations: Reservation[];
+}
+
+export interface TransactionDetail {
+  id: number;
+  uuid: string;
+  userId: number;
+  totalPrice: number;
+  paymentMethode: PaymentMethod;
+  status: TransactionStatus;
+  paymentProof: string | null;
+  invoiceUrl: string | null;
+  checkInDate: string | null;
+  checkOutDate: string | null;
+  duration: number;
+  peakSeasonDays: number;
+  peakSeasonPrice: number;
+  expiredAt: Date | null;
+  updatedAt: string | null;
+  reservations: ReservationDetail[];
 }
 
 export interface TransactionResponse {

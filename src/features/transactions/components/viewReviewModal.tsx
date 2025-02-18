@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Dialog,
   DialogContent,
@@ -7,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
-import { Star } from "lucide-react";
+import { Building2, MapPin, MessageSquare, Star } from "lucide-react";
 
 interface ViewReviewModalProps {
   isOpen: boolean;
@@ -27,47 +25,65 @@ interface ViewReviewModalProps {
 }
 
 const ViewReviewModal = ({ isOpen, onClose, review }: ViewReviewModalProps) => {
-  console.log(review);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Your Review</DialogTitle>
+          <DialogTitle className="text-xl">Your Review</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+
+        <div className="space-y-6">
+          {/* Property Details */}
           {review.property && (
-            <div>
-              <h3 className="font-medium">{review.property.title}</h3>
-              <p className="text-sm text-muted-foreground">
-                {review.property.location}
-              </p>
+            <div className="space-y-2 rounded-lg bg-gray-50 p-4">
+              <div className="flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-blue-600" />
+                <h3 className="font-medium">{review.property.title}</h3>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <MapPin className="h-4 w-4" />
+                <p>{review.property.location}</p>
+              </div>
             </div>
           )}
 
-          <div className="flex items-center space-x-1">
-            {[...Array(review.rating)].map((_, index) => (
-              <Star
-                key={index}
-                className="h-5 w-5 text-yellow-400"
-                fill="currentColor"
-              />
-            ))}
+          {/* Rating and Review */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="flex">
+                {[...Array(5)].map((_, index) => (
+                  <Star
+                    key={index}
+                    className={`h-5 w-5 ${
+                      index < review.rating
+                        ? "text-yellow-400"
+                        : "text-gray-200"
+                    }`}
+                    fill={index < review.rating ? "currentColor" : "none"}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-500">
+                {format(new Date(review.createdAt), "dd MMM yyyy")}
+              </span>
+            </div>
+
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-700">{review.review}</p>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              {format(new Date(review.createdAt), "dd MMM yyyy")}
-            </p>
-            <p className="text-sm">{review.review}</p>
-          </div>
-
+          {/* Owner Reply */}
           {review.replyMessage && (
-            <div className="space-y-2 rounded-lg bg-secondary p-4">
-              <p className="text-sm font-medium">Owner Response:</p>
-              <p className="text-sm">{review.replyMessage}</p>
+            <div className="space-y-2 rounded-lg bg-blue-50 p-4">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-blue-600" />
+                <h4 className="font-medium text-gray-900">Owner Response</h4>
+              </div>
+              <p className="text-sm text-gray-700">{review.replyMessage}</p>
               {review.replyDate && (
-                <p className="text-xs text-muted-foreground">
-                  {format(new Date(review.replyDate), "dd MMM yyyy")}
+                <p className="text-xs text-gray-500">
+                  Replied on {format(new Date(review.replyDate), "dd MMM yyyy")}
                 </p>
               )}
             </div>
