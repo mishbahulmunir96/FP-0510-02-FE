@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
 import { getRatingColor, getRatingLabel } from "@/types/review";
 import { TransactionDetail } from "@/types/transactionByTenant";
-import { Building2, Info, Star } from "lucide-react";
+import { Bed, Building2, Info, Star } from "lucide-react";
 import Image from "next/image";
 
 interface PriceDetailTenantCardProps {
@@ -57,7 +57,7 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
 
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-blue-600" />
+            <Bed className="h-4 w-4 text-blue-600" />
             <h3 className="font-medium text-gray-900">
               {firstReservation.roomType} Room
             </h3>

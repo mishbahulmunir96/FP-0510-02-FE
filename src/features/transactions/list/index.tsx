@@ -204,7 +204,12 @@ const TransactionListPage = () => {
               <div className="flex items-center gap-2">
                 <ArrowDownUp className="h-4 w-4 text-gray-400" />
                 <span className="text-sm text-gray-600">
-                  Sorted by {sortBy === "createdAt" ? "booking date" : sortBy}
+                  Sorted by{" "}
+                  {sortBy === "createdAt"
+                    ? "booking date"
+                    : sortBy === "totalPrice"
+                      ? "total price"
+                      : sortBy}
                 </span>
               </div>
             </div>

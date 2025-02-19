@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import { formatCurrency } from "@/lib/utils";
 import { getRatingColor, getRatingLabel } from "@/types/review";
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -166,13 +166,13 @@ const ReservationCard = ({
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Check-in</span>
               <span className="font-medium text-gray-900">
-                {format(checkIn, "EEE, dd MMM yyyy", { locale: id })}
+                {format(checkIn, "EEE, dd MMM yyyy")}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Check-out</span>
               <span className="font-medium text-gray-900">
-                {format(checkOut, "EEE, dd MMM yyyy", { locale: id })}
+                {format(checkOut, "EEE, dd MMM yyyy")}
               </span>
             </div>
           </div>
@@ -184,7 +184,7 @@ const ReservationCard = ({
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Base Price</span>
               <span className="font-medium text-gray-900">
-                Rp {basePrice.toLocaleString("id-ID")}
+                {formatCurrency(basePrice)}
               </span>
             </div>
             <div className="flex justify-between text-sm">
@@ -198,7 +198,7 @@ const ReservationCard = ({
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Peak Season Rate</span>
                   <span className="font-medium text-gray-900">
-                    Rp {peakSeasonRatePerNight.toLocaleString("id-ID")}
+                    {formatCurrency(peakSeasonRatePerNight)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -213,7 +213,7 @@ const ReservationCard = ({
               <div className="flex justify-between">
                 <span className="font-medium text-gray-900">Total Price</span>
                 <span className="text-lg font-semibold text-blue-600">
-                  Rp {totalPrice.toLocaleString("id-ID")}
+                  {formatCurrency(totalPrice)}
                 </span>
               </div>
             </div>
@@ -227,7 +227,7 @@ const ReservationCard = ({
             <div className="flex flex-col">
               <span className="text-sm text-gray-600">Total Price</span>
               <span className="text-xl font-semibold text-gray-900">
-                Rp {totalPrice.toLocaleString("id-ID")}
+                {formatCurrency(totalPrice)}
               </span>
             </div>
           </div>
