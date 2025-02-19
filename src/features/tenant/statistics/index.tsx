@@ -1,4 +1,3 @@
-// features/tenant/statistics/index.tsx
 "use client";
 
 import { subYears } from "date-fns";
@@ -8,8 +7,8 @@ import { StatCards } from "./components/StatCharts";
 import { MetricsChart } from "./components/MetricsChart";
 import { RevenueChart } from "./components/ReveneuCharts";
 import PaymentDistributionChart from "./components/PaymnetDistributionChart";
-import { TopPropertiesTable } from "./components/TopPRopertiesTable";
 import StatisticFilters from "./components/StatisticFilters";
+import { TopPropertiesTable } from "./components/TopPropertiesTable";
 
 const StatisticPage = () => {
   const [queryStates, setQueryStates] = useQueryStates(statisticQueryStates);

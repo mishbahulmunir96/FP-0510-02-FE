@@ -1,8 +1,8 @@
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
 import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
-import { formatRupiah } from "@/lib/utils";
 import { Building2, DollarSign, Percent, ShoppingCart } from "lucide-react";
 import CardDataStats from "./CardDataStats";
+import { formatCurrency } from "@/lib/utils";
 
 interface StatCardsProps {
   startDate: Date;
@@ -67,7 +67,7 @@ export const StatCards = ({
     <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6">
       <CardDataStats
         title="Total Pendapatan"
-        total={formatRupiah(currentRevenue)}
+        total={formatCurrency(currentRevenue)}
         rate={`${Math.abs(revenueChange)}%`}
         levelUp={revenueChange > 0}
         levelDown={revenueChange < 0}

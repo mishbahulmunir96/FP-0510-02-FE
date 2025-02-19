@@ -1,6 +1,6 @@
 "use client";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
-import { formatRupiah } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 interface TopPropertiesTableProps {
   startDate: Date;
@@ -62,7 +62,7 @@ export const TopPropertiesTable = ({
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
               <p className="text-meta-3">
-                {formatRupiah(property.totalRevenue)}
+                {formatCurrency(property.totalRevenue)}
               </p>
             </div>
 

@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
-import { formatRupiah } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -101,7 +101,7 @@ export const PaymentDistributionChart = ({
                 );
                 return dataType === "transactions"
                   ? total.toString()
-                  : formatRupiah(total);
+                  : formatCurrency(total);
               },
             },
           },
@@ -112,7 +112,7 @@ export const PaymentDistributionChart = ({
       formatter: function (value) {
         return dataType === "transactions"
           ? `${value} transaksi`
-          : formatRupiah(Number(value));
+          : formatCurrency(Number(value));
       },
     },
     tooltip: {
@@ -120,7 +120,7 @@ export const PaymentDistributionChart = ({
         formatter: function (value) {
           return dataType === "transactions"
             ? `${value} transaksi`
-            : formatRupiah(Number(value));
+            : formatCurrency(Number(value));
         },
       },
     },
