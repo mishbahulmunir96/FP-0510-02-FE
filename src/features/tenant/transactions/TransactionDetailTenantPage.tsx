@@ -40,16 +40,12 @@ const TransactionDetailTenantPage: FC<TransactionDetailTenantPageProps> = ({
           </p>
         </div>
 
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-          <div className="lg:hidden">
-            <PriceDetailTenantCard data={data} />
-          </div>
-
+        <div className="flex flex-col gap-6 lg:flex-row">
           <div className="w-full lg:w-2/3">
             <TransactionDetailTenantCard data={data} />
           </div>
 
-          <div className="hidden lg:block lg:w-1/3">
+          <div className="w-full md:w-1/3">
             <div className="sticky top-6">
               <PriceDetailTenantCard data={data} />
             </div>

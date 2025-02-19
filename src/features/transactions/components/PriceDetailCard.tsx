@@ -10,7 +10,7 @@ import {
 import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
 import { getRatingColor, getRatingLabel } from "@/types/review";
 import { TransactionDetail } from "@/types/transaction";
-import { Shield, Star } from "lucide-react";
+import { Bed, Info, Shield, Star } from "lucide-react";
 import Image from "next/image";
 
 interface PriceDetailCardProps {
@@ -59,9 +59,13 @@ const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
 
         <div className="mt-4 space-y-3">
           <div className="space-y-1">
-            <h3 className="font-medium text-gray-900">
-              {data.reservations[0].roomType} Room
-            </h3>
+            <div className="flex items-center gap-2">
+              <Bed className="h-4 w-4 text-blue-600" />
+
+              <h3 className="font-medium text-gray-900">
+                {data.reservations[0].roomType} Room
+              </h3>
+            </div>
             <p className="text-sm text-gray-500">
               Includes {data.reservations[0].roomFacilities[0]}
             </p>
@@ -94,11 +98,14 @@ const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
       <CardContent className="space-y-6 p-4">
         <div className="flex items-center gap-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-700">
           <Shield className="h-4 w-4" />
-          <p>Your booking is protected by PhonePe</p>
+          <p>Your booking is protected by RateHaven Insurance</p>
         </div>
 
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-900">Price Breakdown</h4>
+          <div className="flex items-center gap-2">
+            <Info className="h-4 w-4 text-blue-600" />
+            <h4 className="font-medium text-gray-900">Price Breakdown</h4>
+          </div>
           <div className="space-y-3 rounded-lg bg-gray-50 p-4 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Base Price</span>

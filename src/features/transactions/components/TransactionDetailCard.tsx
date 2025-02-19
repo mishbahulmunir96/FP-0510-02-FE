@@ -7,7 +7,14 @@ import { formatStatus, getStatusColor } from "@/types/status";
 import { TransactionDetail } from "@/types/transaction";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { format } from "date-fns";
-import { Building2, CalendarDays, Hotel, MapPin, User } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  Hotel,
+  MapPin,
+  ShieldCheck,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import ReviewModal from "./ReviewModal";
@@ -40,61 +47,63 @@ const TransactionDetailCard = ({
 
   return (
     <Card className="overflow-hidden rounded-lg bg-white shadow-md">
-      <CardHeader className="border-b bg-gray-50/50 p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold text-gray-900">
-              {data.reservations[0].roomType} Room
-            </h2>
-            <Badge variant="outline" className={getStatusColor(data.status)}>
-              {formatStatus(data.status)}
-            </Badge>
-          </div>
-          <div className="text-right">
-            <span className="block text-sm text-gray-500">Total Amount</span>
-            <span className="text-2xl font-bold text-blue-600">
-              {data.totalPrice.toLocaleString("id-ID", {
-                style: "currency",
-                currency: "IDR",
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })}
-            </span>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-6 p-6">
-        {/* Property Details */}
-        <div className="rounded-lg border bg-gray-50/50 p-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg">
+      <CardHeader className="space-y-6 border-b bg-gray-50/50 p-6">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex gap-4 sm:items-start">
+            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-200">
               <Image
                 src={data.reservations[0].propertyImages[0]}
-                alt="Property"
-                fill
+                alt={`${data.reservations[0].propertyTitle} property`}
                 className="object-cover"
+                fill
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-blue-600" />
+                <Building2
+                  className="h-4 w-4 text-blue-600"
+                  aria-hidden="true"
+                />
                 <h3 className="font-medium text-gray-900">
                   {data.reservations[0].propertyTitle}
                 </h3>
               </div>
               <p className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin className="h-4 w-4" />
-                {data.reservations[0].propertyLocation}
+                <MapPin className="h-4 w-4" aria-hidden="true" />
+                <span>{data.reservations[0].propertyLocation}</span>
               </p>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {data.reservations[0].roomType} Room
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex justify-between gap-4 sm:items-end md:flex-col">
+            <div className="text-right">
+              <span className="text-2xl font-bold text-blue-600">
+                {data.totalPrice.toLocaleString("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })}
+              </span>
+              <span className="block text-sm text-gray-500">Total Amount</span>
+            </div>
+            <div className="space-y-1">
+              <Badge variant="outline" className={getStatusColor(data.status)}>
+                {formatStatus(data.status)}
+              </Badge>
             </div>
           </div>
         </div>
+      </CardHeader>
 
+      <CardContent className="space-y-6 p-6">
         <div className="space-y-3">
           <h4 className="flex items-center gap-2 font-medium text-gray-900">
             <User className="h-4 w-4 text-blue-600" />
-            Guest Information
+            Tenant Details
           </h4>
           <div className="rounded-lg border p-4">
             <div className="flex items-center gap-4">
@@ -105,6 +114,7 @@ const TransactionDetailCard = ({
                     "/images/profile_default.jpg"
                   }
                   alt={data.reservations[0].tenant.name}
+                  className="border border-green-500"
                 />
                 <AvatarFallback>
                   {data.reservations[0].tenant.name.charAt(0)}
@@ -114,7 +124,7 @@ const TransactionDetailCard = ({
                 <p className="font-medium text-gray-900">
                   {data.reservations[0].tenant.name}
                 </p>
-                <p className="text-sm text-gray-500">Primary Guest</p>
+                {/* <p className="text-sm text-gray-500">Primary Guest</p> */}
               </div>
             </div>
           </div>
@@ -169,7 +179,9 @@ const TransactionDetailCard = ({
               data.status === "WAITING_FOR_PAYMENT")
           }
           isCancelDisabled={
-            data.status !== "WAITING_FOR_PAYMENT" || isCancelling
+            data.status !== "WAITING_FOR_PAYMENT" ||
+            data.paymentMethode === "OTOMATIS" ||
+            isCancelling
           }
           isUploading={isUploading}
           isCancelling={isCancelling}
@@ -177,6 +189,22 @@ const TransactionDetailCard = ({
           onUploadProof={onUploadProof}
           onCancelTransaction={onCancelTransaction}
         />
+
+        {data.reservations[0].roomFacilities.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-medium text-gray-900">
+              <ShieldCheck className="h-4 w-4 text-blue-600" />
+              Room Facilities
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {data.reservations[0].roomFacilities.map((facility, index) => (
+                <Badge key={index} variant="secondary">
+                  {facility}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
 
         {(showReviewButton || showViewReviewButton) && (
           <div className="border-t pt-6">
