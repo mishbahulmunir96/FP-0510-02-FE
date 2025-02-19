@@ -2,8 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxios from "../useAxios";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 const useReplyReview = () => {
+  const router = useRouter();
   const { axiosInstance } = useAxios();
   const queryClient = useQueryClient();
 
@@ -23,6 +25,7 @@ const useReplyReview = () => {
     onSuccess: () => {
       toast.success("Reply successfully added");
       queryClient.invalidateQueries({ queryKey: ["review", "tenant"] });
+      router.refresh();
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);

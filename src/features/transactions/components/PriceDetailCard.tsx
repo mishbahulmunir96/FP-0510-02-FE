@@ -76,7 +76,10 @@ const PriceDetailCard = ({ data }: PriceDetailCardProps) => {
                 <span
                   className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
                 >
-                  <Star className="h-4 w-4" fill="currentColor" />
+                  <Star
+                    className="h-4 w-4 text-yellow-400"
+                    fill="currentColor"
+                  />
                   <span className="font-medium">
                     {reviewsData.meta.averageRating.toFixed(1)}
                   </span>
