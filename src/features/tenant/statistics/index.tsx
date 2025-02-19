@@ -8,7 +8,7 @@ import { MetricsChart } from "./components/MetricsChart";
 import { RevenueChart } from "./components/ReveneuCharts";
 import PaymentDistributionChart from "./components/PaymnetDistributionChart";
 import StatisticFilters from "./components/StatisticFilters";
-import { TopPropertiesTable } from "./components/TopPropertiesTable";
+// import { TopPropertiesTable } from "./components/TopPropertiesTable";
 
 const StatisticPage = () => {
   const [queryStates, setQueryStates] = useQueryStates(statisticQueryStates);
@@ -149,13 +149,13 @@ const StatisticPage = () => {
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
         /> */}
-        <TopPropertiesTable
+        {/* <TopPropertiesTable
           startDate={
             new Date(startDate || subYears(new Date(), 1).toISOString())
           }
           endDate={new Date(endDate || new Date().toISOString())}
           propertyId={Number(propertyId)}
-        />
+        /> */}
       </div>
     </div>
   );

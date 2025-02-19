@@ -71,7 +71,6 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
   return (
     <>
       <div className="space-y-4 rounded-lg border bg-white p-4 shadow-sm">
-        {/* Review Header */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 ring-2 ring-blue-50">
@@ -123,12 +122,10 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
           </div>
         </div>
 
-        {/* Review Content */}
         <div className="rounded-lg bg-gray-50 p-4">
           <p className="text-sm text-gray-700">{review.review}</p>
         </div>
 
-        {/* Reply Section */}
         {review.replyMessage ? (
           <div className="space-y-2 rounded-lg border bg-blue-50 p-4">
             <div className="flex items-center gap-2">

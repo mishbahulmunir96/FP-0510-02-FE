@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import useAxios from "../useAxios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface CreateReviewPayload {
   paymentId: number;
@@ -28,6 +29,7 @@ interface ReviewResponse {
 }
 
 const useCreateReview = () => {
+  const router = useRouter();
   const { axiosInstance } = useAxios();
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -43,6 +45,7 @@ const useCreateReview = () => {
     onSuccess: () => {
       toast.success("Review succesfully added");
       queryClient.invalidateQueries({ queryKey: ["transaction"] });
+      router.refresh();
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);

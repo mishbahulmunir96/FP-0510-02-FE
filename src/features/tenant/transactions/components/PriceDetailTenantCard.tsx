@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
+import { formatCurrency } from "@/lib/utils";
 import { getRatingColor, getRatingLabel } from "@/types/review";
 import { TransactionDetail } from "@/types/transactionByTenant";
-import { Bed, Building2, Info, Star } from "lucide-react";
+import { Bed, Info, Star } from "lucide-react";
 import Image from "next/image";
 
 interface PriceDetailTenantCardProps {
@@ -68,7 +69,10 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
                 <span
                   className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
                 >
-                  <Star className="h-4 w-4" fill="currentColor" />
+                  <Star
+                    className="h-4 w-4 text-yellow-400"
+                    fill="currentColor"
+                  />
                   <span className="font-medium">
                     {reviewsData.meta.averageRating.toFixed(1)}
                   </span>
@@ -109,12 +113,7 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
               <div className="flex justify-between">
                 <span className="text-gray-600">Base Price</span>
                 <span className="font-medium text-gray-900">
-                  {firstReservation.roomPrice.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  })}
+                  {formatCurrency(firstReservation.roomPrice)}
                 </span>
               </div>
 
@@ -122,17 +121,11 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Peak Season Price</span>
                   <span className="font-medium text-gray-900">
-                    {data.peakSeasonPrice.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })}
+                    {formatCurrency(data.peakSeasonPrice)}
                   </span>
                 </div>
               )}
 
-              {/* Stay Duration */}
               <div className="flex justify-between">
                 <span className="text-gray-600">Length of Stay</span>
                 <span className="font-medium text-gray-900">
@@ -140,7 +133,6 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
                 </span>
               </div>
 
-              {/* Peak Season Days */}
               {data.peakSeasonDays > 0 && (
                 <div className="flex justify-between">
                   <span className="text-gray-600">Peak Season Days</span>
@@ -150,19 +142,13 @@ const PriceDetailTenantCard = ({ data }: PriceDetailTenantCardProps) => {
                 </div>
               )}
 
-              {/* Total Amount */}
               <div className="border-t pt-3">
                 <div className="flex justify-between">
                   <span className="font-medium text-gray-900">
                     Total Amount
                   </span>
                   <span className="font-bold text-blue-600">
-                    {data.totalPrice.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })}
+                    {formatCurrency(data.totalPrice)}
                   </span>
                 </div>
               </div>
