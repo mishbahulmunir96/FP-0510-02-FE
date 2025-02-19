@@ -1,7 +1,7 @@
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
-import { formatRupiah } from "@/lib/utils";
 import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
+import { formatCurrency } from "@/lib/utils";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -94,7 +94,7 @@ export const MetricsChart = ({
           fontSize: "12px",
           fontWeight: 400,
         },
-        formatter: (value) => formatRupiah(value),
+        formatter: (value) => formatCurrency(value),
       },
     },
     fill: {
@@ -115,7 +115,7 @@ export const MetricsChart = ({
       intersect: false,
       theme: "light",
       y: {
-        formatter: (value) => formatRupiah(value),
+        formatter: (value) => formatCurrency(value),
       },
     },
     legend: {

@@ -1,8 +1,8 @@
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
-import { formatRupiah } from "@/lib/utils";
 import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/utils";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -170,7 +170,7 @@ export const RevenueChart = ({
       intersect: false,
       y: [
         {
-          formatter: (value) => formatRupiah(value),
+          formatter: (value) => formatCurrency(value),
         },
         {
           formatter: (value) => value.toFixed(0) + " transaksi",
