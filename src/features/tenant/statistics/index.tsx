@@ -1,6 +1,6 @@
 "use client";
 
-import { subYears } from "date-fns";
+import { ReactNode } from "react";
 import { useQueryStates } from "nuqs";
 import { statisticQueryStates } from "@/lib/query-params";
 import { StatCards } from "./components/StatCharts";
@@ -8,14 +8,37 @@ import { MetricsChart } from "./components/MetricsChart";
 import { RevenueChart } from "./components/ReveneuCharts";
 import PaymentDistributionChart from "./components/PaymnetDistributionChart";
 import StatisticFilters from "./components/StatisticFilters";
-// import { TopPropertiesTable } from "./components/TopPropertiesTable";
+import { TopPropertiesTable } from "./components/TopPropertiesTable";
+
+interface ChartContainerProps {
+  title: string;
+  children: ReactNode;
+}
+
+const ChartContainer = ({ title, children }: ChartContainerProps) => (
+  <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
+    <h2 className="mb-4 text-xl font-bold text-gray-800">{title}</h2>
+    {children}
+  </div>
+);
+
+interface FilterSectionProps {
+  children: ReactNode;
+}
+
+const FilterSection = ({ children }: FilterSectionProps) => (
+  <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-6 shadow-md">
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      {children}
+    </div>
+  </div>
+);
 
 const StatisticPage = () => {
   const [queryStates, setQueryStates] = useQueryStates(statisticQueryStates);
   const { filterType, startDate, endDate, month, year, propertyId } =
     queryStates;
 
-  // Handle filter type change
   const handleFilterTypeChange = (
     type: "date-range" | "month-year" | "year-only",
   ) => {
@@ -98,64 +121,82 @@ const StatisticPage = () => {
     });
   };
 
+  const getDefaultStartDate = () => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 1);
+    return date;
+  };
+
   return (
-    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-      <div className="mb-6">
-        <StatisticFilters
-          filterType={filterType}
-          startDate={startDate ? new Date(startDate) : subYears(new Date(), 1)}
-          endDate={endDate ? new Date(endDate) : new Date()}
-          selectedMonth={month}
-          selectedYear={year}
-          selectedProperty={Number(propertyId)}
-          onStartDateChange={(date) =>
-            handleDateChange(date, new Date(endDate))
-          }
-          onEndDateChange={(date) =>
-            handleDateChange(new Date(startDate), date)
-          }
-          onMonthChange={handleMonthChange}
-          onYearChange={handleYearChange}
-          onPropertyChange={handlePropertyChange}
-          onFilterTypeChange={handleFilterTypeChange}
-        />
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+        <FilterSection>
+          <StatisticFilters
+            filterType={filterType}
+            startDate={startDate ? new Date(startDate) : getDefaultStartDate()}
+            endDate={endDate ? new Date(endDate) : new Date()}
+            selectedMonth={month}
+            selectedYear={year}
+            selectedProperty={Number(propertyId)}
+            onStartDateChange={(date) =>
+              handleDateChange(date, new Date(endDate))
+            }
+            onEndDateChange={(date) =>
+              handleDateChange(new Date(startDate), date)
+            }
+            onMonthChange={handleMonthChange}
+            onYearChange={handleYearChange}
+            onPropertyChange={handlePropertyChange}
+            onFilterTypeChange={handleFilterTypeChange}
+          />
+        </FilterSection>
 
-      <StatCards
-        startDate={new Date(startDate || subYears(new Date(), 1).toISOString())}
-        endDate={new Date(endDate || new Date().toISOString())}
-        propertyId={Number(propertyId)}
-      />
+        <div className="mb-8">
+          <StatCards
+            startDate={
+              new Date(startDate || getDefaultStartDate().toISOString())
+            }
+            endDate={new Date(endDate || new Date().toISOString())}
+            propertyId={Number(propertyId)}
+          />
+        </div>
 
-      <div className="2xl:mt-7.5 2xl:gap-7.5 mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6">
-        <RevenueChart
-          startDate={
-            new Date(startDate || subYears(new Date(), 1).toISOString())
-          }
-          endDate={new Date(endDate || new Date().toISOString())}
-          propertyId={Number(propertyId)}
-        />
-        <PaymentDistributionChart
-          startDate={
-            new Date(startDate || subYears(new Date(), 1).toISOString())
-          }
-          endDate={new Date(endDate || new Date().toISOString())}
-          propertyId={Number(propertyId)}
-        />
-        {/* <MetricsChart
-          startDate={
-            new Date(startDate || subYears(new Date(), 1).toISOString())
-          }
-          endDate={new Date(endDate || new Date().toISOString())}
-          propertyId={Number(propertyId)}
-        /> */}
-        {/* <TopPropertiesTable
-          startDate={
-            new Date(startDate || subYears(new Date(), 1).toISOString())
-          }
-          endDate={new Date(endDate || new Date().toISOString())}
-          propertyId={Number(propertyId)}
-        /> */}
+        <div className="mb-8 grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-span-8">
+            <ChartContainer title="Revenue & Transaction Trends">
+              <RevenueChart
+                startDate={
+                  new Date(startDate || getDefaultStartDate().toISOString())
+                }
+                endDate={new Date(endDate || new Date().toISOString())}
+                propertyId={Number(propertyId)}
+              />
+            </ChartContainer>
+          </div>
+          <div className="col-span-12 lg:col-span-4">
+            <ChartContainer title="Distribution">
+              <PaymentDistributionChart
+                startDate={
+                  new Date(startDate || getDefaultStartDate().toISOString())
+                }
+                endDate={new Date(endDate || new Date().toISOString())}
+                propertyId={Number(propertyId)}
+              />
+            </ChartContainer>
+          </div>
+        </div>
+
+        <div className="col-span-12">
+          <ChartContainer title="Top Properties">
+            <TopPropertiesTable
+              startDate={
+                new Date(startDate || getDefaultStartDate().toISOString())
+              }
+              endDate={new Date(endDate || new Date().toISOString())}
+              propertyId={Number(propertyId)}
+            />
+          </ChartContainer>
+        </div>
       </div>
     </div>
   );

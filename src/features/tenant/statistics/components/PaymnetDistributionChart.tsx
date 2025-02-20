@@ -127,7 +127,7 @@ export const PaymentDistributionChart = ({
   };
 
   return (
-    <div className="border-stroke shadow-default relative col-span-4 rounded-sm border bg-white p-6">
+    <div className="border-stroke shadow-default relative col-span-12 rounded-sm border bg-white p-6">
       <div className="mb-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-800">

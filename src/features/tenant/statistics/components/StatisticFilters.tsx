@@ -1,3 +1,4 @@
+import React from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -9,9 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
-import { subYears } from "date-fns";
 import DateRangePicker from "./DateRangePicker";
-import { useState } from "react";
 
 interface StatisticFiltersProps {
   filterType: "date-range" | "month-year" | "year-only";
@@ -29,24 +28,24 @@ interface StatisticFiltersProps {
 }
 
 const months = [
-  { value: 1, label: "Januari" },
-  { value: 2, label: "Februari" },
-  { value: 3, label: "Maret" },
+  { value: 1, label: "January" },
+  { value: 2, label: "February" },
+  { value: 3, label: "March" },
   { value: 4, label: "April" },
-  { value: 5, label: "Mei" },
-  { value: 6, label: "Juni" },
-  { value: 7, label: "Juli" },
-  { value: 8, label: "Agustus" },
+  { value: 5, label: "May" },
+  { value: 6, label: "June" },
+  { value: 7, label: "July" },
+  { value: 8, label: "August" },
   { value: 9, label: "September" },
-  { value: 10, label: "Oktober" },
+  { value: 10, label: "October" },
   { value: 11, label: "November" },
-  { value: 12, label: "Desember" },
-];
+  { value: 12, label: "December" },
+] as const;
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
-export const StatisticFilters = ({
+export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
   filterType,
   startDate,
   endDate,
@@ -59,17 +58,12 @@ export const StatisticFilters = ({
   onYearChange,
   onPropertyChange,
   onFilterTypeChange,
-}: StatisticFiltersProps) => {
-  const [selectValue, setSelectValue] = useState(
-    selectedProperty?.toString() ?? "all",
-  );
-
+}) => {
   const { data: properties } = usePropertyReport({
-    startDate: startDate ? startDate : subYears(new Date(), 1),
-    endDate: endDate ? endDate : new Date(),
+    startDate,
+    endDate,
   });
 
-  // Dalam fungsi renderFilter, perbaiki case "year-only":
   const renderFilter = () => {
     switch (filterType) {
       case "date-range":
@@ -79,19 +73,20 @@ export const StatisticFilters = ({
             endDate={endDate}
             onStartDateChange={onStartDateChange}
             onEndDateChange={onEndDateChange}
+            className="mt-4"
           />
         );
       case "month-year":
         return (
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
-              <Label className="w-16">Bulan</Label>
+              <Label className="w-20 text-gray-700">Month</Label>
               <Select
                 value={selectedMonth.toString()}
                 onValueChange={(value) => onMonthChange(Number(value))}
               >
-                <SelectTrigger className="w-full sm:w-[160px]">
-                  <SelectValue placeholder="Pilih Bulan" />
+                <SelectTrigger className="w-full bg-white sm:w-[160px]">
+                  <SelectValue placeholder="Select Month" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -109,13 +104,13 @@ export const StatisticFilters = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <Label className="w-16">Tahun</Label>
+              <Label className="w-20 text-gray-700">Year</Label>
               <Select
                 value={selectedYear.toString()}
                 onValueChange={(value) => onYearChange(Number(value))}
               >
-                <SelectTrigger className="w-full sm:w-[120px]">
-                  <SelectValue placeholder="Pilih Tahun" />
+                <SelectTrigger className="w-full bg-white sm:w-[120px]">
+                  <SelectValue placeholder="Select Year" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -132,14 +127,14 @@ export const StatisticFilters = ({
         );
       case "year-only":
         return (
-          <div className="flex items-center gap-2">
-            <Label className="w-16">Tahun</Label>
+          <div className="mt-4 flex items-center gap-2">
+            <Label className="w-20 text-gray-700">Year</Label>
             <Select
               value={selectedYear.toString()}
               onValueChange={(value) => onYearChange(Number(value))}
             >
-              <SelectTrigger className="w-full sm:w-[120px]">
-                <SelectValue placeholder="Pilih Tahun" />
+              <SelectTrigger className="w-full bg-white sm:w-[120px]">
+                <SelectValue placeholder="Select Year" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -159,7 +154,7 @@ export const StatisticFilters = ({
   };
 
   return (
-    <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+    <div className="w-full rounded-xl border border-gray-100 bg-white p-6 shadow-lg">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <Tabs
           value={filterType}
@@ -171,30 +166,29 @@ export const StatisticFilters = ({
           className="w-full sm:w-auto"
         >
           <TabsList className="grid w-full grid-cols-3 sm:w-[500px]">
-            <TabsTrigger value="date-range">Range Tanggal</TabsTrigger>
-            <TabsTrigger value="month-year">Bulan & Tahun</TabsTrigger>
-            <TabsTrigger value="year-only">Tahun</TabsTrigger>
+            <TabsTrigger value="date-range">Date Range</TabsTrigger>
+            <TabsTrigger value="month-year">Month & Year</TabsTrigger>
+            <TabsTrigger value="year-only">Year Only</TabsTrigger>
           </TabsList>
         </Tabs>
 
         <Select
-          defaultValue="all"
           value={selectedProperty?.toString() ?? "all"}
           onValueChange={(value) =>
             onPropertyChange(value === "all" ? null : Number(value))
           }
         >
-          <SelectTrigger className="w-full sm:w-[200px]">
-            <SelectValue defaultValue="all">
+          <SelectTrigger className="w-full bg-white sm:w-[200px]">
+            <SelectValue>
               {selectedProperty
                 ? properties?.find((p) => p.propertyId === selectedProperty)
                     ?.propertyName
-                : "Semua Property"}
+                : "All Properties"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="all">Semua Property</SelectItem>
+              <SelectItem value="all">All Properties</SelectItem>
               {properties?.map((property) => (
                 <SelectItem
                   key={property.propertyId}
