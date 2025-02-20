@@ -1,5 +1,5 @@
 // lib/query-params.ts
-import { createParser } from "nuqs";
+import { createParser, parseAsInteger, parseAsStringEnum } from "nuqs";
 import { addDays, subYears } from "date-fns";
 
 type FilterType = "date-range" | "month-year";
@@ -25,7 +25,6 @@ const filterTypeParser = createParser({
 });
 type PropertyIdParam = "all" | number;
 
-// Modifikasi propertyIdParser
 const propertyIdParser = createParser<PropertyIdParam>({
   parse: (value: string): PropertyIdParam => {
     if (!value) return "all";
@@ -42,4 +41,21 @@ export const statisticQueryStates = {
   month: numberParser.withDefault(new Date().getMonth() + 1),
   year: numberParser.withDefault(new Date().getFullYear()),
   propertyId: propertyIdParser.withDefault("all"),
+} as const;
+
+type CalendarPropertyIdParam = "all" | number;
+
+const calendarPropertyIdParser = createParser<CalendarPropertyIdParam>({
+  parse: (value: string): CalendarPropertyIdParam => {
+    if (!value) return "all";
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? "all" : parsed;
+  },
+  serialize: (value: CalendarPropertyIdParam) => value?.toString() ?? "all",
+});
+
+export const calendarQueryStates = {
+  month: numberParser.withDefault(new Date().getMonth() + 1),
+  year: numberParser.withDefault(new Date().getFullYear()),
+  propertyId: calendarPropertyIdParser.withDefault("all"),
 } as const;

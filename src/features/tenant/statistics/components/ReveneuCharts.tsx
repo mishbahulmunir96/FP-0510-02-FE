@@ -198,12 +198,9 @@ export const RevenueChart = ({
   };
 
   return (
-    <div className="border-stroke shadow-default col-span-8 rounded-sm border bg-white p-6">
+    <div className="border-stroke shadow-default col-span-12 rounded-sm border bg-white p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">
-            Tren Pendapatan & Transaksi
-          </h2>
           <p className="mt-1 text-sm text-gray-600">
             {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
           </p>

@@ -1,6 +1,3 @@
-// components/DateRangePicker.tsx
-"use client";
-
 import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -14,7 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 
-interface DateRangePickerCustomProps {
+interface DateRangePickerProps {
   startDate: Date;
   endDate: Date;
   onStartDateChange: (date: Date | undefined) => void;
@@ -22,13 +19,13 @@ interface DateRangePickerCustomProps {
   className?: string;
 }
 
-export function DateRangePicker({
+export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   startDate,
   endDate,
   onStartDateChange,
   onEndDateChange,
   className,
-}: DateRangePickerCustomProps) {
+}) => {
   return (
     <div
       className={cn(
@@ -37,8 +34,8 @@ export function DateRangePicker({
       )}
     >
       <div className="flex items-center gap-2">
-        <Label htmlFor="startDate" className="w-24">
-          Tanggal Awal
+        <Label htmlFor="startDate" className="w-24 text-gray-700">
+          Start Date
         </Label>
         <Popover>
           <PopoverTrigger asChild>
@@ -46,16 +43,12 @@ export function DateRangePicker({
               id="startDate"
               variant={"outline"}
               className={cn(
-                "w-full justify-start text-left font-normal sm:w-[240px]",
-                !startDate && "text-muted-foreground",
+                "w-full justify-start bg-white text-left font-normal sm:w-[240px]",
+                !startDate && "text-gray-500",
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {startDate ? (
-                format(startDate, "PPP")
-              ) : (
-                <span>Pilih tanggal</span>
-              )}
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+              {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -65,14 +58,15 @@ export function DateRangePicker({
               onSelect={onStartDateChange}
               initialFocus
               disabled={(date) => date > endDate || date > new Date()}
+              className="rounded-md border shadow-lg"
             />
           </PopoverContent>
         </Popover>
       </div>
 
       <div className="flex items-center gap-2">
-        <Label htmlFor="endDate" className="w-24">
-          Tanggal Akhir
+        <Label htmlFor="endDate" className="w-24 text-gray-700">
+          End Date
         </Label>
         <Popover>
           <PopoverTrigger asChild>
@@ -80,12 +74,12 @@ export function DateRangePicker({
               id="endDate"
               variant={"outline"}
               className={cn(
-                "w-full justify-start text-left font-normal sm:w-[240px]",
-                !endDate && "text-muted-foreground",
+                "w-full justify-start bg-white text-left font-normal sm:w-[240px]",
+                !endDate && "text-gray-500",
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {endDate ? format(endDate, "PPP") : <span>Pilih tanggal</span>}
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+              {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -95,12 +89,13 @@ export function DateRangePicker({
               onSelect={onEndDateChange}
               initialFocus
               disabled={(date) => date < startDate || date > new Date()}
+              className="rounded-md border shadow-lg"
             />
           </PopoverContent>
         </Popover>
       </div>
     </div>
   );
-}
+};
 
 export default DateRangePicker;
