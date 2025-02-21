@@ -38,7 +38,7 @@ const Navbar = () => {
           Home
         </Link>
         <Link
-          href="/browse"
+          href="/property-catalog"
           className="text-base font-medium text-gray-600 transition-colors hover:text-gray-800"
         >
           Browse Properties
