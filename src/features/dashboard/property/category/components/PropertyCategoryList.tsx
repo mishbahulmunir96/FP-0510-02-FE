@@ -29,7 +29,6 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
   const { data, isPending } = useGetCategory({
     userId: session.data?.user.id,
     take: 7,
-
   });
 
   const onPageChange = ({ selected }: { selected: number }) => {

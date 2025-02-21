@@ -139,6 +139,9 @@ export interface Reservation {
 }
 
 export interface PropertyCategory {
+  rooms: any;
+  description: ReactNode;
+  slug: any;
   reason: ReactNode;
   endDate: any;
   startDate: any;

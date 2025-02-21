@@ -10,8 +10,9 @@ import { format } from "date-fns";
 import useGetProperties from "../../hooks/api/property/useGetProperties";
 import PropertyCard from "../property/components/PropertyCard";
 import PropertyNavigation from "../property/components/PropertyNavigation";
+import PaginationSection from "../../components/PaginationSection";
 
-export default function PropertyListPage() {
+export default function PropertyCatalogPage() {
   const [location, setLocation] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [checkIn, setCheckIn] = useState<Date | undefined>(undefined);
@@ -56,9 +57,16 @@ export default function PropertyListPage() {
     setSearch(value);
     setPage(1);
   };
+
   const handleGuest = (guests: number) => {
     setGuest(guests);
     setPage(1);
+  };
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage);
+    // Optionally scroll to top when changing pages
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const propertyCards = useMemo(() => {
@@ -101,7 +109,7 @@ export default function PropertyListPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-sky-50 to-sky-100">
-      {/* <PropertyNavigation
+      <PropertyNavigation
         onLocation={handleLocation}
         onCategory={handleCategory}
         onCheckIn={handleCheckIn}
@@ -117,7 +125,7 @@ export default function PropertyListPage() {
           value={search}
           aria-label="Search property"
         />
-      </div> */}
+      </div>
 
       <main className="container px-4 sm:px-6 lg:px-24">
         <motion.div
@@ -161,6 +169,15 @@ export default function PropertyListPage() {
             >
               {propertyCards}
             </motion.div>
+
+            {data?.data?.meta && (
+              <PaginationSection
+                page={data.data.meta.page}
+                take={data.data.meta.take}
+                total={data.data.meta.total}
+                onChangePage={handleChangePage}
+              />
+            )}
           </>
         )}
       </main>
