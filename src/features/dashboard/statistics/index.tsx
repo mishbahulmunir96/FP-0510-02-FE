@@ -8,7 +8,7 @@ import { MetricsChart } from "./components/MetricsChart";
 import { RevenueChart } from "./components/ReveneuCharts";
 import PaymentDistributionChart from "./components/PaymnetDistributionChart";
 import StatisticFilters from "./components/StatisticFilters";
-import { TopPropertiesTable } from "./components/TopPropertiesTable";
+import TopPropertiesTable from "./components/TopPropertiesTable";
 
 interface ChartContainerProps {
   title: string;
@@ -128,8 +128,8 @@ const StatisticPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+    <div className="min-h-screen">
+      <div className="mx-auto max-w-screen-2xl">
         <FilterSection>
           <StatisticFilters
             filterType={filterType}

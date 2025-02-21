@@ -130,7 +130,7 @@ const TransactionListTenantCard = ({
                 className="mt-3 rounded-xl bg-blue-600 hover:bg-blue-700"
                 asChild
               >
-                <Link href={`/tenant/transactions/${transaction.id}`}>
+                <Link href={`/tenant/dashboard/transactions/${transaction.id}`}>
                   View Details
                 </Link>
               </Button>

@@ -1,5 +1,6 @@
 import LandingPageLayout from "@/components/LandingPageLayout";
 import TransactionListPage from "@/features/transactions/list";
+import UserAuthGuard from "@/hoc/userAuthGuard";
 import React from "react";
 
 const TransactionList = () => {
@@ -10,4 +11,4 @@ const TransactionList = () => {
   );
 };
 
-export default TransactionList;
+export default UserAuthGuard(TransactionList);
