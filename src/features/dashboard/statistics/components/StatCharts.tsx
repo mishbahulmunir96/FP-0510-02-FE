@@ -10,75 +10,122 @@ interface StatCardsProps {
   propertyId?: number | null;
 }
 
-export const StatCards = ({
-  startDate,
-  endDate,
-  propertyId,
-}: StatCardsProps) => {
-  const { data: propertyData } = usePropertyReport({
-    startDate,
-    endDate,
-    propertyId,
-  });
-  const { data: currentData } = useTransactionReport({
-    startDate,
-    endDate,
-    propertyId,
-  });
+const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
+  const { data: propertyData, isLoading: isPropertyLoading } =
+    usePropertyReport({
+      startDate,
+      endDate,
+      propertyId,
+    });
+  console.log("property data", propertyData);
+  const { data: currentData, isLoading: isCurrentLoading } =
+    useTransactionReport({
+      startDate,
+      endDate,
+      propertyId,
+    });
 
-  // Hitung tanggal untuk periode sebelumnya
   const previousStartDate = new Date(startDate);
   const previousEndDate = new Date(endDate);
   const diff = endDate.getTime() - startDate.getTime();
   previousStartDate.setTime(previousStartDate.getTime() - diff);
   previousEndDate.setTime(previousEndDate.getTime() - diff);
 
-  const { data: previousData } = useTransactionReport({
-    startDate: previousStartDate,
-    endDate: previousEndDate,
-    propertyId,
-  });
+  const { data: previousData, isLoading: isPreviousLoading } =
+    useTransactionReport({
+      startDate: previousStartDate,
+      endDate: previousEndDate,
+      propertyId,
+    });
 
-  // Hitung persentase perubahan
+  const isLoading = isPropertyLoading || isCurrentLoading || isPreviousLoading;
+
   const currentRevenue = currentData?.totalRevenue || 0;
   const previousRevenue = previousData?.totalRevenue || 0;
-  const revenueChange =
-    previousRevenue === 0
-      ? 100
-      : Number(
-          (
-            ((currentRevenue - previousRevenue) / previousRevenue) *
-            100
-          ).toFixed(2),
-        );
+
+  const revenueChange = (() => {
+    if (isLoading) return null;
+
+    if (previousRevenue === 0) {
+      if (currentRevenue === 0) return 0;
+      return "New";
+    }
+
+    return Number(
+      (((currentRevenue - previousRevenue) / previousRevenue) * 100).toFixed(2),
+    );
+  })();
+
   const totalTransactions = currentData?.totalTransactions || 0;
+  const averageBookingDuration = currentData?.averageBookingDuration || 0;
   const totalProperties = propertyData?.length || 0;
   const totalRooms =
-    propertyData?.reduce((total, property) => {
-      return total + property.totalRooms;
-    }, 0) || 0;
-
+    propertyData?.reduce((total, property) => total + property.totalRooms, 0) ||
+    0;
   const averageOccupancy = propertyData
     ? propertyData.reduce((acc, curr) => acc + curr.occupancyRate, 0) /
       propertyData.length
     : 0;
 
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+        <CardDataStats
+          title="Total Revenue"
+          total="Loading..."
+          rate="Calculating..."
+        >
+          <DollarSign className="h-5 w-5" />
+        </CardDataStats>
+
+        <CardDataStats
+          title="Total Transaction"
+          total="Loading..."
+          rate="Calculating..."
+        >
+          <ShoppingCart className="h-5 w-5" />
+        </CardDataStats>
+
+        <CardDataStats
+          title="Total Property"
+          total="Loading..."
+          rate="Calculating..."
+        >
+          <Building2 className="h-5 w-5" />
+        </CardDataStats>
+
+        <CardDataStats
+          title="Occupancy Rate"
+          total="Loading..."
+          rate="Calculating..."
+        >
+          <Percent className="h-5 w-5" />
+        </CardDataStats>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-6">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
       <CardDataStats
-        title="Total Pendapatan"
+        title="Total Revenue"
         total={formatCurrency(currentRevenue)}
-        rate={`${Math.abs(revenueChange)}%`}
-        levelUp={revenueChange > 0}
-        levelDown={revenueChange < 0}
+        rate={
+          revenueChange === "New" ? "New" : `${Math.abs(revenueChange || 0)}%`
+        }
+        levelUp={
+          revenueChange === "New" ||
+          (typeof revenueChange === "number" && revenueChange > 0)
+        }
+        levelDown={typeof revenueChange === "number" && revenueChange < 0}
       >
         <DollarSign className="h-5 w-5" />
       </CardDataStats>
 
       <CardDataStats
-        title="Total Transaksi"
+        title="Total Transaction"
         total={totalTransactions.toString()}
-        rate={`${currentData?.averageBookingDuration || 0} hari`}
+        rate={`${averageBookingDuration} hari`}
         levelUp
       >
         <ShoppingCart className="h-5 w-5" />
@@ -94,7 +141,7 @@ export const StatCards = ({
       </CardDataStats>
 
       <CardDataStats
-        title="Rata-rata Occupancy"
+        title="Occupancy Rate"
         total={`${averageOccupancy.toFixed(1)}%`}
         rate="tingkat hunian"
         levelUp={averageOccupancy > 50}
@@ -105,3 +152,5 @@ export const StatCards = ({
     </div>
   );
 };
+
+export default StatCards;

@@ -18,11 +18,11 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   children,
 }) => {
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-4">
           <div
-            className={`rounded-lg p-3 ${
+            className={`flex h-12 w-12 items-center justify-center rounded-lg ${
               levelUp
                 ? "bg-green-100"
                 : levelDown
@@ -32,14 +32,18 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
           >
             {children}
           </div>
-          <div>
-            <h4 className="text-2xl font-bold text-gray-900">{total}</h4>
-            <span className="text-sm text-gray-500">{title}</span>
+          <div className="min-w-0 flex-1">
+            <h4 className="truncate text-xl font-semibold text-gray-900">
+              {total}
+            </h4>
+            <span className="block truncate text-sm text-gray-500">
+              {title}
+            </span>
           </div>
         </div>
 
         <span
-          className={`flex items-center gap-1 text-sm font-medium ${
+          className={`ml-2 flex w-full shrink-0 items-center justify-end gap-1 text-sm font-medium ${
             levelUp
               ? "text-green-600"
               : levelDown

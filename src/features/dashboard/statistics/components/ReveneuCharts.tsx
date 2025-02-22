@@ -198,7 +198,7 @@ export const RevenueChart = ({
   };
 
   return (
-    <div className="border-stroke shadow-default col-span-12 rounded-sm border bg-white p-6">
+    <div className="border-stroke shadow-default rounded-sm border bg-white p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="mt-1 text-sm text-gray-600">

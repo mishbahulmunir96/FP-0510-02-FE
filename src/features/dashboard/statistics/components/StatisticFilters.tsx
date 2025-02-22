@@ -11,6 +11,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
 import DateRangePicker from "./DateRangePicker";
+import { getDateRangeParams } from "@/utils/date.utils";
 
 interface StatisticFiltersProps {
   filterType: "date-range" | "month-year" | "year-only";
@@ -19,12 +20,14 @@ interface StatisticFiltersProps {
   selectedMonth: number;
   selectedYear: number;
   selectedProperty: number | null;
-  onStartDateChange: (date: Date | undefined) => void;
-  onEndDateChange: (date: Date | undefined) => void;
-  onMonthChange: (month: number) => void;
-  onYearChange: (year: number) => void;
-  onPropertyChange: (propertyId: number | null) => void;
-  onFilterTypeChange: (type: "date-range" | "month-year" | "year-only") => void;
+  onFilterChange: (filters: {
+    filterType: "date-range" | "month-year" | "year-only";
+    startDate: Date;
+    endDate: Date;
+    month?: number;
+    year?: number;
+    propertyId?: number | null;
+  }) => void;
 }
 
 const months = [
@@ -52,17 +55,85 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
   selectedMonth,
   selectedYear,
   selectedProperty,
-  onStartDateChange,
-  onEndDateChange,
-  onMonthChange,
-  onYearChange,
-  onPropertyChange,
-  onFilterTypeChange,
+  onFilterChange,
 }) => {
   const { data: properties } = usePropertyReport({
     startDate,
     endDate,
   });
+
+  const handleFilterTypeChange = (
+    type: "date-range" | "month-year" | "year-only",
+  ) => {
+    const dateRange = getDateRangeParams(type, {
+      month: selectedMonth,
+      year: selectedYear,
+    });
+
+    if (dateRange.startDate && dateRange.endDate) {
+      onFilterChange({
+        filterType: type,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        month: selectedMonth,
+        year: selectedYear,
+        propertyId: selectedProperty,
+      });
+    }
+  };
+
+  const handleDateChange = (type: "start" | "end", date: Date | undefined) => {
+    if (!date) return;
+
+    const newStartDate = type === "start" ? date : startDate;
+    const newEndDate = type === "end" ? date : endDate;
+
+    onFilterChange({
+      filterType,
+      startDate: newStartDate,
+      endDate: newEndDate,
+      month: selectedMonth,
+      year: selectedYear,
+      propertyId: selectedProperty,
+    });
+  };
+
+  const handleMonthChange = (month: number) => {
+    const dateRange = getDateRangeParams("month-year", {
+      month,
+      year: selectedYear,
+    });
+
+    // Pastikan dateRange tidak undefined
+    if (dateRange.startDate && dateRange.endDate) {
+      onFilterChange({
+        filterType,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        month,
+        year: selectedYear,
+        propertyId: selectedProperty,
+      });
+    }
+  };
+
+  const handleYearChange = (year: number) => {
+    const dateRange = getDateRangeParams(filterType, {
+      month: selectedMonth,
+      year,
+    });
+
+    if (dateRange.startDate && dateRange.endDate) {
+      onFilterChange({
+        filterType,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        month: selectedMonth,
+        year,
+        propertyId: selectedProperty,
+      });
+    }
+  };
 
   const renderFilter = () => {
     switch (filterType) {
@@ -71,8 +142,8 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
           <DateRangePicker
             startDate={startDate}
             endDate={endDate}
-            onStartDateChange={onStartDateChange}
-            onEndDateChange={onEndDateChange}
+            onStartDateChange={(date) => handleDateChange("start", date)}
+            onEndDateChange={(date) => handleDateChange("end", date)}
             className="mt-4"
           />
         );
@@ -83,7 +154,7 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
               <Label className="w-20 text-gray-700">Month</Label>
               <Select
                 value={selectedMonth.toString()}
-                onValueChange={(value) => onMonthChange(Number(value))}
+                onValueChange={(value) => handleMonthChange(Number(value))}
               >
                 <SelectTrigger className="w-full bg-white sm:w-[160px]">
                   <SelectValue placeholder="Select Month" />
@@ -107,7 +178,7 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
               <Label className="w-20 text-gray-700">Year</Label>
               <Select
                 value={selectedYear.toString()}
-                onValueChange={(value) => onYearChange(Number(value))}
+                onValueChange={(value) => handleYearChange(Number(value))}
               >
                 <SelectTrigger className="w-full bg-white sm:w-[120px]">
                   <SelectValue placeholder="Select Year" />
@@ -131,7 +202,7 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
             <Label className="w-20 text-gray-700">Year</Label>
             <Select
               value={selectedYear.toString()}
-              onValueChange={(value) => onYearChange(Number(value))}
+              onValueChange={(value) => handleYearChange(Number(value))}
             >
               <SelectTrigger className="w-full bg-white sm:w-[120px]">
                 <SelectValue placeholder="Select Year" />
@@ -159,7 +230,7 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
         <Tabs
           value={filterType}
           onValueChange={(value) =>
-            onFilterTypeChange(
+            handleFilterTypeChange(
               value as "date-range" | "month-year" | "year-only",
             )
           }
@@ -175,7 +246,14 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
         <Select
           value={selectedProperty?.toString() ?? "all"}
           onValueChange={(value) =>
-            onPropertyChange(value === "all" ? null : Number(value))
+            onFilterChange({
+              filterType,
+              startDate,
+              endDate,
+              month: selectedMonth,
+              year: selectedYear,
+              propertyId: value === "all" ? null : Number(value),
+            })
           }
         >
           <SelectTrigger className="w-full bg-white sm:w-[200px]">
