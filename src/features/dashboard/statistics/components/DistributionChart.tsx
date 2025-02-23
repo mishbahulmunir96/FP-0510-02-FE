@@ -9,7 +9,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-interface PaymentDistributionChartProps {
+interface DistributionChartProps {
   startDate: Date;
   endDate: Date;
   propertyId?: number | null;
@@ -17,11 +17,11 @@ interface PaymentDistributionChartProps {
 
 type DataType = "transactions" | "revenue";
 
-export const PaymentDistributionChart = ({
+export const DistributionChart = ({
   startDate,
   endDate,
   propertyId,
-}: PaymentDistributionChartProps) => {
+}: DistributionChartProps) => {
   const [dataType, setDataType] = useState<DataType>("transactions");
 
   const { data: propertyData } = usePropertyReport({
@@ -30,10 +30,8 @@ export const PaymentDistributionChart = ({
     propertyId,
   });
 
-  // Persiapkan data berdasarkan propertyId
   const chartData = propertyId
-    ? // Jika propertyId ada, tampilkan data per room type
-      propertyData
+    ? propertyData
         ?.find((p) => p.propertyId === propertyId)
         ?.roomDetails.map((room) => ({
           name: room.roomType,
@@ -42,8 +40,7 @@ export const PaymentDistributionChart = ({
               ? room.totalBookings
               : room.totalRevenue,
         })) || []
-    : // Jika tidak ada propertyId, tampilkan data per property
-      propertyData?.map((property) => ({
+    : propertyData?.map((property) => ({
         name: property.propertyName,
         value:
           dataType === "transactions"
@@ -168,4 +165,4 @@ export const PaymentDistributionChart = ({
   );
 };
 
-export default PaymentDistributionChart;
+export default DistributionChart;

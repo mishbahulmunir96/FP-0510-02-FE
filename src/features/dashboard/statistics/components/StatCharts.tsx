@@ -25,6 +25,8 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
       propertyId,
     });
 
+  console.log("tx data report 2", currentData);
+
   const previousStartDate = new Date(startDate);
   const previousEndDate = new Date(endDate);
   const diff = endDate.getTime() - startDate.getTime();

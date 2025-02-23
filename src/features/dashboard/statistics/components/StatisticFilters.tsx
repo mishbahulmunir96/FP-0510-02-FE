@@ -12,18 +12,19 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
 import DateRangePicker from "./DateRangePicker";
 import { getDateRangeParams } from "@/utils/date.utils";
+import { FilterType } from "@/types/report";
 
 interface StatisticFiltersProps {
-  filterType: "date-range" | "month-year" | "year-only";
+  filterType: FilterType;
   startDate: Date;
   endDate: Date;
   selectedMonth: number;
   selectedYear: number;
   selectedProperty: number | null;
   onFilterChange: (filters: {
-    filterType: "date-range" | "month-year" | "year-only";
-    startDate: Date;
-    endDate: Date;
+    filterType?: FilterType;
+    startDate?: Date;
+    endDate?: Date;
     month?: number;
     year?: number;
     propertyId?: number | null;
