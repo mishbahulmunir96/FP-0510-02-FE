@@ -1,5 +1,7 @@
+import CalendarReportPage from "@/features/dashboard/calendar-report";
+
 const CalendarReport = () => {
-  return <div />;
+  return <CalendarReportPage />;
 };
 
 export default CalendarReport;

@@ -6,6 +6,7 @@ export const formatLocalDateTime = (utcDate: string) => {
   return format(date, "dd MMMM yyyy", { locale: id });
 };
 
+// utils/date.utils.ts
 export const getDateRangeParams = (
   filterType: "date-range" | "month-year" | "year-only",
   params: {
@@ -14,18 +15,20 @@ export const getDateRangeParams = (
     month?: number;
     year?: number;
   },
-) => {
+): { startDate?: Date; endDate?: Date } => {
   const { startDate, endDate, month, year } = params;
 
   switch (filterType) {
     case "month-year": {
-      const firstDayOfMonth = new Date(Date.UTC(year!, month! - 1, 1));
-      const lastDayOfMonth = new Date(Date.UTC(year!, month!, 0));
+      if (!month || !year) return {};
+      const firstDayOfMonth = new Date(Date.UTC(year, month - 1, 1));
+      const lastDayOfMonth = new Date(Date.UTC(year, month, 0));
       return { startDate: firstDayOfMonth, endDate: lastDayOfMonth };
     }
     case "year-only": {
-      const firstDayOfYear = new Date(Date.UTC(year!, 0, 1));
-      const lastDayOfYear = new Date(Date.UTC(year!, 11, 31));
+      if (!year) return {};
+      const firstDayOfYear = new Date(Date.UTC(year, 0, 1));
+      const lastDayOfYear = new Date(Date.UTC(year, 11, 31));
       return { startDate: firstDayOfYear, endDate: lastDayOfYear };
     }
     case "date-range": {

@@ -1,68 +1,119 @@
 "use client";
-import { ReactNode } from "react";
+import { FilterType } from "@/types/report";
 import { getDateRangeParams } from "@/utils/date.utils";
-import { MetricsChart } from "./components/MetricsChart";
+import { parseAsString, parseAsStringEnum, useQueryState } from "nuqs";
+import DistributionChart from "./components/DistributionChart";
 import { RevenueChart } from "./components/ReveneuCharts";
-import PaymentDistributionChart from "./components/PaymnetDistributionChart";
+import StatCards from "./components/StatCharts";
 import StatisticFilters from "./components/StatisticFilters";
 import TopPropertiesTable from "./components/TopPropertiesTable";
-import { useState } from "react";
-import StatCards from "./components/StatCharts";
-
-interface FilterState {
-  filterType: "date-range" | "month-year" | "year-only";
-  startDate: Date;
-  endDate: Date;
-  month: number;
-  year: number;
-  propertyId: number | null;
-}
 
 const StatisticPage = () => {
-  const [filters, setFilters] = useState<FilterState>(() => {
-    const currentDate = new Date();
-    const defaultDateRange = getDateRangeParams("date-range", {
-      startDate: new Date(
-        currentDate.getFullYear() - 1,
-        currentDate.getMonth(),
-        currentDate.getDate(),
-      ),
-      endDate: currentDate,
-    });
+  const defaultStartDate = new Date();
+  defaultStartDate.setDate(defaultStartDate.getDate() - 29);
 
-    return {
-      filterType: "date-range",
-      startDate: defaultDateRange.startDate!,
-      endDate: defaultDateRange.endDate!,
-      month: currentDate.getMonth() + 1,
-      year: currentDate.getFullYear(),
-      propertyId: null,
-    };
-  });
+  const [filterType, setFilterType] = useQueryState(
+    "filterType",
+    parseAsStringEnum<FilterType>([
+      "date-range",
+      "month-year",
+      "year-only",
+    ]).withDefault("date-range"),
+  );
 
-  const handleFilterChange = (newFilters: Partial<FilterState>) => {
-    setFilters((prev) => ({
-      ...prev,
-      ...newFilters,
-    }));
+  const [startDate, setStartDate] = useQueryState(
+    "startDate",
+    parseAsString.withDefault(defaultStartDate.toISOString()),
+  );
+
+  const [endDate, setEndDate] = useQueryState(
+    "endDate",
+    parseAsString.withDefault(new Date().toISOString()),
+  );
+
+  const [month, setMonth] = useQueryState(
+    "month",
+    parseAsString.withDefault(String(new Date().getMonth() + 1)),
+  );
+
+  const [year, setYear] = useQueryState(
+    "year",
+    parseAsString.withDefault(String(new Date().getFullYear())),
+  );
+
+  const [propertyId, setPropertyId] = useQueryState(
+    "propertyId",
+    parseAsString.withDefault(""),
+  );
+
+  const handleFilterChange = async (newFilters: {
+    filterType?: FilterType;
+    startDate?: Date;
+    endDate?: Date;
+    month?: number;
+    year?: number;
+    propertyId?: number | null;
+  }) => {
+    if (newFilters.filterType) {
+      await setFilterType(newFilters.filterType);
+    }
+
+    if (newFilters.filterType === "date-range") {
+      if (newFilters.startDate) {
+        await setStartDate(newFilters.startDate.toISOString());
+      }
+      if (newFilters.endDate) {
+        await setEndDate(newFilters.endDate.toISOString());
+      }
+    } else if (newFilters.filterType === "month-year") {
+      if (newFilters.month) {
+        await setMonth(String(newFilters.month));
+      }
+      if (newFilters.year) {
+        await setYear(String(newFilters.year));
+      }
+      const dateRange = getDateRangeParams("month-year", {
+        month: newFilters.month || Number(month),
+        year: newFilters.year || Number(year),
+      });
+      if (dateRange.startDate && dateRange.endDate) {
+        await setStartDate(dateRange.startDate.toISOString());
+        await setEndDate(dateRange.endDate.toISOString());
+      }
+    } else if (newFilters.filterType === "year-only") {
+      if (newFilters.year) {
+        await setYear(String(newFilters.year));
+      }
+      const dateRange = getDateRangeParams("year-only", {
+        year: newFilters.year || Number(year),
+      });
+      if (dateRange.startDate && dateRange.endDate) {
+        await setStartDate(dateRange.startDate.toISOString());
+        await setEndDate(dateRange.endDate.toISOString());
+      }
+    }
+
+    if ("propertyId" in newFilters) {
+      await setPropertyId(newFilters.propertyId?.toString() ?? "");
+    }
   };
 
   return (
     <div className="space-y-6">
       <StatisticFilters
-        filterType={filters.filterType}
-        startDate={filters.startDate}
-        endDate={filters.endDate}
-        selectedMonth={filters.month}
-        selectedYear={filters.year}
-        selectedProperty={filters.propertyId}
+        filterType={filterType as FilterType}
+        startDate={new Date(startDate)}
+        endDate={new Date(endDate)}
+        selectedMonth={Number(month)}
+        selectedYear={Number(year)}
+        selectedProperty={propertyId ? Number(propertyId) : null}
         onFilterChange={handleFilterChange}
       />
 
       <StatCards
-        startDate={filters.startDate}
-        endDate={filters.endDate}
-        propertyId={filters.propertyId}
+        startDate={new Date(startDate)}
+        endDate={new Date(endDate)}
+        propertyId={propertyId ? Number(propertyId) : null}
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
@@ -72,9 +123,9 @@ const StatisticPage = () => {
               Revenue & Transaction Trends
             </h2>
             <RevenueChart
-              startDate={filters.startDate}
-              endDate={filters.endDate}
-              propertyId={filters.propertyId}
+              startDate={new Date(startDate)}
+              endDate={new Date(endDate)}
+              propertyId={propertyId ? Number(propertyId) : null}
             />
           </div>
         </div>
@@ -84,10 +135,10 @@ const StatisticPage = () => {
             <h2 className="mb-4 text-xl font-bold text-gray-800">
               Distribution
             </h2>
-            <PaymentDistributionChart
-              startDate={filters.startDate}
-              endDate={filters.endDate}
-              propertyId={filters.propertyId}
+            <DistributionChart
+              startDate={new Date(startDate)}
+              endDate={new Date(endDate)}
+              propertyId={propertyId ? Number(propertyId) : null}
             />
           </div>
         </div>
@@ -96,9 +147,9 @@ const StatisticPage = () => {
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md">
         <h2 className="mb-4 text-xl font-bold text-gray-800">Top Properties</h2>
         <TopPropertiesTable
-          startDate={filters.startDate}
-          endDate={filters.endDate}
-          propertyId={filters.propertyId}
+          startDate={new Date(startDate)}
+          endDate={new Date(endDate)}
+          propertyId={propertyId ? Number(propertyId) : null}
         />
       </div>
     </div>

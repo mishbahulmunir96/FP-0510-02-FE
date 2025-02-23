@@ -24,6 +24,7 @@ export const RevenueChart = ({
     endDate,
     propertyId,
   });
+  console.log("tx report data", data);
 
   const series = [
     {
