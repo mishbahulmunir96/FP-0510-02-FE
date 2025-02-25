@@ -1,13 +1,12 @@
-import LandingPageLayout from "@/components/LandingPageLayout";
-import TransactionDetailPage from "@/features/transactions/TransactionDetailPage";
+import DashboardUserLayout from "@/features/user/dashboard/DashboardUserLayout";
+import TransactionDetailPage from "@/features/user/dashboard/transactions/TransactionDetailPage";
 import UserAuthGuard from "@/hoc/userAuthGuard";
-import React from "react";
 
 const TransactionDetail = ({ params }: { params: { id: string } }) => {
   return (
-    <LandingPageLayout>
+    <DashboardUserLayout>
       <TransactionDetailPage transactionId={Number(params.id)} />
-    </LandingPageLayout>
+    </DashboardUserLayout>
   );
 };
 

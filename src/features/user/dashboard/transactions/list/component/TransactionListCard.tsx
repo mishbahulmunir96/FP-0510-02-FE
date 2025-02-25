@@ -134,7 +134,9 @@ const TransactionListCard = ({ transaction }: TransactionListCardProps) => {
               className="mt-4 w-full rounded-xl bg-blue-600 hover:bg-blue-700"
               asChild
             >
-              <Link href={`/transactions/${transaction.id}`}>View Details</Link>
+              <Link href={`/user/dashboard/transactions/${transaction.id}`}>
+                View Details
+              </Link>
             </Button>
           </div>
         </div>

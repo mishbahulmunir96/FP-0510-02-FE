@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import TransactionFilters from "@/components/TransactionFilter";
-import TransactionListSkeleton from "@/features/transactions/list/component/TransactionListSkeleton";
+import TransactionListSkeleton from "@/features/user/dashboard/transactions/list/component/TransactionListSkeleton";
 import TransactionPagination from "@/components/TransactionPagination";
 import useGetTransactionsByTenant from "@/hooks/api/transaction/useGetTransactionsByTenant";
 import { createParser, useQueryStates } from "nuqs";
