@@ -53,7 +53,7 @@ const useUploadPaymentProof = () => {
         queryKey: ["transactions"],
       });
 
-      router.push(`/transactions/${data.id}`);
+      router.refresh();
     },
     onError: (error) => {
       toast.error(
