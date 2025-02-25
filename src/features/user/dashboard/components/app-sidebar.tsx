@@ -165,65 +165,10 @@ export function AppSidebar() {
 
   const menuItems: ParentMenuItem[] = [
     {
-      title: "Dashboard",
-      url: "/tenant/dashboard",
-      icon: LayoutDashboard,
-      description: "Overview of your activities",
-    },
-    {
-      title: "Properties",
-      icon: Building2,
-      description: "Manage your properties and rooms",
-      submenu: [
-        {
-          title: "Manage Property",
-          url: "/tenant/dashboard/property/management",
-          icon: Home,
-          description: "Add and manage properties",
-        },
-        {
-          title: "Manage Room",
-          url: "/tenant/dashboard/property/room",
-          icon: Bed,
-          description: "Room configurations",
-        },
-        {
-          title: "Manage Category",
-          url: "/tenant/dashboard/property/category",
-          icon: LayoutGrid,
-          description: "Property categories",
-        },
-        {
-          title: "Room Non Availability",
-          url: "/tenant/dashboard/property/room-non-availability",
-          icon: Bed,
-          description: "Set room availability",
-        },
-      ],
-    },
-    {
-      title: "Peak Seasons",
-      url: "/tenant/dashboard/property/peak-season-rate",
-      icon: CalendarDays,
-      description: "Manage seasonal rates",
-    },
-    {
-      title: "My Transactions",
-      url: "/tenant/dashboard/transactions",
+      title: "My Bookings",
+      url: "/user/dashboard/transactions",
       icon: NotebookPen,
-      description: "Manage all transactions",
-    },
-    {
-      title: "Reports",
-      url: "/tenant/reports",
-      icon: FileBarChart,
-      description: "View analytics and reports",
-    },
-    {
-      title: "Settings",
-      url: "/tenant/settings",
-      icon: Settings,
-      description: "Configure your account",
+      description: "Manage your bookings",
     },
   ];
 

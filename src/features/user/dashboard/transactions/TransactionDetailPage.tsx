@@ -33,7 +33,7 @@ const TransactionDetailPage: FC<TransactionDetailPageProps> = ({
   if (!data) return null;
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-8 md:px-6 lg:px-8">
+    <main className="min-h-screen">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">

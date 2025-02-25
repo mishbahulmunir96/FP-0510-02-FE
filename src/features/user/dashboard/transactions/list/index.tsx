@@ -132,8 +132,8 @@ const TransactionListPage = () => {
   const transactions = transactionsResponse?.data ?? [];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-12">
-      <div className="mx-auto max-w-7xl space-y-6 px-4 pt-8 md:px-8">
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-7xl space-y-6">
         <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>

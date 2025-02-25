@@ -7,19 +7,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useGetRoom from "@/hooks/api/room/useGetRoom";
+import useCreateReservation from "@/hooks/api/transaction/useCreateReservation";
+import { useFormik } from "formik";
 import { ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import BankDetail from "./components/BankDetail";
+import { toast } from "react-toastify";
 import InputElementDetail from "./components/InputElementDetail";
 import PropertyRules from "./components/PropertyRules";
 import ReservationCard from "./components/ReservationCard";
-import Link from "next/link";
-import { useFormik } from "formik";
 import { PaymentSchema } from "./components/SchemaPayment";
-import { toast } from "react-toastify";
-import useCreateReservation from "@/hooks/api/transaction/useCreateReservation";
+import BankDetail from "./components/BankDetail";
 
 const TransactionPage = () => {
   const searchParams = useSearchParams();
@@ -181,7 +180,7 @@ const TransactionPage = () => {
                   {formik.values.paymentMethod === "manual" && (
                     <div className="mt-6">
                       <h3 className="mb-4 text-lg font-medium text-gray-900">
-                        Bank Account Details
+                        Please make payment to this Bank Account.
                       </h3>
                       <BankDetail />
                     </div>
