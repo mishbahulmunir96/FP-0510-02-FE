@@ -24,7 +24,7 @@ const useCreateReservation = () => {
       if (data.payment.paymentMethode === "OTOMATIS") {
         window.location.href = data.payment.invoiceUrl;
       } else {
-        router.push(`/transactions/${data.payment.id}`);
+        router.push(`/user/dashboard/transactions/${data.payment.id}`);
       }
     },
     onError: (error: any) => {

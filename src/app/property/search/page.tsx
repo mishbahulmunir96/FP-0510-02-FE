@@ -1,3 +1,4 @@
+
 import LandingPageLayout from "@/components/LandingPageLayout";
 import SearchPropertiesPage from "@/features/search";
 import { divIcon } from "leaflet";
