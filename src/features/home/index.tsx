@@ -1,23 +1,13 @@
-"use client";
-import BestDeals from "@/components/BestDeals";
-import { DatePickerWithRange } from "@/components/DateRangePicker";
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useFormik } from "formik";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-import { useFormik } from "formik";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { DatePickerWithRange } from "@/components/DateRangePicker";
+import Jumbotron from "./components/Jumbotron";
 import PropertyList from "../property/index";
 import { FilterSchema } from "./schemas/FilterSchema";
-
-import Jumbotron from "./components/Jumbotron";
 import { useGetPropertiesByQuery } from "@/hooks/api/search-property/useGetPropertiesByQuery";
-
-interface SearchPropertyOption {
-  label: string;
-  value: string;
-}
 
 const HomePage = () => {
   const router = useRouter();
@@ -75,54 +65,90 @@ const HomePage = () => {
   };
 
   return (
-    <main>
+    <main className="min-h-screen bg-gradient-to-b from-white to-[#CDF5FD]">
       <Jumbotron />
-      <div className="mx-auto mt-20 grid max-w-7xl items-center gap-2 rounded-xl border-2 bg-slate-100 p-2 md:grid-cols-3">
-        <div className="rounded-xl bg-slate-100 p-1">
-          <p className="mb-1 text-center font-semibold text-[#294791]">
-            Property
-          </p>
-          <Input
-            name="title"
-            type="text"
-            placeholder="Search Property Name"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {!!formik.touched.title && !!formik.errors.title ? (
-            <p className="text-xs text-red-500">{formik.errors.title}</p>
-          ) : null}
+
+      {/* Search Section */}
+      <div className="mx-auto mt-20 max-w-7xl">
+        <div className="grid items-center gap-2 rounded-xl border-2 border-[#89CFF3] bg-white p-2 shadow-lg transition-all duration-300 hover:shadow-xl md:grid-cols-3">
+          {/* Property Search */}
+          <div className="rounded-xl p-1">
+            <p className="mb-1 text-center font-semibold text-[#00A9FF]">
+              Property
+            </p>
+            <Input
+              name="title"
+              type="text"
+              placeholder="Search Property Name"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="border-[#89CFF3] transition-all duration-200 placeholder:text-gray-400 focus:border-[#00A9FF] focus:ring-2 focus:ring-[#A0E9FF]"
+            />
+            {!!formik.touched.title && !!formik.errors.title && (
+              <p className="text-xs text-red-500">{formik.errors.title}</p>
+            )}
+          </div>
+
+          {/* Date Range Picker */}
+          <DatePickerWithRange setFieldValue={formik.setFieldValue} />
+
+          {/* Guest Count */}
+          <div className="rounded-xl p-1">
+            <p className="mb-1 text-center font-semibold text-[#00A9FF]">Who</p>
+            <Input
+              name="guest"
+              type="number"
+              placeholder="Number of guests"
+              value={formik.values.guest}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="border-[#89CFF3] transition-all duration-200 placeholder:text-gray-400 focus:border-[#00A9FF] focus:ring-2 focus:ring-[#A0E9FF]"
+            />
+            {!!formik.touched.guest && !!formik.errors.guest && (
+              <p className="text-xs text-red-500">{formik.errors.guest}</p>
+            )}
+          </div>
         </div>
-        <DatePickerWithRange setFieldValue={formik.setFieldValue} />
-        <div className="rounded-xl bg-slate-100 p-1">
-          <p className="mb-1 text-center font-semibold text-[#294791]">Who</p>
-          <Input
-            name="guest"
-            type="number"
-            placeholder="guest"
-            value={formik.values.guest}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {!!formik.touched.guest && !!formik.errors.guest ? (
-            <p className="text-xs text-red-500">{formik.errors.guest}</p>
-          ) : null}
+
+        {/* Search Button */}
+        <div className="container mx-auto mt-3 max-w-7xl text-center">
+          <Button
+            className="w-full bg-[#00A9FF] text-white transition-all duration-300 hover:bg-[#0098e5] disabled:bg-[#89CFF3]"
+            disabled={pendingSearch}
+            onClick={() => formik.handleSubmit()}
+          >
+            {pendingSearch ? (
+              <span className="flex items-center justify-center">
+                <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                Searching...
+              </span>
+            ) : (
+              "Search"
+            )}
+          </Button>
         </div>
       </div>
-      <div className="container mx-auto mt-3 max-w-7xl text-center">
-        <Button
-          className="w-full"
-          disabled={pendingSearch}
-          onClick={() => formik.handleSubmit()}
-        >
-          {pendingSearch ? "Loading..." : "Search"}
-        </Button>
-      </div>
-      {/* Property Listings Section */}
+
+      {/* Properties Section */}
       <div className="mx-auto px-4 py-16">
         <div className="mb-12 text-center">
-          <h2 className="mb-2 text-3xl font-bold text-gray-900">
+          <h2 className="mb-2 text-3xl font-bold text-[#00A9FF]">
             Discover Amazing Properties
           </h2>
           <p className="mx-auto max-w-2xl text-gray-600">
@@ -133,9 +159,6 @@ const HomePage = () => {
 
         <PropertyList />
       </div>
-      {/* <div className="mt-20 pb-20">
-        <BestDeals />
-      </div> */}
     </main>
   );
 };
