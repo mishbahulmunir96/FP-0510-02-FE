@@ -108,7 +108,7 @@ export default function PropertyCatalogPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-sky-50 to-sky-100">
+    <div className="flex min-h-screen flex-col">
       <PropertyNavigation
         onLocation={handleLocation}
         onCategory={handleCategory}

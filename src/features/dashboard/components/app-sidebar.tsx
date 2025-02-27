@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   LayoutDashboard,
@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   Menu,
   X,
+  NotebookPen,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -57,12 +58,12 @@ export function AppSidebar() {
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
 
@@ -77,33 +78,39 @@ export function AppSidebar() {
             onClick={() => toggleSubmenu(item.title)}
             className={cn(
               "group w-full rounded-lg transition-all duration-200",
-              isOpen 
-                ? "bg-sky-50" 
-                : "hover:bg-gray-50"
+              isOpen ? "bg-sky-50" : "hover:bg-gray-50",
             )}
           >
             <div className="flex items-center p-2">
-              <div className={cn(
-                "mr-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
-                isOpen 
-                  ? "bg-sky-100 text-sky-600" 
-                  : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900"
-              )}>
+              <div
+                className={cn(
+                  "mr-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
+                  isOpen
+                    ? "bg-sky-100 text-sky-600"
+                    : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900",
+                )}
+              >
                 <item.icon className="h-5 w-5" />
               </div>
               <div className="flex-1">
-                <p className={cn(
-                  "text-sm font-medium",
-                  isOpen ? "text-sky-600" : "text-gray-700 group-hover:text-gray-900"
-                )}>
+                <p
+                  className={cn(
+                    "text-sm font-medium",
+                    isOpen
+                      ? "text-sky-600"
+                      : "text-gray-700 group-hover:text-gray-900",
+                  )}
+                >
                   {item.title}
                 </p>
                 <p className="text-xs text-gray-500">{item.description}</p>
               </div>
-              <ChevronDown className={cn(
-                "h-5 w-5 transform transition-all duration-200",
-                isOpen ? "rotate-180 text-sky-600" : "text-gray-400"
-              )} />
+              <ChevronDown
+                className={cn(
+                  "h-5 w-5 transform transition-all duration-200",
+                  isOpen ? "rotate-180 text-sky-600" : "text-gray-400",
+                )}
+              />
             </div>
           </button>
           {isOpen && (
@@ -119,29 +126,33 @@ export function AppSidebar() {
 
     return (
       <Link
-        href={item.url || ''}
+        href={item.url || ""}
         className={cn(
           "group flex items-center rounded-lg p-2 transition-all duration-200",
-          isActive 
-            ? "bg-sky-50" 
-            : "hover:bg-gray-50",
-          isSubmenuItem && "pl-2"
+          isActive ? "bg-sky-50" : "hover:bg-gray-50",
+          isSubmenuItem && "pl-2",
         )}
       >
-        <div className={cn(
-          "mr-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
-          isActive 
-            ? "bg-sky-100 text-sky-600" 
-            : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900",
-          isSubmenuItem && "h-8 w-8"
-        )}>
+        <div
+          className={cn(
+            "mr-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
+            isActive
+              ? "bg-sky-100 text-sky-600"
+              : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900",
+            isSubmenuItem && "h-8 w-8",
+          )}
+        >
           <item.icon className={cn("h-5 w-5", isSubmenuItem && "h-4 w-4")} />
         </div>
         <div className="flex-1">
-          <p className={cn(
-            "text-sm font-medium",
-            isActive ? "text-sky-600" : "text-gray-700 group-hover:text-gray-900"
-          )}>
+          <p
+            className={cn(
+              "text-sm font-medium",
+              isActive
+                ? "text-sky-600"
+                : "text-gray-700 group-hover:text-gray-900",
+            )}
+          >
             {item.title}
           </p>
           {!isSubmenuItem && (
@@ -197,6 +208,12 @@ export function AppSidebar() {
       description: "Manage seasonal rates",
     },
     {
+      title: "My Transactions",
+      url: "/tenant/dashboard/transactions",
+      icon: NotebookPen,
+      description: "Manage all transactions",
+    },
+    {
       title: "Reports",
       url: "/tenant/reports",
       icon: FileBarChart,
@@ -224,7 +241,7 @@ export function AppSidebar() {
       </button>
 
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-gray-800/50 backdrop-blur-sm lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -233,12 +250,12 @@ export function AppSidebar() {
       <aside
         className={cn(
           "fixed left-0 top-0 z-40 h-screen w-72 transform border-r bg-white transition-transform duration-300 ease-in-out lg:translate-x-0",
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex h-16 items-center border-b px-6">
-          <Link 
-            href="/tenant/dashboard" 
+          <Link
+            href="/tenant/dashboard"
             className="flex items-center gap-3 transition-transform hover:scale-[0.98]"
           >
             <Image
