@@ -1,38 +1,38 @@
-import { UserReport } from "@/types/report";
+import { SalesReport } from "@/types/report";
 import useAxios from "../useAxios";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 
-interface UserReportParams {
+interface SalesReportParams {
   startDate: Date;
   endDate: Date;
-  limit?: number;
+  propertyId?: number | null;
 }
 
 interface ApiResponse {
   status: string;
-  data: UserReport;
+  data: SalesReport;
   metadata: {
     filterType: string;
     startDate: string;
     endDate: string;
-    limit?: number;
+    propertyId?: number;
   };
 }
 
-const useUserReport = (params: UserReportParams) => {
+const useSalesReport = (params: SalesReportParams) => {
   const { axiosInstance } = useAxios();
 
-  return useQuery<UserReport>({
-    queryKey: ["userReport", params],
+  return useQuery<SalesReport>({
+    queryKey: ["salesReport", params],
     queryFn: async () => {
       const response: AxiosResponse<ApiResponse> = await axiosInstance.get(
-        "/statistics/user",
+        "/statistics/report",
         {
           params: {
             startDate: params.startDate.toISOString(),
             endDate: params.endDate.toISOString(),
-            ...(params.limit && { limit: params.limit }),
+            propertyId: params.propertyId || undefined,
           },
         },
       );
@@ -42,4 +42,4 @@ const useUserReport = (params: UserReportParams) => {
   });
 };
 
-export default useUserReport;
+export default useSalesReport;

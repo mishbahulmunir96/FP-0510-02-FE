@@ -1,0 +1,146 @@
+.fc .fc-daygrid-day {
+  height: auto !important;
+}
+
+/* Container untuk baris kalender */
+.fc .fc-daygrid-body {
+  width: 100% !important;
+}
+
+/* Container untuk tabel kalender */
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+  min-height: unset !important;
+}
+
+/* Frame untuk setiap hari */
+.fc .fc-daygrid-day-frame {
+  min-height: 130px; /* Ditambah untuk menampung info lebih banyak */
+  height: 100%;
+  padding: 4px;
+}
+
+/* Style untuk cell kalender */
+.day-cell-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.day-cell {
+  flex: 1;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 4px;
+}
+
+.day-cell:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nomor tanggal */
+.day-number {
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+/* Styling untuk informasi kamar */
+.room-info {
+  text-align: center;
+  margin-top: 4px;
+  width: 100%;
+  line-height: 1.3;
+}
+
+/* Style untuk peak rate */
+.peak-indicator {
+  margin-top: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #f97316;
+}
+
+/* Responsivitas untuk layar yang lebih kecil */
+@media (max-width: 768px) {
+  .fc .fc-daygrid-day-frame {
+    min-height: 100px;
+  }
+
+  .day-cell {
+    padding: 4px 2px;
+  }
+
+  .day-number {
+    font-size: 14px;
+  }
+
+  .room-info {
+    font-size: 0.65rem;
+  }
+}
+
+/* Meningkatkan keterbacaan tabel kalender */
+.fc-theme-standard th {
+  padding: 10px;
+  background-color: #f9fafb;
+}
+
+.fc-theme-standard td {
+  border-color: #e5e7eb;
+}
+
+/* Mode gelap */
+.dark .fc-theme-standard th {
+  background-color: #1f2937;
+}
+
+.dark .fc-theme-standard td {
+  border-color: #374151;
+}
+
+/* Pastikan kalender mengambil lebar penuh */
+.custom-calendar .fc {
+  width: 100%;
+}
+
+/* Memastikan header kalender terlihat baik */
+.fc .fc-toolbar {
+  margin-bottom: 1rem;
+}
+
+/* Mengurangi padding pada hari-hari di luar bulan */
+.fc .fc-day-other .fc-daygrid-day-frame {
+  opacity: 0.7;
+}
+
+/* Menambahkan shadow pada today */
+.fc .fc-day-today .day-cell {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.price-indicator {
+  margin-top: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #2563eb;
+  background-color: rgba(219, 234, 254, 0.7);
+  border-radius: 4px;
+  padding: 1px 3px;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .price-indicator {
+    font-size: 0.65rem;
+  }
+}

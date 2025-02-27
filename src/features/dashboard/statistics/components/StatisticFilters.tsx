@@ -9,11 +9,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
+import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import DateRangePicker from "./DateRangePicker";
 import { getDateRangeParams } from "@/utils/date.utils";
 import { FilterType } from "@/types/report";
 
+interface Property {
+  propertyId: number;
+  propertyName: string;
+}
 interface StatisticFiltersProps {
   filterType: FilterType;
   startDate: Date;
@@ -58,14 +62,23 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
   selectedProperty,
   onFilterChange,
 }) => {
-  const { data: properties } = usePropertyReport({
+  // Gunakan useSalesReport untuk mendapatkan daftar properti
+  const { data: salesReport } = useSalesReport({
     startDate,
     endDate,
   });
 
+  // Ekstrak properti dari salesReport
+  const properties = salesReport?.propertyMetrics || [];
+
   const handleFilterTypeChange = (
     type: "date-range" | "month-year" | "year-only",
   ) => {
+    onFilterChange({
+      filterType: type,
+      propertyId: selectedProperty,
+    });
+
     const dateRange = getDateRangeParams(type, {
       month: selectedMonth,
       year: selectedYear,
@@ -73,12 +86,10 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
 
     if (dateRange.startDate && dateRange.endDate) {
       onFilterChange({
-        filterType: type,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
         month: selectedMonth,
         year: selectedYear,
-        propertyId: selectedProperty,
       });
     }
   };
@@ -260,15 +271,16 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
           <SelectTrigger className="w-full bg-white sm:w-[200px]">
             <SelectValue>
               {selectedProperty
-                ? properties?.find((p) => p.propertyId === selectedProperty)
-                    ?.propertyName
+                ? properties?.find(
+                    (p: Property) => p.propertyId === selectedProperty,
+                  )?.propertyName
                 : "All Properties"}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectItem value="all">All Properties</SelectItem>
-              {properties?.map((property) => (
+              {properties?.map((property: Property) => (
                 <SelectItem
                   key={property.propertyId}
                   value={property.propertyId.toString()}

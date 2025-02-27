@@ -1,6 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
-import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
+import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 
@@ -19,24 +19,26 @@ export const RevenueChart = ({
   endDate,
   propertyId,
 }: RevenueChartProps) => {
-  const { data } = useTransactionReport({
+  const { data: salesReport } = useSalesReport({
     startDate,
     endDate,
     propertyId,
   });
-  console.log("tx report data", data);
+
+  // Gunakan data dari salesReport.transactionMetrics
+  const peakBookingPeriods =
+    salesReport?.transactionMetrics.peakBookingPeriods || [];
 
   const series = [
     {
       name: "Pendapatan",
       type: "area",
-      data: data?.peakBookingPeriods.map((period) => period.totalRevenue) || [],
+      data: peakBookingPeriods.map((period) => period.totalRevenue) || [],
     },
     {
       name: "Transaksi",
       type: "area",
-      data:
-        data?.peakBookingPeriods.map((period) => period.totalBookings) || [],
+      data: peakBookingPeriods.map((period) => period.totalBookings) || [],
     },
   ];
 
@@ -86,7 +88,7 @@ export const RevenueChart = ({
     },
     xaxis: {
       categories:
-        data?.peakBookingPeriods.map((period) => {
+        peakBookingPeriods.map((period) => {
           const diffInDays = Math.ceil(
             (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
           );
@@ -217,7 +219,7 @@ export const RevenueChart = ({
           width="100%"
         />
 
-        {data && data.peakBookingPeriods.length === 0 && (
+        {peakBookingPeriods.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/80">
             <p className="text-gray-500">Tidak ada data untuk ditampilkan</p>
           </div>

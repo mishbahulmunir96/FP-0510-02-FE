@@ -1,5 +1,4 @@
-import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
-import useTransactionReport from "@/hooks/api/statistic/useGetTransactionsReport";
+import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { Building2, DollarSign, Percent, ShoppingCart } from "lucide-react";
 import CardDataStats from "./CardDataStats";
 import { formatCurrency } from "@/lib/utils";
@@ -11,21 +10,12 @@ interface StatCardsProps {
 }
 
 const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
-  const { data: propertyData, isLoading: isPropertyLoading } =
-    usePropertyReport({
-      startDate,
-      endDate,
-      propertyId,
-    });
-  console.log("property data", propertyData);
-  const { data: currentData, isLoading: isCurrentLoading } =
-    useTransactionReport({
-      startDate,
-      endDate,
-      propertyId,
-    });
-
-  console.log("tx data report 2", currentData);
+  // Gunakan useSalesReport untuk periode saat ini
+  const { data: salesReport, isLoading: isCurrentLoading } = useSalesReport({
+    startDate,
+    endDate,
+    propertyId,
+  });
 
   const previousStartDate = new Date(startDate);
   const previousEndDate = new Date(endDate);
@@ -33,17 +23,19 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
   previousStartDate.setTime(previousStartDate.getTime() - diff);
   previousEndDate.setTime(previousEndDate.getTime() - diff);
 
-  const { data: previousData, isLoading: isPreviousLoading } =
-    useTransactionReport({
+  // Gunakan useSalesReport untuk periode sebelumnya (untuk perbandingan)
+  const { data: previousSalesReport, isLoading: isPreviousLoading } =
+    useSalesReport({
       startDate: previousStartDate,
       endDate: previousEndDate,
       propertyId,
     });
 
-  const isLoading = isPropertyLoading || isCurrentLoading || isPreviousLoading;
+  const isLoading = isCurrentLoading || isPreviousLoading;
 
-  const currentRevenue = currentData?.totalRevenue || 0;
-  const previousRevenue = previousData?.totalRevenue || 0;
+  const currentRevenue = salesReport?.transactionMetrics.totalRevenue || 0;
+  const previousRevenue =
+    previousSalesReport?.transactionMetrics.totalRevenue || 0;
 
   const revenueChange = (() => {
     if (isLoading) return null;
@@ -58,15 +50,22 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
     );
   })();
 
-  const totalTransactions = currentData?.totalTransactions || 0;
-  const averageBookingDuration = currentData?.averageBookingDuration || 0;
-  const totalProperties = propertyData?.length || 0;
+  const totalTransactions =
+    salesReport?.transactionMetrics.totalTransactions || 0;
+  const averageBookingDuration =
+    salesReport?.transactionMetrics.averageBookingDuration || 0;
+  const totalProperties = salesReport?.propertyMetrics.length || 0;
   const totalRooms =
-    propertyData?.reduce((total, property) => total + property.totalRooms, 0) ||
-    0;
-  const averageOccupancy = propertyData
-    ? propertyData.reduce((acc, curr) => acc + curr.occupancyRate, 0) /
-      propertyData.length
+    salesReport?.propertyMetrics.reduce(
+      (total, property) => total + property.totalRooms,
+      0,
+    ) || 0;
+
+  const averageOccupancy = salesReport?.propertyMetrics.length
+    ? salesReport.propertyMetrics.reduce(
+        (acc, curr) => acc + curr.occupancyRate,
+        0,
+      ) / salesReport.propertyMetrics.length
     : 0;
 
   if (isLoading) {
