@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { AppSidebar } from "./components/app-sidebar";
 import NavbarDashboard from "./components/NavbarDashboard";
 import { useState, useEffect } from "react";
@@ -10,7 +10,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isMobileView, setIsMobileView] = useState(false);
-
   useEffect(() => {
     const checkMobileView = () => {
       setIsMobileView(window.innerWidth < 1024); // 1024px is the 'lg' breakpoint
@@ -20,10 +19,10 @@ export default function DashboardLayout({
     checkMobileView();
 
     // Add resize listener
-    window.addEventListener('resize', checkMobileView);
+    window.addEventListener("resize", checkMobileView);
 
     // Cleanup
-    return () => window.removeEventListener('resize', checkMobileView);
+    return () => window.removeEventListener("resize", checkMobileView);
   }, []);
 
   return (
@@ -32,7 +31,7 @@ export default function DashboardLayout({
       <div
         className={cn(
           "transition-all duration-300 ease-in-out",
-          isMobileView ? "ml-0" : "ml-72" // Match sidebar width (w-72)
+          isMobileView ? "ml-0" : "ml-72", // Match sidebar width (w-72)
         )}
       >
         <NavbarDashboard />

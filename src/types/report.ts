@@ -103,3 +103,5 @@ export interface UserReport {
   averageSpendingPerUser: number;
   ratingDistribution: RatingDistribution[];
 }
+
+export type FilterType = "date-range" | "month-year" | "year-only";

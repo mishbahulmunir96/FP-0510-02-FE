@@ -1,5 +1,6 @@
 import LandingPageLayout from "@/components/LandingPageLayout";
 import TransactionPage from "@/features/transactions";
+import UserAuthGuard from "@/hoc/userAuthGuard";
 
 const Transaction = () => {
   return (
@@ -9,4 +10,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default UserAuthGuard(Transaction);
