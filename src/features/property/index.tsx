@@ -126,7 +126,6 @@ export default function PropertyListPage() {
   }
 
   return (
-
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {isLoading ? (
