@@ -17,6 +17,7 @@ export interface PageableResponse<T> {
     ): import("react").ReactNode;
     data: T[];
     meta: {
+      lastPage: number;
       total: number;
       totalCount: number;
       page: number;

@@ -34,7 +34,7 @@ export function DatePickerWithRange({
 
   return (
     <div className="rounded-xl bg-slate-100 p-1">
-      <p className="mb-1 text-center font-semibold text-[#294791]">Duration</p>
+      <p className="mb-1 text-center font-semibold text-[#00A9FF]">Duration</p>
       <div className={cn("grid gap-2", className)}>
         <Popover>
           <PopoverTrigger asChild>
