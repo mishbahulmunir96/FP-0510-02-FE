@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import useAxios from "../useAxios";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 const useCancelTransactionByTenant = () => {
   const router = useRouter();
@@ -30,8 +31,12 @@ const useCancelTransactionByTenant = () => {
       });
       router.refresh();
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to cancel transaction");
+    onError: (error: AxiosError<any>) => {
+      toast.error(
+        error.message ||
+          error.response?.data?.message ||
+          "Failed to cancel transaction",
+      );
     },
   });
 };

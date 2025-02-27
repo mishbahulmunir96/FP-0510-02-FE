@@ -1,7 +1,19 @@
-import CalendarReportPage from "@/features/dashboard/calendar-report";
+import CalendarReportPage from "@/features/dashboard/calendar-report/index.tsx";
+import DashboardLayout from "@/features/dashboard/dashboardLayout";
+import TenantAuthGuard from "@/hoc/tenantAuthGuard";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "RateHaven Property | Calendar Report",
+  description:
+    "This is Next.js Calender page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+};
 const CalendarReport = () => {
-  return <CalendarReportPage />;
+  return (
+    <DashboardLayout>
+      <CalendarReportPage />
+    </DashboardLayout>
+  );
 };
 
-export default CalendarReport;
+export default TenantAuthGuard(CalendarReport);

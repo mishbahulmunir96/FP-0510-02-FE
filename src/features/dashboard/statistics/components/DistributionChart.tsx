@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
+import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { formatCurrency } from "@/lib/utils";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
@@ -24,15 +24,18 @@ export const DistributionChart = ({
 }: DistributionChartProps) => {
   const [dataType, setDataType] = useState<DataType>("transactions");
 
-  const { data: propertyData } = usePropertyReport({
+  const { data: salesReport } = useSalesReport({
     startDate,
     endDate,
     propertyId,
   });
 
+  // Extract property metrics from sales report
+  const propertyMetrics = salesReport?.propertyMetrics || [];
+
   const chartData = propertyId
-    ? propertyData
-        ?.find((p) => p.propertyId === propertyId)
+    ? propertyMetrics
+        .find((p) => p.propertyId === propertyId)
         ?.roomDetails.map((room) => ({
           name: room.roomType,
           value:
@@ -40,7 +43,7 @@ export const DistributionChart = ({
               ? room.totalBookings
               : room.totalRevenue,
         })) || []
-    : propertyData?.map((property) => ({
+    : propertyMetrics.map((property) => ({
         name: property.propertyName,
         value:
           dataType === "transactions"

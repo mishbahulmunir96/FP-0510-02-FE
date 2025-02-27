@@ -1,38 +1,82 @@
-import { CalendarReportResponse, RoomType } from "@/types/calendar-report";
-import useAxios from "../useAxios";
+"use client";
 import { useQuery } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
+import useAxios from "../useAxios";
 
-interface CalendarReportParams {
+/**
+ * Interface for room calendar data within a specific day
+ */
+export interface RoomCalendarData {
+  roomId: number;
+  roomName: string;
+  roomType: "Deluxe" | "Suite" | "Standard";
+  totalRooms: number;
+  bookedRooms: number;
+  availableRooms: number;
+  occupancyRate: number;
+  isNonAvailable: boolean;
+  isPeakSeason: boolean;
+  price: number;
+}
+
+/**
+ * Interface for a day's calendar data
+ */
+export interface DayCalendarData {
+  date: string;
+  totalRooms: number;
+  totalBookedRooms: number;
+  totalAvailableRooms: number;
+  occupancyRate: number;
+  rooms: RoomCalendarData[];
+}
+
+/**
+ * Interface for the full property calendar report
+ */
+export interface PropertyCalendarReport {
+  propertyId: number;
+  propertyName: string;
+  calendarData: DayCalendarData[];
+}
+
+/**
+ * API response format
+ */
+export interface PropertyCalendarReportResponse {
+  status: string;
+  data: PropertyCalendarReport;
+}
+
+/**
+ * Parameters for the calendar report API request
+ */
+export interface PropertyCalendarReportParams {
   propertyId: number;
   startDate: Date;
   endDate: Date;
-  roomType?: RoomType;
+  roomId?: number;
 }
 
-interface ApiResponse {
-  status: string;
-  data: CalendarReportResponse;
-}
-
-const useCalendarReport = (params: CalendarReportParams) => {
+/**
+ * Hook for fetching property calendar report data
+ */
+const useCalendarReport = (params: PropertyCalendarReportParams) => {
   const { axiosInstance } = useAxios();
 
-  return useQuery<CalendarReportResponse>({
-    queryKey: ["calendarReport", params],
+  return useQuery<PropertyCalendarReport>({
+    queryKey: ["propertyCalendarReport", params],
     queryFn: async () => {
-      const response: AxiosResponse<ApiResponse> = await axiosInstance.get(
+      const response = await axiosInstance.get<PropertyCalendarReportResponse>(
         "/statistics/calendar-report",
         {
           params: {
             propertyId: params.propertyId,
-            startDate: params.startDate.toISOString(),
-            endDate: params.endDate.toISOString(),
-            ...(params.roomType && { roomType: params.roomType }),
+            startDate: params.startDate.toISOString().split("T")[0],
+            endDate: params.endDate.toISOString().split("T")[0],
+            ...(params.roomId && { roomId: params.roomId }),
           },
         },
       );
-      console.log("Api response:", response);
       return response.data.data;
     },
     enabled: !!params.propertyId && !!params.startDate && !!params.endDate,

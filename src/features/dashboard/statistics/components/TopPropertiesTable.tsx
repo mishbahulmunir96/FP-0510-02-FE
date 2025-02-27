@@ -1,5 +1,5 @@
 "use client";
-import usePropertyReport from "@/hooks/api/statistic/useGetPropertyReport";
+import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { formatCurrency } from "@/lib/utils";
 
 interface TopPropertiesTableProps {
@@ -13,14 +13,15 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
   endDate,
   propertyId,
 }) => {
-  const { data: properties } = usePropertyReport({
+  const { data: salesReport } = useSalesReport({
     startDate,
     endDate,
     propertyId,
   });
 
-  const sortedProperties = properties
-    ?.sort((a, b) => b.totalRevenue - a.totalRevenue)
+  // Extract property metrics and sort by revenue
+  const sortedProperties = salesReport?.propertyMetrics
+    .sort((a, b) => b.totalRevenue - a.totalRevenue)
     .slice(0, 5);
 
   const renderRatingStars = (rating: number) => {
@@ -49,16 +50,16 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Property Name
+                Nama Properti
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Revenue
+                Pendapatan
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Transactions
+                Transaksi
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Occupancy
+                Hunian
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
                 Rating
@@ -66,7 +67,7 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {sortedProperties?.map((property, index) => (
+            {sortedProperties?.map((property) => (
               <tr
                 key={property.propertyId}
                 className="transition-colors hover:bg-gray-50"
@@ -116,7 +117,7 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
             {(!sortedProperties || sortedProperties.length === 0) && (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                  No properties data available
+                  Tidak ada data properti tersedia
                 </td>
               </tr>
             )}

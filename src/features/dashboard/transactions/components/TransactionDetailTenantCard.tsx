@@ -280,27 +280,74 @@ const TransactionDetailTenantCard = ({
 
         {data.status === "WAITING_FOR_PAYMENT_CONFIRMATION" && (
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-            <Button
-              variant="destructive"
-              onClick={() => handleApproval(false)}
-              disabled={approveTransaction.isPending}
-              className="w-full sm:w-auto"
-            >
-              <X className="mr-2 h-4 w-4" />
-              {approveTransaction.isPending
-                ? "Processing..."
-                : "Reject Payment"}
-            </Button>
-            <Button
-              onClick={() => handleApproval(true)}
-              disabled={approveTransaction.isPending}
-              className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto"
-            >
-              <Check className="mr-2 h-4 w-4" />
-              {approveTransaction.isPending
-                ? "Processing..."
-                : "Approve Payment"}
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  disabled={approveTransaction.isPending}
+                  className="w-full sm:w-auto"
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  {approveTransaction.isPending
+                    ? "Processing..."
+                    : "Reject Payment"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Rejection</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to reject this payment? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleApproval(false)}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {approveTransaction.isPending
+                      ? "Processing..."
+                      : "Yes, reject payment"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto"
+                  disabled={approveTransaction.isPending}
+                >
+                  <Check className="mr-2 h-4 w-4" />
+                  {approveTransaction.isPending
+                    ? "Processing..."
+                    : "Approve Payment"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Approval</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to approve this payment? This will
+                    confirm the transaction.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleApproval(true)}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {approveTransaction.isPending
+                      ? "Processing..."
+                      : "Yes, approve payment"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
 
