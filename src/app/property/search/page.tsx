@@ -1,11 +1,9 @@
-<<<<<<< HEAD
+
 import SearchPropertiesPage from "@/features/search";
 import React from "react";
 
 const SearchProperty = () => {
   return <SearchPropertiesPage />;
-=======
-
 import LandingPageLayout from "@/components/LandingPageLayout";
 import SearchPropertiesPage from "@/features/search";
 import { divIcon } from "leaflet";
