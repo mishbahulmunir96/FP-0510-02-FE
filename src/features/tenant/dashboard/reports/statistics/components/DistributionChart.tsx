@@ -30,7 +30,6 @@ export const DistributionChart = ({
     propertyId,
   });
 
-  // Extract property metrics from sales report
   const propertyMetrics = salesReport?.propertyMetrics || [];
 
   const chartData = propertyId
@@ -92,7 +91,6 @@ export const DistributionChart = ({
                   ? "Total Transaksi"
                   : "Total Pendapatan",
               formatter: function (w) {
-                // Fix: Pastikan penjumlahan menggunakan number
                 const total = w.globals.seriesTotals.reduce(
                   (a: number, b: number) => {
                     return a + b;

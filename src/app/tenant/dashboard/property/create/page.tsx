@@ -1,5 +1,5 @@
-import DashboardLayout from "@/features/dashboard/dashboardLayout";
-import CreatePropertyPage from "@/features/dashboard/property/create";
+import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
+import CreatePropertyPage from "@/features/tenant/dashboard/property/create";
 
 const CreateProperty = () => {
   return (

@@ -1,20 +1,15 @@
-
-import DashboardLayout from '@/features/dashboard/dashboardLayout';
-import PeakSeasonRatePage from '@/features/dashboard/property/peak-season-rate';
-import React from 'react';
+import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
+import PeakSeasonRatePage from "@/features/tenant/dashboard/property/peak-season-rate";
+import React from "react";
 
 const PeakSeasonRate = ({ params }: { params: { id: number } }) => {
-  return(
-
+  return (
     <div>
-<DashboardLayout>
-
+      <DashboardLayout>
         <PeakSeasonRatePage roomId={params.id} />;
-</DashboardLayout>
+      </DashboardLayout>
     </div>
-  
-
-  )
+  );
 };
 
 export default PeakSeasonRate;
