@@ -14,7 +14,7 @@ import useCurrentLocation from "@/hooks/useCurrentLocation";
 import axios from "axios";
 
 const DynamicMapComponent = dynamic(
-  () => import("../../../../components/Map"),
+  () => import("../../../../../components/Map"),
   { ssr: false },
 );
 

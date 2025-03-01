@@ -1,5 +1,5 @@
-import DashboardLayout from "@/features/dashboard/dashboardLayout";
-import StatisticPage from "@/features/dashboard/statistics";
+import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
+import StatisticPage from "@/features/tenant/dashboard/reports/statistics";
 import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 
 const Statistics = () => {

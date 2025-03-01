@@ -16,7 +16,7 @@ import useGetCategory from "@/hooks/api/category/useGetCategory";
 import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
-import { EditPropertyCategory } from "../components/EditPropertyCategory";
+import { EditPropertyCategory } from "./EditPropertyCategory";
 interface PropertyCategoryPageProps {
   propertyCategoryId: number;
 }

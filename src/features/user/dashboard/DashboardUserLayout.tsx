@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { AppSidebar } from "./components/app-sidebar";
-import NavbarDashboard from "@/features/dashboard/components/NavbarDashboard";
+import NavbarDashboard from "@/features/tenant/dashboard/components/NavbarDashboard";
 
 export default function DashboardUserLayout({
   children,

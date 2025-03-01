@@ -215,9 +215,22 @@ export function AppSidebar() {
     },
     {
       title: "Reports",
-      url: "/tenant/reports",
       icon: FileBarChart,
       description: "View analytics and reports",
+      submenu: [
+        {
+          title: "Statistics",
+          url: "/tenant/dashboard/reports/statistics",
+          icon: Home,
+          description: "View your sales reports",
+        },
+        {
+          title: "Calendar Report",
+          url: "/tenant/dashboard/reports/calendar-report",
+          icon: Home,
+          description: "View your sales reports",
+        },
+      ],
     },
     {
       title: "Settings",
