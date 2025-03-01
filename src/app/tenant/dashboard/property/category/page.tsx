@@ -1,6 +1,6 @@
-import DashboardLayout from "@/features/dashboard/dashboardLayout";
-import TenantLayout from "@/features/dashboard/dashboardLayout";
-import CategoryPage from "@/features/dashboard/property/category";
+import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
+import TenantLayout from "@/features/tenant/dashboard/dashboardLayout";
+import CategoryPage from "@/features/tenant/dashboard/property/category";
 
 const PropertyCategory = ({ params }: { params: { id: number } }) => {
   return (

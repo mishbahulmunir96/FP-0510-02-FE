@@ -1,5 +1,5 @@
-import DashboardLayout from "@/features/dashboard/dashboardLayout";
-import PropertyManagementPage from "@/features/dashboard/property/management";
+import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
+import PropertyManagementPage from "@/features/tenant/dashboard/property/management";
 
 const PropertyManagement = () => {
   return (
