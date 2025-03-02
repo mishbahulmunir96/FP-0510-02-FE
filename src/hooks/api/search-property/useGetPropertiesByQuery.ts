@@ -33,3 +33,4 @@ export const useGetPropertiesByQuery = (queries: GetPropertiesByQueries) => {
     },
   });
 };
+//
