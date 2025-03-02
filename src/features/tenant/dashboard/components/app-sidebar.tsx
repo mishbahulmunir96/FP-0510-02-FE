@@ -1,25 +1,27 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
+  Bed,
   Building2,
   CalendarDays,
-  FileBarChart,
-  Settings,
+  CalendarFold,
+  ChartBar,
   ChevronDown,
+  FileBarChart,
   Home,
-  Bed,
+  LayoutDashboard,
   LayoutGrid,
+  LucideIcon,
   Menu,
-  X,
   NotebookPen,
+  Settings,
+  X,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import { LucideIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 // Define interfaces for menu items
 interface BaseMenuItem {
@@ -221,13 +223,13 @@ export function AppSidebar() {
         {
           title: "Statistics",
           url: "/tenant/dashboard/reports/statistics",
-          icon: Home,
+          icon: ChartBar,
           description: "View your sales reports",
         },
         {
           title: "Calendar Report",
           url: "/tenant/dashboard/reports/calendar-report",
-          icon: Home,
+          icon: CalendarFold,
           description: "View your sales reports",
         },
       ],

@@ -2,6 +2,7 @@ import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { Building2, DollarSign, Percent, ShoppingCart } from "lucide-react";
 import CardDataStats from "./CardDataStats";
 import { formatCurrency } from "@/lib/utils";
+import { StatCardsSkeletonList } from "./LoadingSkeleton";
 
 interface StatCardsProps {
   startDate: Date;
@@ -10,7 +11,7 @@ interface StatCardsProps {
 }
 
 const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
-  // Gunakan useSalesReport untuk periode saat ini
+  // Use useSalesReport for the current period
   const { data: salesReport, isLoading: isCurrentLoading } = useSalesReport({
     startDate,
     endDate,
@@ -23,7 +24,7 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
   previousStartDate.setTime(previousStartDate.getTime() - diff);
   previousEndDate.setTime(previousEndDate.getTime() - diff);
 
-  // Gunakan useSalesReport untuk periode sebelumnya (untuk perbandingan)
+  // Use useSalesReport for the previous period (for comparison)
   const { data: previousSalesReport, isLoading: isPreviousLoading } =
     useSalesReport({
       startDate: previousStartDate,
@@ -62,52 +63,21 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
     ) || 0;
 
   const averageOccupancy = salesReport?.propertyMetrics.length
-    ? salesReport.propertyMetrics.reduce(
-        (acc, curr) => acc + curr.occupancyRate,
+    ? Math.max(
         0,
-      ) / salesReport.propertyMetrics.length
+        salesReport.propertyMetrics.reduce(
+          (acc, curr) => acc + Math.max(0, curr.occupancyRate),
+          0,
+        ) / salesReport.propertyMetrics.length,
+      )
     : 0;
 
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
-        <CardDataStats
-          title="Total Revenue"
-          total="Loading..."
-          rate="Calculating..."
-        >
-          <DollarSign className="h-5 w-5" />
-        </CardDataStats>
-
-        <CardDataStats
-          title="Total Transaction"
-          total="Loading..."
-          rate="Calculating..."
-        >
-          <ShoppingCart className="h-5 w-5" />
-        </CardDataStats>
-
-        <CardDataStats
-          title="Total Property"
-          total="Loading..."
-          rate="Calculating..."
-        >
-          <Building2 className="h-5 w-5" />
-        </CardDataStats>
-
-        <CardDataStats
-          title="Occupancy Rate"
-          total="Loading..."
-          rate="Calculating..."
-        >
-          <Percent className="h-5 w-5" />
-        </CardDataStats>
-      </div>
-    );
+    return <StatCardsSkeletonList />;
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-4 md:gap-6">
       <CardDataStats
         title="Total Revenue"
         total={formatCurrency(currentRevenue)}
@@ -120,35 +90,35 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
         }
         levelDown={typeof revenueChange === "number" && revenueChange < 0}
       >
-        <DollarSign className="h-5 w-5" />
+        <DollarSign className="h-6 w-6" />
       </CardDataStats>
 
       <CardDataStats
-        title="Total Transaction"
+        title="Total Transactions"
         total={totalTransactions.toString()}
-        rate={`${averageBookingDuration} hari`}
+        rate={`${averageBookingDuration} days`}
         levelUp
       >
-        <ShoppingCart className="h-5 w-5" />
+        <ShoppingCart className="h-6 w-6" />
       </CardDataStats>
 
       <CardDataStats
-        title="Total Property"
+        title="Total Properties"
         total={totalProperties.toString()}
-        rate={`${totalRooms} kamar`}
+        rate={`${totalRooms} rooms`}
         levelUp
       >
-        <Building2 className="h-5 w-5" />
+        <Building2 className="h-6 w-6" />
       </CardDataStats>
 
       <CardDataStats
         title="Occupancy Rate"
         total={`${averageOccupancy.toFixed(1)}%`}
-        rate="tingkat hunian"
+        rate="occupancy rate"
         levelUp={averageOccupancy > 50}
         levelDown={averageOccupancy <= 50}
       >
-        <Percent className="h-5 w-5" />
+        <Percent className="h-6 w-6" />
       </CardDataStats>
     </div>
   );
