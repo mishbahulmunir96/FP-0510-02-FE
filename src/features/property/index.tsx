@@ -6,70 +6,18 @@ import useGetProperties from "../../hooks/api/property/useGetProperties";
 import useDebounce from "../../hooks/useDebounce";
 import PropertyCard from "../property/components/PropertyCard";
 
-// Keep existing interfaces
-interface PropertyImage {
-  imageUrl?: string;
-  id?: string;
-  propertyId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface PropertyCategory {
-  id?: string;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface Room {
-  id?: string;
-  propertyId?: string;
-  name?: string;
-  description?: string;
-  price: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-type Property = ImportedProperty;
-
-interface ApiResponse {
-  data: {
-    data: Property[];
-    meta?: {
-      total?: number;
-      lastPage?: number;
-      currentPage?: number;
-      perPage?: number;
-      prev?: number | null;
-      next?: number | null;
-    };
-  };
-}
-
-interface GetPropertiesParams {
-  page: number;
-  location?: string;
-  category?: string;
-  startDate?: string;
-  endDate?: string;
-  search?: string;
-  guest?: number;
-}
-
 const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
 };
 
 export default function PropertyListPage() {
-  const [location, setLocation] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [checkIn, setCheckIn] = useState<Date | undefined>(undefined);
-  const [checkOut, setCheckOut] = useState<Date | undefined>(undefined);
-  const [search, setSearch] = useState<string>("");
-  const [guest, setGuest] = useState<number | undefined>(undefined);
-  const [page, setPage] = useState<number>(1);
+  const [location] = useState<string>("");
+  const [category] = useState<string>("");
+  const [checkIn] = useState<Date | undefined>(undefined);
+  const [checkOut] = useState<Date | undefined>(undefined);
+  const [search] = useState<string>("");
+  const [guest] = useState<number | undefined>(undefined);
+  const [page] = useState<number>(1);
 
   const debouncedSearch = useDebounce(search, 500);
   const formattedStartDate = checkIn ? formatDate(checkIn) : "";

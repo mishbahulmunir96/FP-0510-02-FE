@@ -77,7 +77,7 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-4 md:gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-6">
       <CardDataStats
         title="Total Revenue"
         total={formatCurrency(currentRevenue)}
