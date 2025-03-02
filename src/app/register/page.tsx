@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import RegisterPage from "@/features/auth/register";
 import TenantRegistrationComponent from "@/features/auth/register/tenantRegister";
 import { useSearchParams } from "next/navigation";
+import LandingPageLayout from "@/components/LandingPageLayout";
 
 export default function Register() {
   const searchParams = useSearchParams();
@@ -30,32 +31,36 @@ export default function Register() {
   };
 
   return (
-    <div className="relative overflow-hidden">
-      <AnimatePresence mode="wait">
-        {role === "TENANT" ? (
-          <motion.div
-            key="tenant"
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={pageTransition}
-          >
-            <TenantRegistrationComponent />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="user"
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={pageTransition}
-          >
-            <RegisterPage role={"USER"} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div>
+      <LandingPageLayout>
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait">
+            {role === "TENANT" ? (
+              <motion.div
+                key="tenant"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <TenantRegistrationComponent />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="user"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <RegisterPage role={"USER"} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </LandingPageLayout>
     </div>
   );
 }

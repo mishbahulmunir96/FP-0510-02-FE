@@ -13,7 +13,7 @@ interface CreatePropertyPayload {
   slug: string;
   location: string;
   title: string;
-  imageUrl: File | null;
+  imageUrl: File[] | null; // Changed from File | null to File[] | null
   propertyCategoryId: number;
 }
 
@@ -36,10 +36,16 @@ const useCreateProperty = () => {
         "propertyCategoryId",
         String(payload.propertyCategoryId),
       );
-      createPropertyForm.append("imageUrl", payload.imageUrl!);
+
+      // Add each image file with the same key "imageUrl"
+      if (payload.imageUrl && payload.imageUrl.length > 0) {
+        payload.imageUrl.forEach((image) => {
+          createPropertyForm.append("imageUrl", image);
+        });
+      }
 
       const { data } = await axiosInstance.post(
-        "/property/create-property",
+        "/properties",
         createPropertyForm,
       );
       return data;
@@ -47,7 +53,7 @@ const useCreateProperty = () => {
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["property"] });
       toast.success("Create property success");
-      router.push("/tenant/dashboard/");
+      router.push("/tenant/dashboard/property/management");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);
