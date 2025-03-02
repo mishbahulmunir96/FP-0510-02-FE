@@ -9,7 +9,7 @@ const useGetProperty = (slug: string) => {
   return useQuery({
     queryKey: ["property", slug],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<Property>(`/property/${slug}`); // Changed from properties to property
+      const { data } = await axiosInstance.get<Property>(`/properties/${slug}`); // Changed from properties to property
       return data;
     },
   });

@@ -1,7 +1,7 @@
-'use client';
-import Pagination from '@/components/PaginationSection';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+"use client";
+import Pagination from "@/components/PaginationSection";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -10,12 +10,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import useDeleteRoomNonAvailability from '@/hooks/api/room-non-availability/useDeleteRoomNonAvailability';
-import useRoomNonAvailabilities from '@/hooks/api/room-non-availability/useGetRoomNonAvailability';
-import { useSession } from 'next-auth/react';
-import { FC, useState } from 'react';
-import { EditRoomNonAvailabilityButton } from './EditRoomNonAvailability';
+} from "@/components/ui/table";
+import useDeleteRoomNonAvailability from "@/hooks/api/room-non-availability/useDeleteRoomNonAvailability";
+import useRoomNonAvailabilities from "@/hooks/api/room-non-availability/useGetRoomNonAvailability";
+import { useSession } from "next-auth/react";
+import { FC, useState } from "react";
+import { EditRoomNonAvailabilityButton } from "./EditRoomNonAvailability";
 
 interface RoomNonAvailabilityPageProps {
   roomId: number;
@@ -42,25 +42,25 @@ const RoomNonAvailabilityList: FC<RoomNonAvailabilityPageProps> = ({
 
   if (isPending) {
     return (
-      <div className="container max-w-7xl mx-auto">
-        <Skeleton className="relative h-[400px] w-full rounded-2xl overflow-hidden bg-slate-200" />
+      <div className="container mx-auto max-w-7xl">
+        <Skeleton className="relative h-[400px] w-full overflow-hidden rounded-2xl bg-slate-200" />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+      <h5 className="container mx-auto mb-3 max-w-7xl text-center font-semibold md:text-left">
         Room Non Availability not found
       </h5>
     );
   }
   return (
     <>
-      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
+      <h5 className="container mx-auto mb-3 max-w-7xl text-center font-semibold md:text-left">
         Room Non Availability List
       </h5>
-      <section className="container max-w-7xl mx-auto bg-white p-5 rounded-lg">
+      <section className="container mx-auto max-w-7xl rounded-lg bg-white p-5">
         <Table>
           <TableCaption>A list of your Room Non Availability</TableCaption>
           <TableHeader>
@@ -85,17 +85,17 @@ const RoomNonAvailabilityList: FC<RoomNonAvailabilityPageProps> = ({
                     {roomNonAvailability.startDate &&
                     roomNonAvailability.endDate
                       ? `${new Date(roomNonAvailability.startDate).toLocaleDateString()} - ${new Date(roomNonAvailability.endDate).toLocaleDateString()}`
-                      : 'N/A'}
+                      : "N/A"}
                   </TableCell>
                   <TableCell className="flex items-center gap-3">
                     <Button
-                      variant={'destructive'}
+                      variant={"destructive"}
                       disabled={pendingRoomNonAvailability}
                       onClick={() =>
                         deleteRoomNonAvailability(roomNonAvailability.id)
                       }
                     >
-                      {pendingRoomNonAvailability ? 'Deleting...' : 'Delete'}
+                      {pendingRoomNonAvailability ? "Deleting..." : "Delete"}
                     </Button>
                     <EditRoomNonAvailabilityButton
                       id={roomNonAvailability.id}
@@ -107,8 +107,8 @@ const RoomNonAvailabilityList: FC<RoomNonAvailabilityPageProps> = ({
           </TableBody>
         </Table>
       </section>
-      <div className="container max-w-7xl mx-auto flex justify-center mt-10">
-      <Pagination
+      <div className="container mx-auto mt-10 flex max-w-7xl justify-center">
+        <Pagination
           take={data.meta.take}
           total={data.meta.total}
           page={page}

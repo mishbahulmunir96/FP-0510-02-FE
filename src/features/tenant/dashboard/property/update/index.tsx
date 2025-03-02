@@ -30,7 +30,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   const { mutateAsync: deleteProperty, isPending: deletePending } =
     useDeleteProperty();
   const { data, isPending: dataIsPending } = useGetPropertyTenant(propertyId);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImages, setSelectedImages] = useState<string[]>([]); // Changed to array
   const imageRef = useRef<HTMLInputElement>(null);
   const [selectedPosition, setSelectedPosition] = useState<[string, string]>([
     "0",
@@ -45,7 +45,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
       latitude: data?.latitude || "",
       longitude: data?.longitude || "",
       location: data?.location || "",
-      imageUrl: null,
+      imageUrl: [], // Changed from null to empty array
       propertyCategoryId: data?.propertyCategory?.id || null,
     },
     onSubmit: async (values) => {
@@ -101,14 +101,32 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length) {
-      formik.setFieldValue("imageUrl", files[0]);
-      setSelectedImage(URL.createObjectURL(files[0]));
+      // Convert FileList to Array
+      const fileArray = Array.from(files);
+
+      // Update formik
+      formik.setFieldValue("imageUrl", fileArray);
+
+      // Create object URLs for preview
+      const imageUrls = fileArray.map((file) => URL.createObjectURL(file));
+      setSelectedImages(imageUrls);
     }
   };
 
-  const removeSelectedImage = () => {
-    formik.setFieldValue("imageUrl", null);
-    setSelectedImage("");
+  const removeSelectedImage = (index: number) => {
+    // Create new arrays without the item at the specified index
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+
+    const newFiles = [...formik.values.imageUrl];
+    newFiles.splice(index, 1);
+    formik.setFieldValue("imageUrl", newFiles);
+  };
+
+  const removeAllImages = () => {
+    formik.setFieldValue("imageUrl", []);
+    setSelectedImages([]);
     if (imageRef.current) {
       imageRef.current.value = "";
     }
@@ -155,37 +173,59 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
         <form onSubmit={formik.handleSubmit} className="space-y-5">
           {/* Image Section */}
           <div className="space-y-5">
-            {selectedImage ? (
-              <>
-                <div className="relative h-[350px] w-full overflow-hidden rounded-lg">
-                  <Image
-                    src={selectedImage}
-                    alt="Property Image"
-                    fill
-                    className="object-cover"
-                  />
+            {selectedImages.length > 0 ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {selectedImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative h-[200px] overflow-hidden rounded-lg"
+                    >
+                      <Image
+                        src={image}
+                        alt={`Property Image ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                      <Button
+                        onClick={() => removeSelectedImage(index)}
+                        variant="destructive"
+                        className="absolute right-2 top-2 h-8 w-8 p-0"
+                      >
+                        ✕
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-                <Button onClick={removeSelectedImage} variant="destructive">
-                  Remove Image
+                <Button onClick={removeAllImages} variant="destructive">
+                  Remove All Images
                 </Button>
-              </>
-            ) : data.propertyImage?.[0]?.imageUrl ? (
-              <div className="relative h-[350px] w-full overflow-hidden rounded-lg">
-                <Image
-                  src={data.propertyImage[0].imageUrl}
-                  alt="Property Image"
-                  fill
-                  className="object-cover"
-                />
+              </div>
+            ) : data.propertyImage && data.propertyImage.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {data.propertyImage.map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative h-[200px] overflow-hidden rounded-lg"
+                  >
+                    <Image
+                      src={image.imageUrl || "/placeholder-image.jpg"}
+                      alt={`Property Image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
               </div>
             ) : null}
             <div className="mx-auto max-w-xs">
-              <Label>Property Image</Label>
+              <Label>Property Images</Label>
               <Input
                 type="file"
                 accept="image/*"
                 onChange={onChangeImage}
                 ref={imageRef}
+                multiple // Enable multiple file selection
               />
             </div>
           </div>

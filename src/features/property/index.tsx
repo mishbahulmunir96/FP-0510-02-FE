@@ -1,12 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { Search, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import useDebounce from "../../hooks/useDebounce";
-import useGetProperties from "../../hooks/api/property/useGetProperties";
-import PropertyCard from "../property/components/PropertyCard";
-import PropertyNavigation from "../property/components/PropertyNavigation";
 import { Property as ImportedProperty } from "@/types/property";
+import { motion } from "framer-motion";
+import { Loader2, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import useGetProperties from "../../hooks/api/property/useGetProperties";
+import useDebounce from "../../hooks/useDebounce";
+import PropertyCard from "../property/components/PropertyCard";
 
 // Keep existing interfaces
 interface PropertyImage {

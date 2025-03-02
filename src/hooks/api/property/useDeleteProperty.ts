@@ -13,13 +13,13 @@ const useDeleteProperty = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.delete(`/property/delete/${id}`);
+      const { data } = await axiosInstance.delete(`/properties/${id}`);
       return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["property"] });
       toast.success("Delete Property success");
-      router.push("/dashboard/property/management");
+      router.push("/tenant/dashboard/property/management");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);

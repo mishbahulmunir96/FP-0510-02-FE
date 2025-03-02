@@ -20,47 +20,6 @@ import {
   standardizeToCheckOutTime,
 } from "@/utils/date";
 
-// Definisi tipe untuk Property
-interface Property {
-  id: number;
-  title: string;
-  description: string;
-  latitude: string;
-  longitude: string;
-  location: string;
-  tenant: {
-    name: string;
-  };
-  PropertyCategory: Array<{
-    name: string;
-  }>;
-  propertyImage: Array<{
-    id: number;
-    imageUrl: string | null;
-  }>;
-  propertyFacility: Array<{
-    id: number;
-    title: string;
-    description: string;
-  }>;
-  room: Array<{
-    id: number;
-    type: string;
-    guest: number;
-    price: number;
-    isDeleted: boolean;
-    roomImage: Array<{
-      imageUrl: string | null;
-    }>;
-    roomFacility: Array<{
-      id: number;
-      title: string;
-      description: string;
-      isDeleted: boolean;
-    }>;
-  }>;
-}
-
 type DateRange = {
   from: Date | undefined;
   to?: Date | undefined;
@@ -345,7 +304,7 @@ export default function PropertyDetailPage({
                 <div className="rounded-lg border border-gray-200 p-3 text-center">
                   <p className="text-xs text-gray-500">From</p>
                   <p className="text-sm font-medium">
-                    ${Math.min(...availableRooms.map((room) => room.price))}
+                    IDR {Math.min(...availableRooms.map((room) => room.price))}
                     /night
                   </p>
                 </div>
@@ -375,7 +334,7 @@ export default function PropertyDetailPage({
                 onClick={handleBooking}
               >
                 {selectedRoom
-                  ? `Book Now · $${selectedRoom.price}/night`
+                  ? `Book Now · IDR ${selectedRoom.price}/night`
                   : "Select Room & Dates"}
               </Button>
 
@@ -431,12 +390,7 @@ export default function PropertyDetailPage({
               >
                 Rooms & Availability
               </TabsTrigger>
-              {/* <TabsTrigger
-                value="amenities"
-                className="rounded-none border-b-2 border-transparent px-1 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                Amenities
-              </TabsTrigger> */}
+
               <TabsTrigger
                 value="location"
                 className="rounded-none border-b-2 border-transparent px-1 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
@@ -463,148 +417,6 @@ export default function PropertyDetailPage({
                     )}
                   />
                 ))}
-              </div>
-            </TabsContent>
-
-            {/* Amenities Tab - Enhanced with icons and grouping */}
-            <TabsContent value="amenities" className="mt-8">
-              <div className="grid grid-cols-1 gap-y-8 md:grid-cols-3 lg:grid-cols-3">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-gray-900">Basic</h3>
-                  <div className="space-y-3">
-                    {property.propertyFacility
-                      .filter(
-                        (f) =>
-                          f.title.toLowerCase().includes("wifi") ||
-                          f.title.toLowerCase().includes("parking") ||
-                          f.title.toLowerCase().includes("air"),
-                      )
-                      .map((facility) => (
-                        <div
-                          key={facility.id}
-                          className="flex items-center gap-3"
-                        >
-                          {getFacilityIcon(facility.title)}
-                          <span className="text-gray-700">
-                            {facility.description}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-gray-900">Comfort</h3>
-                  <div className="space-y-3">
-                    {property.propertyFacility
-                      .filter(
-                        (f) =>
-                          f.title.toLowerCase().includes("coffee") ||
-                          f.title.toLowerCase().includes("kitchen") ||
-                          f.title.toLowerCase().includes("tv"),
-                      )
-                      .map((facility) => (
-                        <div
-                          key={facility.id}
-                          className="flex items-center gap-3"
-                        >
-                          {getFacilityIcon(facility.title)}
-                          <span className="text-gray-700">
-                            {facility.description}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-gray-900">
-                    Safety & Services
-                  </h3>
-                  <div className="space-y-3">
-                    {property.propertyFacility
-                      .filter(
-                        (f) =>
-                          !f.title.toLowerCase().includes("wifi") &&
-                          !f.title.toLowerCase().includes("coffee") &&
-                          !f.title.toLowerCase().includes("kitchen") &&
-                          !f.title.toLowerCase().includes("tv") &&
-                          !f.title.toLowerCase().includes("parking") &&
-                          !f.title.toLowerCase().includes("air"),
-                      )
-                      .map((facility) => (
-                        <div
-                          key={facility.id}
-                          className="flex items-center gap-3"
-                        >
-                          {getFacilityIcon(facility.title)}
-                          <span className="text-gray-700">
-                            {facility.description}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-gray-900">
-                    Room Amenities
-                  </h3>
-                  <div className="space-y-3">
-                    {/* This would be populated with room-specific amenities if available */}
-                    <div className="flex items-center gap-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-gray-700">Comfortable beds</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-gray-700">Private bathroom</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-primary"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-gray-700">Fresh linens</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </TabsContent>
 
@@ -730,7 +542,6 @@ const LoadingSkeleton = () => (
         <div className="mb-6 flex gap-6">
           <Skeleton className="h-10 w-32 rounded-md" />
           <Skeleton className="h-10 w-32 rounded-md" />
-          <Skeleton className="h-10 w-32 rounded-md" />
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <Skeleton className="h-64 w-full rounded-xl" />
@@ -743,7 +554,7 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-// Utility function for facility icons - Enhanced
+// Utility function for facility icons - Kept for potential future use
 const getFacilityIcon = (facilityName: string) => {
   const iconClass = "h-5 w-5 text-primary";
 

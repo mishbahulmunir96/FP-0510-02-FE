@@ -9,7 +9,7 @@ import {
 import { format, differenceInDays, addDays } from "date-fns";
 import { Building2, CalendarDays, Users, MapPin, Home, X } from "lucide-react";
 import { locations } from "./Const";
-import GuestSelector from "./Guest";
+import GuestSelector from "../../property/components/Guest";
 
 interface NavigationProps {
   onLocation: (location: string) => void;
@@ -276,9 +276,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
                   <div className="absolute bottom-4 left-4">
                     <div className="font-medium text-white">
                       {location.name}
-                    </div>
-                    <div className="text-sm text-gray-200">
-                      {location.places}
                     </div>
                   </div>
                 </div>

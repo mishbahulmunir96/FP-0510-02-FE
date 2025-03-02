@@ -23,7 +23,7 @@ const useLogin = () => {
       toast.success("Login Success");
       await signIn("credentials", { ...data, redirect: false });
       if (data.role === "TENANT") {
-        router.replace("/tenant/dashboard");
+        router.replace("/tenant/dashboard/reports/statistics");
       } else {
         router.replace("/");
       }

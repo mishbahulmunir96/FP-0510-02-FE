@@ -8,7 +8,7 @@ import useDebounce from "../../hooks/useDebounce";
 import { format } from "date-fns";
 import useGetProperties from "../../hooks/api/property/useGetProperties";
 import PropertyCard from "../property/components/PropertyCard";
-import PropertyNavigation from "../property/components/PropertyNavigation";
+import PropertyNavigation from "./components/PropertyNavigation";
 import PaginationSection from "../../components/PaginationSection";
 
 export default function PropertyCatalogPage() {
@@ -153,7 +153,7 @@ export default function PropertyCatalogPage() {
             <Search className="absolute left-6 top-1/2 h-7 w-7 -translate-y-1/2 text-gray-500" />
             <Input
               className="border-3 w-full rounded-full border-gray-200 bg-white py-6 pl-16 pr-6 text-xl text-gray-800 placeholder-gray-500 transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200"
-              placeholder="Search properties, locations, amenities..."
+              placeholder="Search properties name..."
               onChange={(e) => handleSearchChange(e.target.value)}
               value={search}
               aria-label="Search properties"
@@ -290,14 +290,6 @@ export default function PropertyCatalogPage() {
                 <h2 className="text-3xl font-bold text-gray-800">
                   {data?.data?.meta?.total || ""} Properties Found
                 </h2>
-                <div className="flex items-center gap-3">
-                  <select className="rounded-lg border-2 border-gray-200 px-4 py-2 text-base text-gray-700">
-                    <option value="recommended">Recommended</option>
-                    <option value="priceAsc">Price: Low to High</option>
-                    <option value="priceDesc">Price: High to Low</option>
-                    <option value="newest">Newest First</option>
-                  </select>
-                </div>
               </div>
 
               <motion.div
