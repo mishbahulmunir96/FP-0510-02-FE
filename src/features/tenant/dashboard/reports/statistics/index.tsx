@@ -99,7 +99,7 @@ const StatisticPage = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <StatisticFilters
         filterType={filterType as FilterType}
         startDate={new Date(startDate)}
@@ -116,12 +116,9 @@ const StatisticPage = () => {
         propertyId={propertyId ? Number(propertyId) : null}
       />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
         <div className="md:col-span-12">
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-            <h2 className="mb-4 text-xl font-bold text-gray-800">
-              Tren Pendapatan & Transaksi
-            </h2>
             <RevenueChart
               startDate={new Date(startDate)}
               endDate={new Date(endDate)}
@@ -132,7 +129,6 @@ const StatisticPage = () => {
 
         <div className="md:col-span-12">
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-            <h2 className="mb-4 text-xl font-bold text-gray-800">Distribusi</h2>
             <DistributionChart
               startDate={new Date(startDate)}
               endDate={new Date(endDate)}
@@ -143,9 +139,7 @@ const StatisticPage = () => {
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md">
-        <h2 className="mb-4 text-xl font-bold text-gray-800">
-          Properti Teratas
-        </h2>
+        <h2 className="mb-4 text-xl font-bold text-gray-800">Top Properties</h2>
         <TopPropertiesTable
           startDate={new Date(startDate)}
           endDate={new Date(endDate)}

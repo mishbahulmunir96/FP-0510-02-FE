@@ -4,6 +4,7 @@ import { formatCurrency } from "@/lib/utils";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { ChartSkeleton } from "./LoadingSkeleton";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -24,7 +25,7 @@ export const DistributionChart = ({
 }: DistributionChartProps) => {
   const [dataType, setDataType] = useState<DataType>("transactions");
 
-  const { data: salesReport } = useSalesReport({
+  const { data: salesReport, isLoading } = useSalesReport({
     startDate,
     endDate,
     propertyId,
@@ -56,15 +57,15 @@ export const DistributionChart = ({
   const options: ApexOptions = {
     chart: {
       type: "donut",
-      fontFamily: "sans-serif",
+      fontFamily: "Inter, sans-serif",
     },
     labels,
-    colors: ["#3C50E0", "#80CAEE", "#F0ABFC", "#FBBF24", "#34D399"],
+    colors: ["#3B82F6", "#6366F1", "#EC4899", "#F59E0B", "#10B981"],
     legend: {
       show: true,
       position: "bottom",
       fontSize: "14px",
-      fontFamily: "sans-serif",
+      fontFamily: "Inter, sans-serif",
       markers: {
         size: 12,
         strokeWidth: 0,
@@ -84,12 +85,23 @@ export const DistributionChart = ({
           size: "50%",
           labels: {
             show: true,
+            name: {
+              show: true,
+            },
+            value: {
+              show: true,
+              formatter: function (val) {
+                return dataType === "transactions"
+                  ? val + " transactions"
+                  : formatCurrency(Number(val));
+              },
+            },
             total: {
               show: true,
               label:
                 dataType === "transactions"
-                  ? "Total Transaksi"
-                  : "Total Pendapatan",
+                  ? "Total Transactions"
+                  : "Total Revenue",
               formatter: function (w) {
                 const total = w.globals.seriesTotals.reduce(
                   (a: number, b: number) => {
@@ -107,37 +119,40 @@ export const DistributionChart = ({
       },
     },
     dataLabels: {
-      formatter: function (value) {
-        return dataType === "transactions"
-          ? `${value} transaksi`
-          : formatCurrency(Number(value));
+      formatter: function (val, opts) {
+        const value = Number(val);
+        return value.toFixed(1) + "%";
       },
     },
     tooltip: {
       y: {
         formatter: function (value) {
           return dataType === "transactions"
-            ? `${value} transaksi`
+            ? `${value} transactions`
             : formatCurrency(Number(value));
         },
       },
     },
   };
 
+  if (isLoading) {
+    return <ChartSkeleton />;
+  }
+
   return (
     <div className="border-stroke shadow-default relative rounded-sm border bg-white p-6">
       <div className="mb-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-800">
-            Distribusi {propertyId ? "Per Tipe Kamar" : "Per Property"}
+            Distribution {propertyId ? "By Room Type" : "By Property"}
           </h2>
           <Tabs
             value={dataType}
             onValueChange={(value) => setDataType(value as DataType)}
           >
             <TabsList>
-              <TabsTrigger value="transactions">Transaksi</TabsTrigger>
-              <TabsTrigger value="revenue">Pendapatan</TabsTrigger>
+              <TabsTrigger value="transactions">Transactions</TabsTrigger>
+              <TabsTrigger value="revenue">Revenue</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -159,7 +174,7 @@ export const DistributionChart = ({
 
       {chartData.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-          <p className="text-gray-500">Tidak ada data untuk ditampilkan</p>
+          <p className="text-gray-500">No data to display</p>
         </div>
       )}
     </div>

@@ -13,6 +13,7 @@ import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import DateRangePicker from "./DateRangePicker";
 import { getDateRangeParams } from "@/utils/date.utils";
 import { FilterType } from "@/types/report";
+import { FiltersSkeleton } from "./LoadingSkeleton";
 
 interface Property {
   propertyId: number;
@@ -62,13 +63,17 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
   selectedProperty,
   onFilterChange,
 }) => {
-  // Gunakan useSalesReport untuk mendapatkan daftar properti
-  const { data: salesReport } = useSalesReport({
+  // Use useSalesReport to get the property list
+  const { data: salesReport, isLoading } = useSalesReport({
     startDate,
     endDate,
   });
 
-  // Ekstrak properti dari salesReport
+  if (isLoading) {
+    return <FiltersSkeleton />;
+  }
+
+  // Extract properties from salesReport
   const properties = salesReport?.propertyMetrics || [];
 
   const handleFilterTypeChange = (
@@ -116,7 +121,7 @@ export const StatisticFilters: React.FC<StatisticFiltersProps> = ({
       year: selectedYear,
     });
 
-    // Pastikan dateRange tidak undefined
+    // Ensure dateRange is not undefined
     if (dateRange.startDate && dateRange.endDate) {
       onFilterChange({
         filterType,
