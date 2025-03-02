@@ -11,7 +11,7 @@ const useGetPropertyTenant = (id: number) => {
     queryKey: ["property", id],
     queryFn: async () => {
       const { data } = await axiosInstance.get<Property>(
-        `/property/tenant/${id}`,
+        `/properties/tenant/${id}`,
       );
       return data;
     },

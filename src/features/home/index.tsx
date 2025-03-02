@@ -65,7 +65,7 @@ const HomePage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-[#CDF5FD]">
+    <main className="min-h-screen]">
       <Jumbotron />
 
       {/* Search Section */}
@@ -156,7 +156,6 @@ const HomePage = () => {
             next perfect stay
           </p>
         </div>
-
         <PropertyList />
       </div>
     </main>

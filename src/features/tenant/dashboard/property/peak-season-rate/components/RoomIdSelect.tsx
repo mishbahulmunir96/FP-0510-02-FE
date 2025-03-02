@@ -6,10 +6,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useGetRoomsTenant } from '@/hooks/api/room/useGetRoomsTenant';
-import { Room } from '@/types/property';
-import { FC } from 'react';
+} from "@/components/ui/select";
+import { useGetRoomsTenant } from "@/hooks/api/room/useGetRoomsTenant";
+import { FC } from "react";
 
 interface FcFormSelectProps {
   setFieldValue: (field: string, value: string) => void;
@@ -20,7 +19,7 @@ interface FcFormSelectProps {
 export const RoomIdSelect: FC<FcFormSelectProps> = ({
   setFieldValue,
   defaultValue,
-  isDisabled = false
+  isDisabled = false,
 }) => {
   const { data, isPending } = useGetRoomsTenant({
     take: 100,
@@ -30,7 +29,7 @@ export const RoomIdSelect: FC<FcFormSelectProps> = ({
 
   return (
     <Select
-      onValueChange={(value) => setFieldValue('roomId', value)}
+      onValueChange={(value) => setFieldValue("roomId", value)}
       defaultValue={defaultValue}
       disabled={isDisabled || isPending}
     >
@@ -40,17 +39,14 @@ export const RoomIdSelect: FC<FcFormSelectProps> = ({
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Your Room List</SelectLabel>
-          {rooms.length > 0 && rooms.map((room) => (
-            <SelectItem 
-              key={room.id} 
-              value={String(room.id)}
-            >
-              {room.name}
-            </SelectItem>
-          ))}
+          {rooms.length > 0 &&
+            rooms.map((room) => (
+              <SelectItem key={room.id} value={String(room.id)}>
+                {room.property.title} type: {room.type}
+              </SelectItem>
+            ))}
         </SelectGroup>
       </SelectContent>
     </Select>
   );
 };
-

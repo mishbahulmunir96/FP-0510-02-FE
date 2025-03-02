@@ -167,12 +167,6 @@ export function AppSidebar() {
 
   const menuItems: ParentMenuItem[] = [
     {
-      title: "Dashboard",
-      url: "/tenant/dashboard",
-      icon: LayoutDashboard,
-      description: "Overview of your activities",
-    },
-    {
       title: "Properties",
       icon: Building2,
       description: "Manage your properties and rooms",
