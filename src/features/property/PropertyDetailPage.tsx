@@ -19,6 +19,9 @@ import {
   standardizeToCheckInTime,
   standardizeToCheckOutTime,
 } from "@/utils/date";
+import useGetReviewsByProperty from "@/hooks/api/review/useGetReviewsByProperty";
+import { number } from "yup";
+import { getRatingColor, getRatingLabel } from "@/types/review";
 
 type DateRange = {
   from: Date | undefined;
@@ -52,6 +55,12 @@ export default function PropertyDetailPage({
 }) {
   const router = useRouter();
   const { data: property, isPending } = useGetProperty(propertySlug);
+
+  const { data: reviewsData } = useGetReviewsByProperty({
+    propertyId: property?.id,
+    page: 1,
+    take: 5,
+  });
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedRoomId, setSelectedRoomId] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -243,17 +252,29 @@ export default function PropertyDetailPage({
             {/* Property Details & Description - Below the gallery on large screens */}
             <div className="mt-6 space-y-6">
               <div>
-                <div className="mb-3 flex flex-wrap items-center gap-3">
-                  <Badge
-                    variant="secondary"
-                    className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700"
-                  >
-                    {property.PropertyCategory?.[0]?.name}
-                  </Badge>
-                  <span className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    4.9 · <span className="underline">24 reviews</span>
-                  </span>
+                <div className="flex items-center gap-3">
+                  {reviewsData?.meta.averageRating ? (
+                    <>
+                      <span
+                        className={`flex items-center gap-1 rounded-lg ${getRatingColor(reviewsData.meta.averageRating)} px-2 py-1 text-white`}
+                      >
+                        <Star className="h-4 w-4" fill="currentColor" />
+                        <span className="font-medium">
+                          {reviewsData.meta.averageRating.toFixed(1)}
+                        </span>
+                      </span>
+                      <span className="font-medium text-gray-700">
+                        {getRatingLabel(reviewsData.meta.averageRating)}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        ({reviewsData.meta.total} reviews)
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-sm text-gray-500">
+                      No ratings yet
+                    </span>
+                  )}
                 </div>
 
                 <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl md:text-4xl">

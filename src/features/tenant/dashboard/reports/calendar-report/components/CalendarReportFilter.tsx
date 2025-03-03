@@ -12,7 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { useQueryState } from "nuqs";
-import { Building2, Hotel } from "lucide-react";
+import { Building2, Hotel, Filter, CalendarRange } from "lucide-react";
 
 export const usePropertyIdParam = () => {
   return useQueryState("propertyId");
@@ -89,8 +89,17 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
   );
 
   return (
-    <Card className="border-gray-200 shadow-sm dark:border-gray-800">
-      <CardContent className="p-6">
+    <Card className="overflow-hidden border-gray-200 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-800">
+      <CardContent className="p-5">
+        <div className="mb-4 flex items-center">
+          <div className="mr-3 rounded-full bg-blue-50 p-2 dark:bg-blue-900/20">
+            <Filter className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-800 dark:text-white">
+            Filter Calendar View
+          </h3>
+        </div>
+
         <div className="flex flex-col gap-6 sm:flex-row">
           <div className="w-full sm:w-1/2">
             <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -102,16 +111,18 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
               onValueChange={handlePropertyChange}
               disabled={salesReportLoading}
             >
-              <SelectTrigger className="w-full rounded-md border-gray-300 bg-white focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 dark:border-gray-700 dark:bg-gray-800">
+              <SelectTrigger className="w-full rounded-md border-gray-300 bg-white transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 dark:border-gray-700 dark:bg-gray-800">
                 <SelectValue placeholder="Select a property" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Select a property</SelectItem>
+              <SelectContent className="max-h-80 overflow-y-auto">
+                <SelectItem value="none" className="text-gray-500">
+                  Select a property
+                </SelectItem>
                 {salesReportLoading ? (
-                  <div className="p-2">
+                  <div className="space-y-2 p-2">
                     <Skeleton className="h-5 w-full" />
-                    <Skeleton className="mt-2 h-5 w-full" />
-                    <Skeleton className="mt-2 h-5 w-full" />
+                    <Skeleton className="h-5 w-full" />
+                    <Skeleton className="h-5 w-full" />
                   </div>
                 ) : (
                   <>
@@ -119,6 +130,7 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
                       <SelectItem
                         key={property.propertyId}
                         value={property.propertyId.toString()}
+                        className="py-2.5"
                       >
                         {property.propertyName}
                       </SelectItem>
@@ -139,18 +151,44 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
               onValueChange={handleRoomChange}
               disabled={!propertyId || selectedPropertyRooms.length === 0}
             >
-              <SelectTrigger className="w-full rounded-md border-gray-300 bg-white focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 dark:border-gray-700 dark:bg-gray-800">
+              <SelectTrigger className="w-full rounded-md border-gray-300 bg-white transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 dark:border-gray-700 dark:bg-gray-800">
                 <SelectValue placeholder="All Rooms" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Rooms</SelectItem>
+              <SelectContent className="max-h-80 overflow-y-auto">
+                <SelectItem
+                  value="all"
+                  className="py-2.5 font-medium text-blue-600 dark:text-blue-400"
+                >
+                  All Rooms
+                </SelectItem>
                 {selectedPropertyRooms.map((room) => (
-                  <SelectItem key={room.roomId} value={room.roomId.toString()}>
+                  <SelectItem
+                    key={room.roomId}
+                    value={room.roomId.toString()}
+                    className="py-2.5"
+                  >
                     {`${room.roomType} Room`}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {!propertyId && (
+              <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                Please select a property first
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center justify-end border-t border-gray-100 pt-4 dark:border-gray-700/50">
+          <div className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400">
+            <CalendarRange className="mr-1.5 h-4 w-4 text-gray-400" />
+            <span>
+              {new Date(startDate).toLocaleDateString("en-US", {
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
           </div>
         </div>
       </CardContent>

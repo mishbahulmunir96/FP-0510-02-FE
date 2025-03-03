@@ -4,6 +4,7 @@ import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import { ChartSkeleton } from "./LoadingSkeleton";
+import { TrendingUp, DollarSign } from "lucide-react";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -51,10 +52,19 @@ export const RevenueChart = ({
     colors: ["#6366F1", "#38BDF8"],
     chart: {
       fontFamily: "Inter, sans-serif",
-      height: 350,
+      height: 450, // Increased height
       type: "line",
       toolbar: {
-        show: false,
+        show: true, // Enable toolbar for zoom/pan options
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
       },
       stacked: false,
       parentHeightOffset: 0,
@@ -75,6 +85,10 @@ export const RevenueChart = ({
     grid: {
       borderColor: "#F2F2F2",
       strokeDashArray: 5,
+      padding: {
+        left: 20,
+        right: 20,
+      },
       xaxis: {
         lines: {
           show: true,
@@ -123,6 +137,8 @@ export const RevenueChart = ({
           fontSize: "12px",
           fontWeight: 400,
         },
+        rotateAlways: false,
+        minHeight: 40,
       },
     },
     yaxis: [
@@ -138,13 +154,17 @@ export const RevenueChart = ({
         labels: {
           style: {
             colors: "#6366F1",
+            fontSize: "12px",
           },
           formatter: (value) => {
-            if (value >= 1000) {
+            if (value >= 1000000) {
+              return `Rp ${(value / 1000000).toFixed(1)}M`;
+            } else if (value >= 1000) {
               return `Rp ${(value / 1000).toFixed(0)}k`;
             }
             return `Rp ${value}`;
           },
+          offsetX: -5,
         },
       },
       {
@@ -160,7 +180,9 @@ export const RevenueChart = ({
         labels: {
           style: {
             colors: "#38BDF8",
+            fontSize: "12px",
           },
+          offsetX: 5,
         },
       },
     ],
@@ -207,33 +229,65 @@ export const RevenueChart = ({
         vertical: 8,
       },
     },
+    responsive: [
+      {
+        breakpoint: 768,
+        options: {
+          chart: {
+            height: 400,
+          },
+        },
+      },
+    ],
   };
 
   return (
-    <div className="border-stroke shadow-default rounded-sm border bg-white p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="border-stroke rounded-sm border bg-white">
+      <div className="flex flex-wrap items-start justify-between gap-3 p-6 pb-0">
         <div>
-          <h2 className="mb-4 text-xl font-bold text-gray-800">
-            Revenue & Transaction Trends
-          </h2>
+          <div className="mb-2 flex items-center gap-3">
+            <div className="rounded-full bg-indigo-50 p-2">
+              <TrendingUp className="h-5 w-5 text-indigo-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800">
+              Revenue & Transaction Trends
+            </h2>
+          </div>
           <p className="mt-1 text-sm text-gray-600">
             {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
           </p>
         </div>
       </div>
 
-      <div className="relative mt-4 min-h-[400px] pt-4">
-        <ReactApexChart
-          options={options}
-          series={series}
-          type="area"
-          height={350}
-          width="100%"
-        />
+      <div className="relative px-4 pt-4">
+        {/* Chart container with proper sizing */}
+        <div className="chart-container w-full overflow-hidden">
+          <div className="chart-scroll-container">
+            {/* Set min-width to ensure the chart doesn't get too compressed */}
+            <div
+              style={{
+                minWidth: peakBookingPeriods.length > 10 ? "800px" : "100%",
+              }}
+            >
+              <ReactApexChart
+                options={options}
+                series={series}
+                type="area"
+                height={450}
+                width="100%"
+              />
+            </div>
+          </div>
+        </div>
 
         {peakBookingPeriods.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-            <p className="text-gray-500">No data to display</p>
+            <div className="text-center">
+              <DollarSign className="mx-auto mb-3 h-10 w-10 text-gray-400" />
+              <p className="font-medium text-gray-500">
+                No revenue data available for the selected period
+              </p>
+            </div>
           </div>
         )}
       </div>
