@@ -49,17 +49,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/browse" className="hover:text-gray-700">
+                <Link href="/property-catalog" className="hover:text-gray-700">
                   Browse Properties
                 </Link>
               </li>
+
               <li>
-                <Link href="/compare" className="hover:text-gray-700">
-                  Compare
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-gray-700">
+                <Link href="/#" className="hover:text-gray-700">
                   Contact Us
                 </Link>
               </li>
@@ -71,17 +67,17 @@ const Footer = () => {
             <h3 className="mb-3 text-sm font-semibold text-gray-800">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/terms-of-service" className="hover:text-gray-700">
+                <Link href="/#" className="hover:text-gray-700">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-gray-700">
+                <Link href="/#" className="hover:text-gray-700">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/faqs" className="hover:text-gray-700">
+                <Link href="/#" className="hover:text-gray-700">
                   FAQs
                 </Link>
               </li>

@@ -1,5 +1,6 @@
 import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
 import CreatePropertyPage from "@/features/tenant/dashboard/property/create";
+import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 
 const CreateProperty = () => {
   return (
@@ -11,4 +12,4 @@ const CreateProperty = () => {
   );
 };
 
-export default CreateProperty;
+export default TenantAuthGuard(CreateProperty);

@@ -1,5 +1,6 @@
 import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
 import UpdatePropertyPage from "@/features/tenant/dashboard/property/update";
+import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 
 const UpdateProperty = ({ params }: { params: { id: number } }) => {
   return (
@@ -11,4 +12,4 @@ const UpdateProperty = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default UpdateProperty;
+export default TenantAuthGuard(UpdateProperty);
