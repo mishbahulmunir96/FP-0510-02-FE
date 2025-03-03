@@ -177,4 +177,3 @@ export const locations = [
     image: "https://images.unsplash.com/photo-1611070920643-c921b7872070?w=500",
   },
 ];
-//
