@@ -79,6 +79,10 @@ const useCalendarReport = (params: PropertyCalendarReportParams) => {
       );
       return response.data.data;
     },
+
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
     enabled: !!params.propertyId && !!params.startDate && !!params.endDate,
   });
 };

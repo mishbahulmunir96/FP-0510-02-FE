@@ -19,6 +19,7 @@ export default function NavbarDashboard() {
   };
 
   useEffect(() => {
+
     checkMobileView();
     window.addEventListener("resize", checkMobileView);
 
@@ -38,6 +39,7 @@ export default function NavbarDashboard() {
       window.removeEventListener("resize", checkMobileView);
       document.removeEventListener("mousedown", handleClickOutside);
     };
+
   }, []);
 
   return (
@@ -136,6 +138,7 @@ export default function NavbarDashboard() {
               </div>
             </div>
           )}
+
         </div>
       </div>
     </nav>
