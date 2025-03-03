@@ -5,6 +5,7 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { ChartSkeleton } from "./LoadingSkeleton";
+import { PieChart, DollarSign } from "lucide-react";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -54,20 +55,48 @@ export const DistributionChart = ({
   const series = chartData.map((item) => item.value);
   const labels = chartData.map((item) => item.name);
 
+  // Enhanced color palette with better contrast
+  const colors = [
+    "#3B82F6",
+    "#6366F1",
+    "#8B5CF6",
+    "#EC4899",
+    "#F97316",
+    "#10B981",
+    "#06B6D4",
+    "#0EA5E9",
+    "#6366F1",
+    "#8B5CF6",
+  ];
+
   const options: ApexOptions = {
     chart: {
       type: "donut",
       fontFamily: "Inter, sans-serif",
+      height: 400,
+      animations: {
+        enabled: true,
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350,
+        },
+      },
     },
     labels,
-    colors: ["#3B82F6", "#6366F1", "#EC4899", "#F59E0B", "#10B981"],
+    colors,
     legend: {
       show: true,
       position: "bottom",
       fontSize: "14px",
       fontFamily: "Inter, sans-serif",
+      fontWeight: 500,
       markers: {
-        size: 12,
+        size: 10,
         strokeWidth: 0,
         offsetX: 0,
         offsetY: 0,
@@ -77,19 +106,29 @@ export const DistributionChart = ({
         horizontal: 15,
         vertical: 8,
       },
-      offsetY: 20,
+      offsetY: 10,
     },
     plotOptions: {
       pie: {
         donut: {
-          size: "50%",
+          size: "55%",
+          background: "transparent",
           labels: {
             show: true,
             name: {
               show: true,
+              fontSize: "14px",
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 500,
+              offsetY: -10,
             },
             value: {
               show: true,
+              fontSize: "20px",
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 600,
+              color: undefined,
+              offsetY: 5,
               formatter: function (val) {
                 return dataType === "transactions"
                   ? val + " transactions"
@@ -102,6 +141,9 @@ export const DistributionChart = ({
                 dataType === "transactions"
                   ? "Total Transactions"
                   : "Total Revenue",
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "#6B7280",
               formatter: function (w) {
                 const total = w.globals.seriesTotals.reduce(
                   (a: number, b: number) => {
@@ -119,9 +161,18 @@ export const DistributionChart = ({
       },
     },
     dataLabels: {
+      enabled: true,
       formatter: function (val, opts) {
         const value = Number(val);
         return value.toFixed(1) + "%";
+      },
+      style: {
+        fontSize: "12px",
+        fontWeight: 500,
+        fontFamily: "Inter, sans-serif",
+      },
+      dropShadow: {
+        enabled: false,
       },
     },
     tooltip: {
@@ -132,7 +183,26 @@ export const DistributionChart = ({
             : formatCurrency(Number(value));
         },
       },
+      style: {
+        fontSize: "14px",
+        fontFamily: "Inter, sans-serif",
+      },
     },
+    stroke: {
+      width: 2,
+    },
+    responsive: [
+      {
+        breakpoint: 768,
+        options: {
+          legend: {
+            position: "bottom",
+            offsetY: 0,
+            height: 120,
+          },
+        },
+      },
+    ],
   };
 
   if (isLoading) {
@@ -140,43 +210,64 @@ export const DistributionChart = ({
   }
 
   return (
-    <div className="border-stroke shadow-default relative rounded-sm border bg-white p-6">
-      <div className="mb-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-800">
-            Distribution {propertyId ? "By Room Type" : "By Property"}
-          </h2>
+    <div className="border-stroke shadow-default relative rounded-sm border bg-white">
+      <div className="p-6 pb-0">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="mb-2 flex items-center gap-3">
+              <div className="rounded-full bg-blue-50 p-2">
+                <PieChart className="h-5 w-5 text-blue-600" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-800">
+                Distribution {propertyId ? "By Room Type" : "By Property"}
+              </h2>
+            </div>
+            <p className="mt-1 text-sm text-gray-600">
+              {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
+            </p>
+          </div>
+
           <Tabs
             value={dataType}
             onValueChange={(value) => setDataType(value as DataType)}
+            className="w-full sm:w-auto"
           >
-            <TabsList>
-              <TabsTrigger value="transactions">Transactions</TabsTrigger>
-              <TabsTrigger value="revenue">Revenue</TabsTrigger>
+            <TabsList className="grid w-full min-w-[200px] grid-cols-2">
+              <TabsTrigger value="transactions" className="text-sm">
+                Transactions
+              </TabsTrigger>
+              <TabsTrigger value="revenue" className="text-sm">
+                Revenue
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
-        <p className="mt-1 text-sm text-gray-600">
-          {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
-        </p>
       </div>
 
-      <div className="mb-2">
-        <div className="mx-auto flex justify-center">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="donut"
-            height={400}
-          />
+      <div className="px-4 py-6">
+        <div className="chart-container w-full">
+          <div className="mx-auto flex justify-center">
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="donut"
+              height={400}
+              width="100%"
+            />
+          </div>
         </div>
-      </div>
 
-      {chartData.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-          <p className="text-gray-500">No data to display</p>
-        </div>
-      )}
+        {chartData.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+            <div className="p-6 text-center">
+              <PieChart className="mx-auto mb-3 h-10 w-10 text-gray-400" />
+              <p className="font-medium text-gray-500">
+                No distribution data available for the selected period
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

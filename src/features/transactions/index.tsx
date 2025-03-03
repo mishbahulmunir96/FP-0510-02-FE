@@ -18,7 +18,6 @@ import InputElementDetail from "./components/InputElementDetail";
 import PropertyRules from "./components/PropertyRules";
 import ReservationCard from "./components/ReservationCard";
 import { PaymentSchema } from "./components/SchemaPayment";
-import BankDetail from "./components/BankDetail";
 
 const TransactionPage = () => {
   const searchParams = useSearchParams();
@@ -176,15 +175,6 @@ const TransactionPage = () => {
                       {formik.errors.paymentMethod}
                     </p>
                   ) : null}
-
-                  {formik.values.paymentMethod === "manual" && (
-                    <div className="mt-6">
-                      <h3 className="mb-4 text-lg font-medium text-gray-900">
-                        Please make payment to this Bank Account.
-                      </h3>
-                      <BankDetail />
-                    </div>
-                  )}
                 </div>
               </form>
             </div>

@@ -6,7 +6,7 @@ import useGetReviewsByRoom from "@/hooks/api/review/useGetReviewsByRoom";
 import { formatCurrency } from "@/lib/utils";
 import { getRatingColor, getRatingLabel } from "@/types/review";
 import { format } from "date-fns";
-import { Star } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -237,7 +237,14 @@ const ReservationCard = ({
             onClick={handleReservation}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : "Book Now"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="animate-spin" />
+                <span className="ml-2">Processing...</span>
+              </>
+            ) : (
+              "Book Now"
+            )}
           </Button>
         </div>
       </div>

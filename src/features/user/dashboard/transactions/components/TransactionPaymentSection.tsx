@@ -18,9 +18,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PaymentMethod, TransactionStatus } from "@/types/transaction";
-import { AlertCircle, CreditCard, Eye, Upload, XCircle } from "lucide-react";
+import {
+  AlertCircle,
+  CreditCard,
+  Eye,
+  Loader2,
+  Upload,
+  Wallet,
+  XCircle,
+} from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+
+interface BankAccount {
+  bankName: string;
+  bankNumber: string; // Sesuai dengan struktur tenant di backend
+  name: string; // Nama pemilik rekening (menggunakan name dari tenant)
+}
 
 interface TransactionPaymentSectionProps {
   paymentMethode: PaymentMethod;
@@ -31,6 +45,7 @@ interface TransactionPaymentSectionProps {
   isUploading: boolean;
   isCancelling: boolean;
   invoiceUrl: string | null;
+  bankAccount?: BankAccount | null; // Tambahkan properti bankAccount
   onUploadProof: (file: File) => void;
   onCancelTransaction: () => void;
 }
@@ -44,6 +59,7 @@ const TransactionPaymentSection = ({
   isUploading,
   isCancelling,
   invoiceUrl,
+  bankAccount, // Tambahkan properti bankAccount
   onUploadProof,
   onCancelTransaction,
 }: TransactionPaymentSectionProps) => {
@@ -69,9 +85,29 @@ const TransactionPaymentSection = ({
     onUploadProof(selectedFile);
   };
 
+  const handleRemovePreview = () => {
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    // Reset file input
+    const fileInput = document.getElementById(
+      "payment-proof",
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  };
+
   const handleCancelOrder = () => {
     onCancelTransaction();
     setShowCancelDialog(false);
+  };
+
+  // Menentukan teks tombol untuk preview sesuai dengan kebutuhan
+  const getPreviewButtonText = () => {
+    if (selectedFile && !paymentProof) {
+      return "View Preview Payment Proof";
+    }
+    return "View Payment Proof";
   };
 
   return (
@@ -81,6 +117,35 @@ const TransactionPaymentSection = ({
         <span className="font-medium text-gray-900">Payment Method:</span>
         <span className="text-gray-600">{paymentMethode}</span>
       </div>
+
+      {status === "WAITING_FOR_PAYMENT" &&
+        paymentMethode === "MANUAL" &&
+        bankAccount && (
+          <div className="space-y-2 rounded-lg border border-blue-100 bg-blue-50 p-4">
+            <div className="flex items-center gap-2">
+              <Wallet className="h-5 w-5 text-blue-600" />
+              <h4 className="font-medium text-gray-900">Informasi Rekening</h4>
+            </div>
+            <div className="space-y-1 pl-7">
+              <p className="text-sm text-gray-700">
+                <span className="font-medium">Bank:</span>{" "}
+                {bankAccount.bankName}
+              </p>
+              <p className="text-sm text-gray-700">
+                <span className="font-medium">No. Rekening:</span>{" "}
+                {bankAccount.bankNumber}
+              </p>
+              <p className="text-sm text-gray-700">
+                <span className="font-medium">Atas Nama:</span>{" "}
+                {bankAccount.name}
+              </p>
+            </div>
+            <p className="pl-7 text-xs text-blue-600">
+              Mohon transfer sesuai dengan jumlah yang tertera dan unggah bukti
+              pembayaran
+            </p>
+          </div>
+        )}
 
       <div className="space-y-4">
         {paymentMethode === "OTOMATIS" &&
@@ -124,20 +189,22 @@ const TransactionPaymentSection = ({
               />
             </div>
 
-            <Button
-              onClick={handleUpload}
-              disabled={!selectedFile || isUploadDisabled || isUploading}
-              className="w-full sm:w-auto"
-            >
-              {isUploading ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  <span>Uploading...</span>
-                </div>
-              ) : (
-                "Submit Proof"
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleUpload}
+                disabled={!selectedFile || isUploadDisabled || isUploading}
+                className="w-full sm:w-auto"
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    <span className="ml-2">Uploading...</span>
+                  </>
+                ) : (
+                  "Submit Proof"
+                )}
+              </Button>
+            </div>
           </div>
         )}
 
@@ -149,14 +216,18 @@ const TransactionPaymentSection = ({
             className="w-full sm:w-auto"
           >
             <Eye className="mr-2 h-4 w-4" />
-            View Payment Proof
+            {getPreviewButtonText()} {/* Teks tombol yang dinamis */}
           </Button>
         )}
 
         <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Payment Proof</DialogTitle>
+              <DialogTitle>
+                {selectedFile && !paymentProof
+                  ? "Preview Payment Proof"
+                  : "Payment Proof"}
+              </DialogTitle>
             </DialogHeader>
             <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-lg">
               <Image
@@ -166,6 +237,22 @@ const TransactionPaymentSection = ({
                 className="object-contain"
               />
             </div>
+            {selectedFile && !paymentProof && (
+              <div className="mt-4 flex justify-end">
+                <p>Wrong image selection?</p>
+                <Button
+                  onClick={() => {
+                    handleRemovePreview();
+                    setShowPreviewDialog(false);
+                  }}
+                  variant="destructive"
+                  size="sm"
+                >
+                  <XCircle className="mr-2 h-4 w-4" />
+                  Remove Payment Proof
+                </Button>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
@@ -188,10 +275,10 @@ const TransactionPaymentSection = ({
                 className="bg-red-500 hover:bg-red-600"
               >
                 {isCancelling ? (
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Cancelling...
-                  </div>
+                  <>
+                    <Loader2 className="animate-spin" />
+                    <span className="ml-2">Cancelling...</span>
+                  </>
                 ) : (
                   "Yes, cancel order"
                 )}
@@ -207,7 +294,14 @@ const TransactionPaymentSection = ({
           disabled={isCancelDisabled}
         >
           <XCircle className="mr-2 h-4 w-4" />
-          {isCancelling ? "Cancelling..." : "Cancel Order"}
+          {isCancelling ? (
+            <>
+              <Loader2 className="animate-spin" />
+              <span className="ml-2">Cancelling...</span>
+            </>
+          ) : (
+            "Cancel Order"
+          )}
         </Button>
 
         {status === "CANCELLED" && (
