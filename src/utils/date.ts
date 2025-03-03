@@ -17,6 +17,6 @@ export const standardizeToCheckOutTime = (date: Date) => {
 
 export const formatLocalDate = (date: Date) => {
   const zonedDate = toZonedTime(date, TIMEZONE);
-  return format(zonedDate, "dd/MM/yyyy");
+ return format(zonedDate, "dd/MM/yyyy");
 };
 //

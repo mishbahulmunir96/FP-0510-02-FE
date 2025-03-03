@@ -89,6 +89,21 @@ const Navbar = () => {
                 <DropdownMenuItem asChild>
                   <Link href="/account">Profile</Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={
+                      session.user.role === "TENANT"
+                        ? "/tenant/dashboard/reports/statistics"
+                        : "/user/dashboard/transactions"
+                    }
+                  >
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild>
+                
+                </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
                   <Link href="/forgot-password">Reset Password</Link>
@@ -180,6 +195,23 @@ const Navbar = () => {
                     <Link href="/account">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+
+                    <Link
+                      href={
+                        session.user.role === "TENANT"
+                          ? "/tenant/dashboard/reports/statistics"
+                          : "/user/dashboard/transactions"
+                      }
+                    >
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                 
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+
+
                     <Link href="/forgot-password">Reset Password</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>

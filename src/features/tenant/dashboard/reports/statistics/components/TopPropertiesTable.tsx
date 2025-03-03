@@ -1,6 +1,7 @@
 "use client";
 import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { formatCurrency } from "@/lib/utils";
+import { TableSkeleton } from "./LoadingSkeleton";
 
 interface TopPropertiesTableProps {
   startDate: Date;
@@ -13,11 +14,15 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
   endDate,
   propertyId,
 }) => {
-  const { data: salesReport } = useSalesReport({
+  const { data: salesReport, isLoading } = useSalesReport({
     startDate,
     endDate,
     propertyId,
   });
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
 
   // Extract property metrics and sort by revenue
   const sortedProperties = salesReport?.propertyMetrics
@@ -50,16 +55,16 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Nama Properti
+                Property Name
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Pendapatan
+                Revenue
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Transaksi
+                Transactions
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
-                Hunian
+                Occupancy
               </th>
               <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-medium text-gray-500">
                 Rating
@@ -117,7 +122,7 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
             {(!sortedProperties || sortedProperties.length === 0) && (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                  Tidak ada data properti tersedia
+                  No property data available
                 </td>
               </tr>
             )}

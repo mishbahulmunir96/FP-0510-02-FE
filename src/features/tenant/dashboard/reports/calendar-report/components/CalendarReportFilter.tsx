@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -11,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { useQueryState } from "nuqs";
+import { Building2, Hotel } from "lucide-react";
 
 export const usePropertyIdParam = () => {
   return useQueryState("propertyId");
@@ -57,7 +59,7 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
     startDate,
     endDate,
   });
-  console.log("data filter", salesReport);
+
   const properties = useMemo(() => {
     return salesReport?.propertyMetrics || [];
   }, [salesReport]);
@@ -87,19 +89,20 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
   );
 
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <Card className="border-gray-200 shadow-sm dark:border-gray-800">
+      <CardContent className="p-6">
         <div className="flex flex-col gap-6 sm:flex-row">
           <div className="w-full sm:w-1/2">
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Select Property
+            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Building2 className="h-4 w-4 text-gray-500" />
+              Property
             </label>
             <Select
               value={propertyIdParam || "none"}
               onValueChange={handlePropertyChange}
               disabled={salesReportLoading}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full rounded-md border-gray-300 bg-white focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 dark:border-gray-700 dark:bg-gray-800">
                 <SelectValue placeholder="Select a property" />
               </SelectTrigger>
               <SelectContent>
@@ -127,15 +130,16 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
           </div>
 
           <div className="w-full sm:w-1/2">
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Select Room
+            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Hotel className="h-4 w-4 text-gray-500" />
+              Room Type
             </label>
             <Select
               value={roomIdParam || "all"}
               onValueChange={handleRoomChange}
               disabled={!propertyId || selectedPropertyRooms.length === 0}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full rounded-md border-gray-300 bg-white focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 dark:border-gray-700 dark:bg-gray-800">
                 <SelectValue placeholder="All Rooms" />
               </SelectTrigger>
               <SelectContent>

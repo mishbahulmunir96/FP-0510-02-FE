@@ -121,7 +121,6 @@ export default function NavbarDashboard() {
                 <Building className="h-4 w-4 text-gray-500" />
                 Tenant Profile
               </Link>
-
               <div className="border-t border-gray-100 pt-1">
                 <button
                   onClick={() => {
@@ -136,6 +135,7 @@ export default function NavbarDashboard() {
               </div>
             </div>
           )}
+
         </div>
       </div>
     </nav>

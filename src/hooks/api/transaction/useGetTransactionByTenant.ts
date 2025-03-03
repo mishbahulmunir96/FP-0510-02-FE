@@ -11,6 +11,9 @@ const useGetTransactionDetailByTenant = (id: number) => {
       const { data } = await axiosInstance.get(`/transactions/tenant/${id}`);
       return data;
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 };
