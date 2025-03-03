@@ -31,7 +31,7 @@ const useUpdateProfile = () => {
     },
     onSuccess: async () => {
       toast.success("Update profile success");
-      await queryClient.invalidateQueries({ queryKey: ["account"] });
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
       router.push("/account");
     },
     onError: (error: AxiosError<any>) => {

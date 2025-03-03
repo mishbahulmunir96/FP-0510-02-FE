@@ -40,7 +40,7 @@ export const useUpdateTenant = () => {
 
       // Menggunakan endpoint tenant tanpa ID
       const { data } = await axiosInstance.patch(
-        "/tenant/dashboard/account",
+        "/account/tenant",
         updateTenantForm,
       );
       return data;
@@ -49,7 +49,7 @@ export const useUpdateTenant = () => {
       toast.success("Tenant profile updated successfully");
       // Invalidate query untuk memperbarui cache
       await queryClient.invalidateQueries({ queryKey: ["tenant"] });
-      router.push("/account/tenant");
+      router.push("/tenant/dashboard/account");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(

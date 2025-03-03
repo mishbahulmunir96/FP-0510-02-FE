@@ -31,6 +31,7 @@ import { Icons } from "./icons";
 import useUpdateProfile from "@/hooks/api/account/useUpdateProfile";
 import useChangePassword from "@/hooks/api/account/useChangePassword";
 import { useChangeEmail } from "@/hooks/api/account/useChangeEmail";
+import useGetProfile from "@/hooks/api/account/useGetProfile"; // New hook for fetching profile
 import {
   CheckCircle,
   AlertCircle,
@@ -42,6 +43,9 @@ import {
 
 const EditProfileForm = () => {
   const { data: session, status } = useSession();
+  // Add the profile data from API
+  const { data: profileData, isLoading: isProfileLoading } = useGetProfile();
+
   const { mutate: updateProfile, isPending: isUpdateProfilePending } =
     useUpdateProfile();
   const changePasswordMutation = useChangePassword();
@@ -67,7 +71,18 @@ const EditProfileForm = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (session?.user) {
+    // First try to load data from API
+    if (profileData?.data) {
+      const userData = profileData.data;
+      setDisplayName(userData.name || "");
+      setDisplayEmail(userData.email || "");
+      setDisplayImage(userData.imageUrl || "/images/placeholder.png");
+      setFormName(userData.name || "");
+      setFormEmail(userData.email || "");
+      setIsEmailVerified(userData.isVerified || false);
+    }
+    // Fallback to session data if API data is not available
+    else if (session?.user) {
       setDisplayName(session.user.name || "");
       setDisplayEmail(session.user.email || "");
       setDisplayImage(
@@ -79,9 +94,10 @@ const EditProfileForm = () => {
       setFormEmail(session.user.email || "");
       setIsEmailVerified(session.user.isVerified || false);
     }
-  }, [session]);
+  }, [session, profileData]);
 
-  if (status === "loading") {
+  // Show loading state if either session or profile is loading
+  if (status === "loading" || isProfileLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -92,7 +108,8 @@ const EditProfileForm = () => {
     );
   }
 
-  if (!session) {
+  // Keep the original session check
+  if (!session && !profileData?.data) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Card className="max-w-md">
@@ -105,7 +122,11 @@ const EditProfileForm = () => {
               <p className="mt-2 text-gray-500">
                 Please sign in to access your profile settings.
               </p>
-              <Button className="mt-4" variant="default">
+              <Button
+                className="mt-4"
+                variant="default"
+                onClick={() => (window.location.href = "/api/auth/signin")}
+              >
                 Sign In
               </Button>
             </div>
