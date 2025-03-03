@@ -100,6 +100,7 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                 
                 </DropdownMenuItem>
@@ -194,6 +195,7 @@ const Navbar = () => {
                     <Link href="/account">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+
                     <Link
                       href={
                         session.user.role === "TENANT"
@@ -208,6 +210,7 @@ const Navbar = () => {
                  
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+
 
                     <Link href="/forgot-password">Reset Password</Link>
                   </DropdownMenuItem>

@@ -19,7 +19,6 @@ export default function NavbarDashboard() {
   };
 
   useEffect(() => {
-
     checkMobileView();
     window.addEventListener("resize", checkMobileView);
 
@@ -39,7 +38,6 @@ export default function NavbarDashboard() {
       window.removeEventListener("resize", checkMobileView);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-
   }, []);
 
   return (
@@ -123,7 +121,6 @@ export default function NavbarDashboard() {
                 <Building className="h-4 w-4 text-gray-500" />
                 Tenant Profile
               </Link>
-
               <div className="border-t border-gray-100 pt-1">
                 <button
                   onClick={() => {
