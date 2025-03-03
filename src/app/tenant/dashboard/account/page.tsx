@@ -1,15 +1,15 @@
+import ProfilePage from "@/features/tenant/dashboard/account/setting-profile";
 import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
-import PropertyManagementPage from "@/features/tenant/dashboard/property/management";
 import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 
-const PropertyManagement = () => {
+const Profile = () => {
   return (
     <div>
       <DashboardLayout>
-        <PropertyManagementPage />
+        <ProfilePage />
       </DashboardLayout>
     </div>
   );
 };
 
-export default TenantAuthGuard(PropertyManagement);
+export default TenantAuthGuard(Profile);

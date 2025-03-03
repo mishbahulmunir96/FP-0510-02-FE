@@ -1,4 +1,5 @@
 import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
+import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 import React from "react";
 
 const Dashboard = () => {
@@ -9,4 +10,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default TenantAuthGuard(Dashboard);

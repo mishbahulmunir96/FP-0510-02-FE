@@ -46,9 +46,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user.token = data.token;
         user.email = data.data.email;
         user.imageUrl = data.data.imageUrl;
-
+        user.data = data.data.phoneNumber;
         // Pastikan pengguna yang login dengan Google langsung dianggap verified
-        user.isVerified = true;
+        data.data.user.isVerified = true;
       }
       return true;
     },

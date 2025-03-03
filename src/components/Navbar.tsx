@@ -16,9 +16,7 @@ import {
 import { Menu as IconMenu, UserCircle } from "lucide-react";
 
 const Navbar = () => {
-  const pathName = usePathname();
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const handleLogout = async () => {
     await signOut({
@@ -43,14 +41,6 @@ const Navbar = () => {
         >
           Browse Properties
         </Link>
-        {session?.user && (
-          <Link
-            href="/compare"
-            className="text-base font-medium text-gray-600 transition-colors hover:text-gray-800"
-          >
-            Compare
-          </Link>
-        )}
       </>
     );
   };
@@ -79,7 +69,18 @@ const Navbar = () => {
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center space-x-2 rounded-md px-4 py-2 text-base font-medium text-gray-600 transition-colors hover:text-gray-900">
-                <UserCircle className="h-5 w-5" />
+                {session.user.imageUrl ? (
+                  <div className="relative h-8 w-8 overflow-hidden rounded-full border border-gray-200">
+                    <Image
+                      src={session.user.imageUrl}
+                      alt="Profile Picture"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <UserCircle className="h-8 w-8" />
+                )}
                 <span>{session.user.name || "User"}</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-white">
@@ -88,9 +89,7 @@ const Navbar = () => {
                 <DropdownMenuItem asChild>
                   <Link href="/account">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings">Settings</Link>
-                </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                   <Link href="/forgot-password">Reset Password</Link>
                 </DropdownMenuItem>
@@ -122,9 +121,47 @@ const Navbar = () => {
         <div className="md:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <IconMenu className="h-7 w-7 text-gray-700" />
+              {session?.user?.imageUrl ? (
+                <div className="relative h-9 w-9 overflow-hidden rounded-full border border-gray-200">
+                  <Image
+                    src={session.user.imageUrl}
+                    alt="Profile Picture"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <IconMenu className="h-7 w-7 text-gray-700" />
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-white">
+              {session?.user && (
+                <>
+                  <div className="flex items-center gap-3 p-2">
+                    {session.user.imageUrl ? (
+                      <div className="relative h-10 w-10 overflow-hidden rounded-full border border-gray-200">
+                        <Image
+                          src={session.user.imageUrl}
+                          alt="Profile Picture"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <UserCircle className="h-10 w-10" />
+                    )}
+                    <div>
+                      <p className="font-medium">
+                        {session.user.name || "User"}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {session.user.email || ""}
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                </>
+              )}
               <DropdownMenuLabel>Menu</DropdownMenuLabel>
               <DropdownMenuSeparator />
 
@@ -132,14 +169,8 @@ const Navbar = () => {
                 <Link href="/">Home</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/browse">Browse Properties</Link>
+                <Link href="/property-catalog">explore Properties</Link>
               </DropdownMenuItem>
-
-              {session?.user && (
-                <DropdownMenuItem asChild>
-                  <Link href="/compare">Compare</Link>
-                </DropdownMenuItem>
-              )}
 
               <DropdownMenuSeparator />
 
@@ -147,9 +178,6 @@ const Navbar = () => {
                 <>
                   <DropdownMenuItem asChild>
                     <Link href="/account">Profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/forgot-password">Reset Password</Link>

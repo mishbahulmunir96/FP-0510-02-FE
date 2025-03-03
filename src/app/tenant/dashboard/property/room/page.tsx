@@ -1,5 +1,6 @@
 import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
 import RoomManagementPage from "@/features/tenant/dashboard/property/room";
+import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 
 const Room = () => {
   return (
@@ -11,4 +12,4 @@ const Room = () => {
   );
 };
 
-export default Room;
+export default TenantAuthGuard(Room);
