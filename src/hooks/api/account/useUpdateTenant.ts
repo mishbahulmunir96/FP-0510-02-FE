@@ -40,7 +40,7 @@ export const useUpdateTenant = () => {
 
       // Menggunakan endpoint tenant tanpa ID
       const { data } = await axiosInstance.patch(
-        "/tenant/dashboard/account",
+        "/account/tenant",
         updateTenantForm,
       );
       return data;
