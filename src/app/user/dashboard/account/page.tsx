@@ -1,15 +1,13 @@
-import LandingPageLayout from "@/components/LandingPageLayout";
 import ProfilePage from "@/features/account/Setting-profile";
-import ProfileSettingsPage from "@/features/account/Setting-profile";
+import DashboardUserLayout from "@/features/user/dashboard/DashboardUserLayout";
 import UserAuthGuard from "@/hoc/userAuthGuard";
-import React from "react";
 
 const Profile = () => {
   return (
     <div>
-      <LandingPageLayout>
+      <DashboardUserLayout>
         <ProfilePage />
-      </LandingPageLayout>
+      </DashboardUserLayout>
     </div>
   );
 };

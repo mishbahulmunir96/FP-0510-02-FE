@@ -45,6 +45,15 @@ const TransactionDetailCard = ({
   const showReviewButton = data.status === "CHECKED_OUT" && !reviewData;
   const showViewReviewButton = data.status === "CHECKED_OUT" && reviewData;
 
+  // Mengambil informasi bank dari tenant dalam rezervasi pertama
+  const bankAccount = data.reservations[0]?.tenant
+    ? {
+        bankName: data.reservations[0].tenant.bankName,
+        bankNumber: data.reservations[0].tenant.bankNumber,
+        name: data.reservations[0].tenant.name,
+      }
+    : null;
+
   return (
     <Card className="overflow-hidden rounded-lg bg-white shadow-md">
       <CardHeader className="space-y-6 border-b bg-gray-50/50 p-6">
@@ -124,7 +133,6 @@ const TransactionDetailCard = ({
                 <p className="font-medium text-gray-900">
                   {data.reservations[0].tenant.name}
                 </p>
-                {/* <p className="text-sm text-gray-500">Primary Guest</p> */}
               </div>
             </div>
           </div>
@@ -186,6 +194,7 @@ const TransactionDetailCard = ({
           isUploading={isUploading}
           isCancelling={isCancelling}
           invoiceUrl={data.invoiceUrl}
+          bankAccount={bankAccount} // Menambahkan properti bankAccount
           onUploadProof={onUploadProof}
           onCancelTransaction={onCancelTransaction}
         />

@@ -77,7 +77,9 @@ const BestDeals = () => {
           </Carousel>
         </div>
 
+
         <div className="mt-6 text-center"></div>
+
       </div>
     </section>
   );

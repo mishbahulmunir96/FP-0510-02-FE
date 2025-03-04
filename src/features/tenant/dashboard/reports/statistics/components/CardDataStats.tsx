@@ -18,22 +18,22 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   children,
 }) => {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:translate-y-[-2px] hover:shadow-md">
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-4">
           <div
-            className={`flex h-14 w-14 items-center justify-center rounded-lg ${
+            className={`flex h-16 w-16 items-center justify-center rounded-lg shadow-sm ${
               levelUp
-                ? "bg-green-100 text-green-600"
+                ? "bg-gradient-to-br from-green-50 to-green-100 text-green-600"
                 : levelDown
-                  ? "bg-blue-100 text-blue-600"
-                  : "bg-blue-50 text-blue-500"
+                  ? "bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600"
+                  : "bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-500"
             }`}
           >
             {children}
           </div>
           <div className="min-w-0 flex-1">
-            <h4 className="truncate text-2xl font-semibold text-gray-900">
+            <h4 className="truncate text-2xl font-bold text-gray-900">
               {total}
             </h4>
             <span className="block truncate text-sm font-medium text-gray-500">
