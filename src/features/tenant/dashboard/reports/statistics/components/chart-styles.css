@@ -1,8 +1,23 @@
+<<<<<<< HEAD
+/* Chart container styles */
+=======
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 .chart-container {
   position: relative;
   width: 100%;
 }
 
+<<<<<<< HEAD
+/* Horizontal scrolling container for charts */
+.chart-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  padding-bottom: 1rem; /* Provide space for scrollbar */
+}
+
+/* Custom scrollbar styling */
+=======
 .chart-scroll-container {
   width: 100%;
   overflow-x: auto;
@@ -10,6 +25,7 @@
   padding-bottom: 1rem;
 }
 
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 .chart-scroll-container::-webkit-scrollbar {
   height: 6px;
 }
@@ -28,6 +44,10 @@
   background: #a1a1a1;
 }
 
+<<<<<<< HEAD
+/* Responsive adjustments */
+=======
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 @media (max-width: 768px) {
   .chart-scroll-container::after {
     content: "";
@@ -60,6 +80,10 @@
   }
 }
 
+<<<<<<< HEAD
+/* Enhanced chart visuals */
+=======
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 .apexcharts-menu-icon,
 .apexcharts-reset-icon,
 .apexcharts-zoom-icon,
@@ -91,6 +115,10 @@
   font-weight: 500 !important;
 }
 
+<<<<<<< HEAD
+/* Dark mode support */
+=======
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 .dark .chart-scroll-container::-webkit-scrollbar-track {
   background: #1e293b;
 }

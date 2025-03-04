@@ -11,9 +11,7 @@ export const useDeletePeakSeasonRate = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.delete(
-        `/peak-season-rates/delete/${id}`,
-      );
+      const { data } = await axiosInstance.delete(`/peak-season-rates/${id}`);
       return data;
     },
     onSuccess: () => {
