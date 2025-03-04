@@ -1,0 +1,160 @@
+.custom-calendar .fc {
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+.fc .fc-toolbar {
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 0.5rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.dark .fc .fc-toolbar-title {
+  color: #f8fafc;
+}
+
+.fc .fc-button {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease;
+}
+
+.fc .fc-button:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  transform: translateY(-1px);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset !important;
+}
+
+.dark .fc .fc-button {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+.dark .fc .fc-button:hover {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+}
+
+.dark .fc .fc-button-primary:not(:disabled).fc-button-active,
+.dark .fc .fc-button-primary:not(:disabled):active {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+.fc .fc-day-other .fc-daygrid-day-frame {
+  opacity: 0.65;
+}
+
+.fc .fc-day-today .day-cell {
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.5);
+  background-color: rgba(56, 189, 248, 0.05) !important;
+}
+
+.price-indicator {
+  margin-top: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0284c7;
+  background-color: rgba(186, 230, 253, 0.7);
+  border-radius: 4px;
+  padding: 2px 5px;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .price-indicator {
+    font-size: 0.65rem;
+    padding: 1px 3px;
+  }
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.5) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.5);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.7);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.day-cell .text-red-700 {
+  animation: pulse 2s infinite;
+}
+
+.dialog-content {
+  max-width: 90vw;
+  width: 700px;
+  border-radius: 12px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.dark .dialog-content {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+.room-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.room-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}

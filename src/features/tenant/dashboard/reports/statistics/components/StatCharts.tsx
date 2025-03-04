@@ -11,7 +11,6 @@ interface StatCardsProps {
 }
 
 const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
-  // Use useSalesReport for the current period
   const { data: salesReport, isLoading: isCurrentLoading } = useSalesReport({
     startDate,
     endDate,
@@ -24,7 +23,6 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
   previousStartDate.setTime(previousStartDate.getTime() - diff);
   previousEndDate.setTime(previousEndDate.getTime() - diff);
 
-  // Use useSalesReport for the previous period (for comparison)
   const { data: previousSalesReport, isLoading: isPreviousLoading } =
     useSalesReport({
       startDate: previousStartDate,

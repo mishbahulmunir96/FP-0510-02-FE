@@ -24,7 +24,6 @@ export const TopPropertiesTable: React.FC<TopPropertiesTableProps> = ({
     return <TableSkeleton />;
   }
 
-  // Extract property metrics and sort by revenue
   const sortedProperties = salesReport?.propertyMetrics
     .sort((a, b) => b.totalRevenue - a.totalRevenue)
     .slice(0, 5);

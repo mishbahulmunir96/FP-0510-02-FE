@@ -152,7 +152,6 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
         )}
       </div>
 
-      {/* Reply Modal */}
       <Dialog open={isReplyModalOpen} onOpenChange={setIsReplyModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
