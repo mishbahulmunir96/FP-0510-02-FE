@@ -79,41 +79,39 @@ export function AppSidebar() {
           <button
             onClick={() => toggleSubmenu(item.title)}
             className={cn(
-              "group w-full rounded-lg transition-all duration-200",
+              "group flex w-full items-center rounded-lg p-2 text-left transition-all duration-200",
               isOpen ? "bg-sky-50" : "hover:bg-gray-50",
             )}
           >
-            <div className="flex items-center p-2">
-              <div
+            <div
+              className={cn(
+                "mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200",
+                isOpen
+                  ? "bg-sky-100 text-sky-600"
+                  : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900",
+              )}
+            >
+              <item.icon className="h-5 w-5" />
+            </div>
+            <div className="flex-1 text-left">
+              <p
                 className={cn(
-                  "mr-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
+                  "text-sm font-medium",
                   isOpen
-                    ? "bg-sky-100 text-sky-600"
-                    : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900",
+                    ? "text-sky-600"
+                    : "text-gray-700 group-hover:text-gray-900",
                 )}
               >
-                <item.icon className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    isOpen
-                      ? "text-sky-600"
-                      : "text-gray-700 group-hover:text-gray-900",
-                  )}
-                >
-                  {item.title}
-                </p>
-                <p className="text-xs text-gray-500">{item.description}</p>
-              </div>
-              <ChevronDown
-                className={cn(
-                  "h-5 w-5 transform transition-all duration-200",
-                  isOpen ? "rotate-180 text-sky-600" : "text-gray-400",
-                )}
-              />
+                {item.title}
+              </p>
+              <p className="text-xs text-gray-500">{item.description}</p>
             </div>
+            <ChevronDown
+              className={cn(
+                "ml-2 h-5 w-5 flex-shrink-0 transform transition-all duration-200",
+                isOpen ? "rotate-180 text-sky-600" : "text-gray-400",
+              )}
+            />
           </button>
           {isOpen && (
             <div className="mt-1 space-y-1 pl-12">
@@ -137,7 +135,7 @@ export function AppSidebar() {
       >
         <div
           className={cn(
-            "mr-3 flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200",
+            "mr-3 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200",
             isActive
               ? "bg-sky-100 text-sky-600"
               : "bg-gray-50 text-gray-600 group-hover:bg-gray-100 group-hover:text-gray-900",
@@ -146,7 +144,7 @@ export function AppSidebar() {
         >
           <item.icon className={cn("h-5 w-5", isSubmenuItem && "h-4 w-4")} />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 text-left">
           <p
             className={cn(
               "text-sm font-medium",
