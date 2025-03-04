@@ -1,8 +1,8 @@
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, BedDouble } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { BedDouble, Users } from "lucide-react";
+import Image from "next/image";
 
 interface PropertyDetailCardProps {
   roomId: string;
