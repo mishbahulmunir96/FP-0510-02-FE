@@ -1,16 +1,12 @@
 "use client";
+<<<<<<< HEAD
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+=======
+import React, { useCallback, useRef, useState } from "react";
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
   TooltipContent,
@@ -30,6 +26,7 @@ import {
   useStartDateParam,
   useEndDateParam,
 } from "./CalendarReportFilter";
+<<<<<<< HEAD
 import {
   Building2,
   Calendar,
@@ -38,9 +35,21 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+=======
+import { Calendar as CalendarIcon } from "lucide-react";
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 import CalendarLoadingSkeleton from "./CalendarLoadingSkeleton";
+import NoPropertyCard from "./NoPropertyCard";
+import ErrorCalendarCard from "./ErrorCalendarCard";
+import RoomDetailModal from "./RoomDetailModal";
 
-import "./calendar-styles.css";
+import "./calendar-styles-base.css";
+import "./calendar-styles-components.css";
+import {
+  formatDate,
+  getCalendarOptions,
+  getDayCellHtml,
+} from "@/utils/calendarUtils";
 
 const CalendarReportCard: React.FC = () => {
   const [propertyIdParam] = usePropertyIdParam();
@@ -57,7 +66,6 @@ const CalendarReportCard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const calendarRef = useRef<FullCalendar>(null);
-  // Flag untuk mengetahui apakah perubahan tanggal dilakukan secara programatik
   const isUpdatingProgrammatically = useRef(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -72,22 +80,11 @@ const CalendarReportCard: React.FC = () => {
     roomId,
   });
 
-  // Helper function untuk memformat tanggal
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  // Handler untuk navigasi bulan
   const handleMonthChange = (direction: "prev" | "next") => {
     if (!calendarRef.current) return;
 
-    // Set flag bahwa kita sedang melakukan update secara programatik
     isUpdatingProgrammatically.current = true;
 
-    // Navigasi calendar UI
     const calendarApi = calendarRef.current.getApi();
     if (direction === "prev") {
       calendarApi.prev();
@@ -95,13 +92,11 @@ const CalendarReportCard: React.FC = () => {
       calendarApi.next();
     }
 
-    // Dapatkan tanggal baru setelah navigasi
     const newStart = calendarApi.view.currentStart;
     const newEnd = calendarApi.view.currentEnd;
 
-    // Tetapkan tanggal baru untuk state dan query
     setStartDate(formatDate(newStart));
-    setEndDate(formatDate(new Date(newEnd.getTime() - 86400000))); // Kurangi 1 hari
+    setEndDate(formatDate(new Date(newEnd.getTime() - 86400000)));
   };
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
@@ -122,15 +117,13 @@ const CalendarReportCard: React.FC = () => {
 
   const handleDatesSet = useCallback(
     ({ start, end }: { start: Date; end: Date }) => {
-      // Jangan update state jika perubahan dilakukan secara programatik
       if (isUpdatingProgrammatically.current) {
         isUpdatingProgrammatically.current = false;
         return;
       }
 
-      // Jika perubahan dilakukan oleh pengguna, update state
       const formattedStartDate = formatDate(start);
-      const formattedEndDate = formatDate(new Date(end.getTime() - 86400000)); // Kurangi 1 hari
+      const formattedEndDate = formatDate(new Date(end.getTime() - 86400000));
 
       setStartDate(formattedStartDate);
       setEndDate(formattedEndDate);
@@ -139,12 +132,18 @@ const CalendarReportCard: React.FC = () => {
   );
 
   const dayCellContent = (args: { date: Date; dayNumberText: string }) => {
-    if (!reportData) return { html: args.dayNumberText };
+    return getDayCellHtml(args, reportData, roomIdParam);
+  };
 
-    const dateStr = formatDate(args.date);
+  const handleTodayClick = () => {
+    if (!calendarRef.current) return;
+    calendarRef.current.getApi().today();
 
-    const dayData = reportData.calendarData.find((day) => day.date === dateStr);
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
+<<<<<<< HEAD
     if (!dayData) return { html: args.dayNumberText };
 
     let displayInfo = "";
@@ -234,20 +233,16 @@ const CalendarReportCard: React.FC = () => {
     `;
 
     return { html };
+=======
+    setStartDate(formatDate(firstDay));
+    setEndDate(formatDate(lastDay));
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
   };
 
   const calendarOptions = {
-    height: "auto",
-    contentHeight: "auto",
-    aspectRatio: 1.5,
-    dayMaxEvents: true,
-    fixedWeekCount: false,
-    weekends: true,
-    firstDay: 1,
-    showNonCurrentDates: true,
-    handleWindowResize: true,
-    stickyHeaderDates: true,
+    ...getCalendarOptions(handleMonthChange),
     customButtons: {
+<<<<<<< HEAD
       prev: {
         text: "",
         click: () => handleMonthChange("prev"),
@@ -284,10 +279,18 @@ const CalendarReportCard: React.FC = () => {
       next: "chevron-right",
       prevYear: "chevrons-left",
       nextYear: "chevrons-right",
+=======
+      ...getCalendarOptions(handleMonthChange).customButtons,
+      today: {
+        text: "Today",
+        click: handleTodayClick,
+      },
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
     },
   };
 
   if (!propertyId) {
+<<<<<<< HEAD
     return (
       <Card className="overflow-hidden border-gray-200 p-6 shadow-sm dark:border-gray-800">
         <CardContent className="flex h-[400px] items-center justify-center p-0">
@@ -310,10 +313,14 @@ const CalendarReportCard: React.FC = () => {
         </CardContent>
       </Card>
     );
+=======
+    return <NoPropertyCard />;
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
   }
 
   if (isLoading) return <CalendarLoadingSkeleton />;
 
+<<<<<<< HEAD
   if (error)
     return (
       <Card className="overflow-hidden border-gray-200 p-6 shadow-sm dark:border-gray-800">
@@ -349,6 +356,9 @@ const CalendarReportCard: React.FC = () => {
         </CardContent>
       </Card>
     );
+=======
+  if (error) return <ErrorCalendarCard />;
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 
   return (
     <>
@@ -455,6 +465,7 @@ const CalendarReportCard: React.FC = () => {
         </CardContent>
       </Card>
 
+<<<<<<< HEAD
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         {selectedDay && (
           <DialogContent className="dialog-content overflow-hidden p-0 sm:max-w-[700px]">
@@ -585,6 +596,14 @@ const CalendarReportCard: React.FC = () => {
           </DialogContent>
         )}
       </Dialog>
+=======
+      <RoomDetailModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        selectedDay={selectedDay}
+        propertyName={reportData?.propertyName}
+      />
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
     </>
   );
 };

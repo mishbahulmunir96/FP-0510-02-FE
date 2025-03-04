@@ -1,23 +1,22 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
-import { formatCurrency } from "@/lib/utils";
-import { ApexOptions } from "apexcharts";
-import dynamic from "next/dynamic";
+import { PieChart } from "lucide-react";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import { DataType, DistributionChartProps } from "@/types/report";
 import { ChartSkeleton } from "./LoadingSkeleton";
+<<<<<<< HEAD
 import { PieChart, DollarSign } from "lucide-react";
+=======
+import {
+  getChartOptions,
+  prepareChartData,
+} from "@/utils/distributionChartUtils";
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-
-interface DistributionChartProps {
-  startDate: Date;
-  endDate: Date;
-  propertyId?: number | null;
-}
-
-type DataType = "transactions" | "revenue";
 
 export const DistributionChart = ({
   startDate,
@@ -32,6 +31,7 @@ export const DistributionChart = ({
     propertyId,
   });
 
+<<<<<<< HEAD
   const propertyMetrics = salesReport?.propertyMetrics || [];
 
   const chartData = propertyId
@@ -205,9 +205,18 @@ export const DistributionChart = ({
     ],
   };
 
+=======
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
   if (isLoading) {
     return <ChartSkeleton />;
   }
+
+  const propertyMetrics = salesReport?.propertyMetrics || [];
+  const chartData = prepareChartData(propertyMetrics, propertyId, dataType);
+
+  const series = chartData.map((item) => item.value);
+  const labels = chartData.map((item) => item.name);
+  const options = getChartOptions(labels, dataType);
 
   return (
     <div className="border-stroke shadow-default relative rounded-sm border bg-white">

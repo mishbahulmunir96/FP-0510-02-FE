@@ -102,7 +102,10 @@ const StatisticPage = () => {
 
   return (
     <div className="space-y-8">
+<<<<<<< HEAD
       {/* Page Title Section */}
+=======
+>>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
       <div className="rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-6 dark:from-blue-900/20 dark:to-indigo-900/20">
         <div className="mb-3 flex items-center gap-3">
           <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-800/40">
