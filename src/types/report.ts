@@ -106,9 +106,7 @@ export interface UserReport {
 
 export type FilterType = "date-range" | "month-year" | "year-only";
 
-// Tambahkan type SalesReport pada file report.ts yang sudah ada
 export interface SalesReport {
-  // Property metrics
   propertyMetrics: {
     propertyId: number;
     propertyName: string;
@@ -133,7 +131,6 @@ export interface SalesReport {
     }[];
   }[];
 
-  // Aggregated transaction metrics
   transactionMetrics: {
     totalTransactions: number;
     totalRevenue: number;
@@ -158,4 +155,51 @@ export interface SalesReport {
     averageBookingDuration: number;
     averageBookingLeadTime: number;
   };
+}
+
+export interface DistributionChartProps {
+  startDate: Date;
+  endDate: Date;
+  propertyId?: number | null;
+}
+
+export type DataType = "transactions" | "revenue";
+
+export interface ChartItem {
+  name: string;
+  value: number;
+}
+
+export interface RevenueChartProps {
+  startDate: Date;
+  endDate: Date;
+  propertyId?: number | null;
+}
+
+export interface PeakBookingPeriod {
+  date: string;
+  totalRevenue: number;
+  totalBookings: number;
+}
+
+export interface StatisticFiltersProps {
+  filterType: FilterType;
+  startDate: Date;
+  endDate: Date;
+  selectedMonth: number;
+  selectedYear: number;
+  selectedProperty: number | null;
+  onFilterChange: (filters: {
+    filterType?: FilterType;
+    startDate?: Date;
+    endDate?: Date;
+    month?: number;
+    year?: number;
+    propertyId?: number | null;
+  }) => void;
+}
+
+export interface Property {
+  propertyId: number;
+  propertyName: string;
 }

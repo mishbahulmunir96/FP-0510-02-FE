@@ -1,18 +1,17 @@
 "use client";
-import React, { useCallback, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
+import { Building2, CalendarRange, Filter, Hotel } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { Building2, Hotel, Filter, CalendarRange } from "lucide-react";
+import React, { useCallback, useMemo } from "react";
 
 export const usePropertyIdParam = () => {
   return useQueryState("propertyId");
@@ -45,7 +44,6 @@ export const useEndDateParam = () => {
 interface CalendarFiltersProps {}
 
 const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
-  // Get params from URL
   const [propertyIdParam, setPropertyId] = usePropertyIdParam();
   const [roomIdParam, setRoomId] = useRoomIdParam();
   const [startDateParam] = useStartDateParam();
