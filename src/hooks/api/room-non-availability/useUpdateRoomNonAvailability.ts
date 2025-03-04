@@ -19,7 +19,7 @@ const useUpdateRoomNonAvailability = () => {
   return useMutation({
     mutationFn: async (payload: UpdateRoomNonAvailabilityPayload) => {
       const { data } = await axiosInstance.patch(
-        `/room-non-availabilities/room-non-availability/${payload.id}`,
+        `/room-non-availabilities/non-availability/${payload.id}`,
         payload,
       );
       return data;
