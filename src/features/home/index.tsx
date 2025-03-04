@@ -8,6 +8,7 @@ import Jumbotron from "./components/Jumbotron";
 import PropertyList from "../property/index";
 import { FilterSchema } from "./schemas/FilterSchema";
 import { useGetPropertiesByQuery } from "@/hooks/api/search-property/useGetPropertiesByQuery";
+import BestDeals from "@/components/BestDeals";
 
 const HomePage = () => {
   const router = useRouter();
@@ -65,11 +66,11 @@ const HomePage = () => {
   };
 
   return (
-    <main className="min-h-screen]">
+    <main className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <Jumbotron />
 
-      {/* Search Section */}
-      <div className="mx-auto mt-20 max-w-7xl">
+      {/* Search Section - Keeping original size */}
+      <div className="mx-auto mt-20 max-w-7xl px-4">
         <div className="grid items-center gap-2 rounded-xl border-2 border-[#89CFF3] bg-white p-2 shadow-lg transition-all duration-300 hover:shadow-xl md:grid-cols-3">
           {/* Property Search */}
           <div className="rounded-xl p-1">
@@ -114,7 +115,7 @@ const HomePage = () => {
         {/* Search Button */}
         <div className="container mx-auto mt-3 max-w-7xl text-center">
           <Button
-            className="w-full bg-[#00A9FF] text-white transition-all duration-300 hover:bg-[#0098e5] disabled:bg-[#89CFF3]"
+            className="w-full bg-[#00A9FF] font-medium text-white shadow-sm transition-all duration-300 hover:bg-[#0098e5] hover:shadow disabled:bg-[#89CFF3]"
             disabled={pendingSearch}
             onClick={() => formik.handleSubmit()}
           >
@@ -148,9 +149,10 @@ const HomePage = () => {
       {/* Properties Section */}
       <div className="mx-auto px-4 py-16">
         <div className="mb-12 text-center">
-          <h2 className="mb-2 text-3xl font-bold text-[#00A9FF]">
+          <h2 className="mb-2 text-3xl font-bold text-gray-800 transition-colors duration-300 hover:text-[#00A9FF]">
             Discover Amazing Properties
           </h2>
+
           <p className="mx-auto max-w-2xl text-gray-600">
             Browse through our curated selection of premium properties for your
             next perfect stay
@@ -158,9 +160,12 @@ const HomePage = () => {
         </div>
         <PropertyList />
       </div>
+      {/* Best Deals Section */}
+      <div className="py-8 md:py-12">
+        <BestDeals />
+      </div>
     </main>
   );
 };
 
 export default HomePage;
-//
