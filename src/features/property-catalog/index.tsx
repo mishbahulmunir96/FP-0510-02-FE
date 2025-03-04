@@ -10,6 +10,7 @@ import useGetProperties from "../../hooks/api/property/useGetProperties";
 import PropertyCard from "../property/components/PropertyCard";
 import PropertyNavigation from "./components/PropertyNavigation";
 import PaginationSection from "../../components/PaginationSection";
+import CatalogPagination from "@/components/CatalogPagination";
 
 export default function PropertyCatalogPage() {
   const [location, setLocation] = useState<string>("");
@@ -294,7 +295,7 @@ export default function PropertyCatalogPage() {
               {/* Pagination - BIGGER */}
               {data?.data?.meta && (
                 <div className="mt-16">
-                  <PaginationSection
+                  <CatalogPagination
                     page={data.data.meta.page}
                     take={data.data.meta.take}
                     totalCount={data.data.meta.totalCount}
