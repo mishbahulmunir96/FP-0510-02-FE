@@ -24,10 +24,6 @@ export const CalendarLoadingSkeleton: React.FC = () => {
             </div>
           </div>
 
-<<<<<<< HEAD
-          {/* Calendar header */}
-=======
->>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
           <div className="mb-3 grid grid-cols-7 gap-2">
             {[...Array(7)].map((_, i) => (
               <div
@@ -37,25 +33,14 @@ export const CalendarLoadingSkeleton: React.FC = () => {
             ))}
           </div>
 
-<<<<<<< HEAD
-          {/* Calendar grid */}
-=======
->>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
           <div className="grid grid-cols-7 gap-3">
             {[...Array(35)].map((_, i) => (
               <div
                 key={`cell-${i}`}
                 className="relative h-32 animate-pulse overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800/50"
               >
-<<<<<<< HEAD
-                {/* Day number */}
                 <div className="absolute left-2 top-2 h-5 w-5 rounded bg-gray-200 dark:bg-gray-700"></div>
 
-                {/* Content placeholders */}
-=======
-                <div className="absolute left-2 top-2 h-5 w-5 rounded bg-gray-200 dark:bg-gray-700"></div>
-
->>>>>>> 5d8a0be1228781fedb1fa034b7e16873b050b305
                 <div className="absolute left-2 right-2 top-10 space-y-2">
                   <div className="h-3 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
                   <div className="h-3 w-2/3 rounded bg-gray-200 dark:bg-gray-700"></div>
