@@ -10,6 +10,11 @@ import { Loader2, Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import PriceDetails from "./PriceDetails";
+import {
+  calculatePricing,
+  PeakSeasonRate,
+} from "@/utils/reservationsPriceUtils";
 
 interface ReservationCardProps {
   roomId: number;
@@ -20,12 +25,7 @@ interface ReservationCardProps {
   roomImage: string;
   paymentMethod: string;
   isLoggedIn: boolean;
-  peakSeasonRates: {
-    id: number;
-    startDate: string;
-    endDate: string;
-    price: number;
-  }[];
+  peakSeasonRates: PeakSeasonRate[];
   onSubmit: (e?: React.FormEvent<HTMLFormElement>) => void;
   isSubmitting: boolean;
 }
@@ -50,62 +50,13 @@ const ReservationCard = ({
     take: 1,
   });
 
-  const calculatePricing = () => {
-    const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime());
-    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    let totalPrice = 0;
-    let peakSeasonDays = 0;
-    let peakSeasonRatePerNight = 0;
-    let basePrice = pricePerNight;
-
-    for (let i = 0; i < nights; i++) {
-      const currentDate = new Date(checkIn);
-      currentDate.setDate(currentDate.getDate() + i);
-      currentDate.setHours(0, 0, 0, 0);
-
-      const isPeakSeason = peakSeasonRates.some((rate) => {
-        const startDate = new Date(rate.startDate);
-        const endDate = new Date(rate.endDate);
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
-        return currentDate >= startDate && currentDate <= endDate;
-      });
-
-      if (isPeakSeason) {
-        const peakRate = peakSeasonRates.find((rate) => {
-          const startDate = new Date(rate.startDate);
-          const endDate = new Date(rate.endDate);
-          startDate.setHours(0, 0, 0, 0);
-          endDate.setHours(0, 0, 0, 0);
-          return currentDate >= startDate && currentDate <= endDate;
-        });
-
-        if (peakRate) {
-          peakSeasonDays++;
-          peakSeasonRatePerNight = peakRate.price;
-          totalPrice += peakRate.price;
-        }
-      } else {
-        totalPrice += basePrice;
-      }
-    }
-
-    return {
-      totalPrice,
-      nights,
-      basePrice,
-      peakSeasonDays,
-      peakSeasonRatePerNight,
-    };
-  };
-
-  const {
-    totalPrice,
-    nights,
-    basePrice,
-    peakSeasonDays,
-    peakSeasonRatePerNight,
-  } = calculatePricing();
+  const pricingDetails = calculatePricing(
+    checkIn,
+    checkOut,
+    pricePerNight,
+    peakSeasonRates,
+  );
+  const { totalPrice } = pricingDetails;
 
   const handleReservation = () => {
     if (!isLoggedIn) {
@@ -180,44 +131,7 @@ const ReservationCard = ({
 
         <div className="space-y-4">
           <h4 className="text-lg font-semibold text-gray-900">Price Details</h4>
-          <div className="space-y-3 rounded-lg bg-gray-50 p-4">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Base Price</span>
-              <span className="font-medium text-gray-900">
-                {formatCurrency(basePrice)}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Duration</span>
-              <span className="font-medium text-gray-900">
-                {nights} night{nights > 1 ? "s" : ""}
-              </span>
-            </div>
-            {peakSeasonDays > 0 && (
-              <>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Peak Season Rate</span>
-                  <span className="font-medium text-gray-900">
-                    {formatCurrency(peakSeasonRatePerNight)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Peak Season Days</span>
-                  <span className="font-medium text-gray-900">
-                    {peakSeasonDays}
-                  </span>
-                </div>
-              </>
-            )}
-            <div className="border-t pt-3">
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-900">Total Price</span>
-                <span className="text-lg font-semibold text-blue-600">
-                  {formatCurrency(totalPrice)}
-                </span>
-              </div>
-            </div>
-          </div>
+          <PriceDetails pricingDetails={pricingDetails} />
         </div>
       </div>
 

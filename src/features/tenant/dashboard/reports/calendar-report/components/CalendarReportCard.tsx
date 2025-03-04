@@ -25,7 +25,6 @@ import CalendarLoadingSkeleton from "./CalendarLoadingSkeleton";
 import NoPropertyCard from "./NoPropertyCard";
 import ErrorCalendarCard from "./ErrorCalendarCard";
 import RoomDetailModal from "./RoomDetailModal";
-
 import "./calendar-styles-base.css";
 import "./calendar-styles-components.css";
 import {
