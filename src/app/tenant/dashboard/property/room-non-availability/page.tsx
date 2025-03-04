@@ -2,7 +2,6 @@
 
 import DashboardLayout from "@/features/tenant/dashboard/dashboardLayout";
 import RoomNonAvailabilityPage from "@/features/tenant/dashboard/property/room-non-availability";
-import TenantAuthGuard from "@/hoc/tenantAuthGuard";
 
 const RoomNonAvailability = ({ params }: { params: { id: number } }) => {
   return (
@@ -14,4 +13,4 @@ const RoomNonAvailability = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default TenantAuthGuard(RoomNonAvailability);
+export default RoomNonAvailability;
