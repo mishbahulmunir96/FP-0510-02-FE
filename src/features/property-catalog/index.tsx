@@ -134,7 +134,7 @@ export default function PropertyCatalogPage() {
       {/* Top Navigation with PropertyNavigation component */}
       <div className="border-b bg-white py-6 shadow-md">
         <div className="container mx-auto px-6">
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-max">
             <PropertyNavigation
               onLocation={handleLocation}
               onCategory={handleCategory}
@@ -237,7 +237,7 @@ export default function PropertyCatalogPage() {
 
       {/* Main Content Area - BIGGER spacing and elements */}
       <main className="container mx-auto flex-1 px-6 pb-16">
-        <div className="mx-auto max-w-7xl">
+        <div className="max-w- mx-auto">
           {isLoading ? (
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -286,7 +286,7 @@ export default function PropertyCatalogPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
-                className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
+                className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4"
               >
                 {propertyCards}
               </motion.div>
@@ -297,7 +297,7 @@ export default function PropertyCatalogPage() {
                   <PaginationSection
                     page={data.data.meta.page}
                     take={data.data.meta.take}
-                    total={data.data.meta.total}
+                    totalCount={data.data.meta.totalCount}
                     onChangePage={handleChangePage}
                   />
                 </div>

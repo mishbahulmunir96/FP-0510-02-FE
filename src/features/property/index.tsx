@@ -1,16 +1,19 @@
 import { Property as ImportedProperty } from "@/types/property";
 import { motion } from "framer-motion";
-import { Loader2, Search } from "lucide-react";
+import { ArrowRight, Loader2, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import useGetProperties from "../../hooks/api/property/useGetProperties";
 import useDebounce from "../../hooks/useDebounce";
 import PropertyCard from "../property/components/PropertyCard";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
 };
 
 export default function PropertyListPage() {
+  const router = useRouter();
   const [location] = useState<string>("");
   const [category] = useState<string>("");
   const [checkIn] = useState<Date | undefined>(undefined);
@@ -53,6 +56,10 @@ export default function PropertyListPage() {
     );
   }, [data]);
 
+  const handleExploreMore = () => {
+    router.push("/property-catalog");
+  };
+
   if (isError) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-white to-[#CDF5FD]">
@@ -73,7 +80,7 @@ export default function PropertyListPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 px-4 py-8 sm:px-6 lg:px-48">
         {isLoading ? (
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -104,14 +111,33 @@ export default function PropertyListPage() {
             </p>
           </motion.div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          >
-            {propertyCards}
-          </motion.div>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            >
+              {propertyCards}
+            </motion.div>
+
+            {/* Explore More Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.4 }}
+              className="mt-12 flex justify-center"
+            >
+              <Button
+                onClick={handleExploreMore}
+                className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-[#00A9FF] px-8 py-6 text-lg font-semibold text-white transition-all duration-300 hover:bg-[#0090DB] hover:shadow-lg"
+              >
+                Explore More Properties
+                <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
+                <span className="absolute -bottom-20 left-0 right-0 h-40 bg-white/10 blur-xl transition-all duration-500 group-hover:bottom-0" />
+              </Button>
+            </motion.div>
+          </>
         )}
       </main>
     </div>
