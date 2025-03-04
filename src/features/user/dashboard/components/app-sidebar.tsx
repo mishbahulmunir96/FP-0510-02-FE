@@ -1,27 +1,19 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  Building2,
-  CalendarDays,
-  FileBarChart,
-  Settings,
-  ChevronDown,
-  Home,
-  Bed,
-  LayoutGrid,
-  Menu,
-  X,
-  NotebookPen,
-} from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import { LucideIcon } from "lucide-react";
+import {
+  ChevronDown,
+  LucideIcon,
+  Menu,
+  NotebookPen,
+  UserRound,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-// Define interfaces for menu items
 interface BaseMenuItem {
   title: string;
   icon: LucideIcon;
@@ -37,7 +29,6 @@ interface ParentMenuItem extends BaseMenuItem {
   url?: string;
 }
 
-// Define interface for MenuItem component props
 interface MenuItemProps {
   item: ParentMenuItem;
   isSubmenuItem?: boolean;
@@ -164,6 +155,12 @@ export function AppSidebar() {
   };
 
   const menuItems: ParentMenuItem[] = [
+    {
+      title: "Profile",
+      url: "/user/dashboard/account",
+      icon: UserRound,
+      description: "View & manage your profile",
+    },
     {
       title: "My Bookings",
       url: "/user/dashboard/transactions",
