@@ -87,7 +87,7 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/account">Profile</Link>
+                  <Link href="/user/dashboard/account">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link
@@ -101,9 +101,7 @@ const Navbar = () => {
                   </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem asChild>
-                
-                </DropdownMenuItem>
+                <DropdownMenuItem asChild></DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
                   <Link href="/forgot-password">Reset Password</Link>
@@ -195,7 +193,6 @@ const Navbar = () => {
                     <Link href="/account">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-
                     <Link
                       href={
                         session.user.role === "TENANT"
@@ -206,12 +203,8 @@ const Navbar = () => {
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild></DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                 
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-
-
                     <Link href="/forgot-password">Reset Password</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>

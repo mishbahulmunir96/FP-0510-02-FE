@@ -30,6 +30,16 @@ import type { DayButtonProps } from "react-day-picker";
 // Threshold for determining "good price" (less than base price)
 const GOOD_PRICE_THRESHOLD_RATIO = 0.9;
 
+// Compact price formatting function
+const formatCompactPrice = (price: number) => {
+  if (price >= 1_000_000) {
+    return `${Math.round(price / 1_000_000)}M`;
+  } else if (price >= 1_000) {
+    return `${Math.round(price / 1_000)}k`;
+  }
+  return `${price}`;
+};
+
 type DateRange = {
   from: Date | undefined;
   to?: Date | undefined;
@@ -53,24 +63,19 @@ interface RoomPriceCalendarProps {
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
-const disabledDays = [{ before: today }]; // This is used by the Calendar component internally
+const disabledDays = [{ before: today }];
 
 const TIMEZONE = "Asia/Jakarta";
 
 // Function to calculate the number of nights between two dates
 const calculateNights = (checkIn: Date, checkOut: Date) => {
-  // Create copies of the dates to avoid modifying originals
   const from = new Date(checkIn);
   const to = new Date(checkOut);
 
-  // Set time to midnight for accurate day calculation
   from.setHours(0, 0, 0, 0);
   to.setHours(0, 0, 0, 0);
 
-  // Calculate the difference in milliseconds
   const diffTime = to.getTime() - from.getTime();
-
-  // Convert to days
   return Math.round(diffTime / (1000 * 60 * 60 * 24));
 };
 
@@ -106,16 +111,6 @@ const DayButton = (
   const isGoodPrice = price < basePrice * GOOD_PRICE_THRESHOLD_RATIO;
   const isPeak = isPeakSeason?.[dateKey] || false;
 
-  // Format price to IDR
-  const formattedPrice = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })
-    .format(price)
-    .replace("Rp", "");
-
   return (
     <button
       {...buttonProps}
@@ -138,7 +133,7 @@ const DayButton = (
                   : "text-slate-600",
             )}
           >
-            {formattedPrice}
+            {formatCompactPrice(price)}
           </span>
         )}
         {dayData && (
@@ -192,7 +187,6 @@ export function RoomPriceCalendar({
       let total = 0;
       const prices: { [key: string]: number } = {};
 
-      // Get all dates between from and to (inclusive of from, exclusive of to)
       const startDate = new Date(dateRange.from);
       const endDate = new Date(dateRange.to);
       const days = calculateNights(startDate, endDate);
@@ -202,13 +196,11 @@ export function RoomPriceCalendar({
         currentDate.setDate(startDate.getDate() + i);
         const dateKey = format(currentDate, "yyyy-MM-dd");
 
-        // Get price for this date from calendar data
         if (calendarData.data.calendar[dateKey]) {
           const dayPrice = calendarData.data.calendar[dateKey].price;
           total += dayPrice;
           prices[dateKey] = dayPrice;
         } else {
-          // If price not available for this date, use base price
           total += calendarData.data.basePrice;
           prices[dateKey] = calendarData.data.basePrice;
         }
@@ -217,7 +209,6 @@ export function RoomPriceCalendar({
       setTotalPrice(total);
       setNightlyPrices(prices);
 
-      // Pass the total price to the parent component
       if (onTotalPriceChange) {
         onTotalPriceChange(total);
       }
@@ -225,7 +216,6 @@ export function RoomPriceCalendar({
       setTotalPrice(null);
       setNightlyPrices({});
 
-      // Pass null to the parent component when no valid price
       if (onTotalPriceChange) {
         onTotalPriceChange(null);
       }
@@ -240,13 +230,10 @@ export function RoomPriceCalendar({
 
     let { from, to } = newDateRange;
 
-    // Get current date for validation
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); // Reset to start of day
+    currentDate.setHours(0, 0, 0, 0);
 
-    // Apply timezone and standardize times
     if (from) {
-      // Ensure check-in date is not in the past
       if (from < currentDate) {
         from = currentDate;
       }
@@ -255,7 +242,6 @@ export function RoomPriceCalendar({
     }
 
     if (to) {
-      // Ensure check-out date is not in the past
       if (to < currentDate) {
         to = currentDate;
       }
@@ -263,10 +249,8 @@ export function RoomPriceCalendar({
       to = standardizeToCheckOutTime(zonedTo);
     }
 
-    // Additional validation to ensure proper date sequence
     if (from && to) {
       if (from > to) {
-        // If check-in is after check-out, clear the check-out date
         onDateChange({ from, to: undefined });
         return;
       }
@@ -278,7 +262,6 @@ export function RoomPriceCalendar({
   const buttonClasses = (date: Date | undefined) =>
     cn("w-full justify-start text-left font-normal", !date && "text-slate-400");
 
-  // Create isPeakSeason map for easy lookup
   const isPeakSeason: Record<string, boolean> = {};
 
   if (calendarData?.data?.calendar) {
@@ -288,15 +271,13 @@ export function RoomPriceCalendar({
   }
 
   const isDateDisabled = (date: Date) => {
-    // First check if the date is in the past (before today)
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); // Reset to start of day for proper comparison
+    currentDate.setHours(0, 0, 0, 0);
 
     if (date < currentDate) {
-      return true; // Disable past dates
+      return true;
     }
 
-    // Then check availability from the calendar data
     if (!calendarData?.data?.calendar) return false;
 
     const dateKey = format(date, "yyyy-MM-dd");
@@ -305,22 +286,21 @@ export function RoomPriceCalendar({
     return dayData ? !dayData.isAvailable : false;
   };
 
-  // Get selected room details
   const selectedRoom = rooms.find(
     (room) => room.id.toString() === selectedRoomId,
   );
 
-  // Format price as IDR
   const formatIDR = (amount: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
+    })
+      .format(amount)
+      .replace("Rp", "");
   };
 
-  // Calculate number of nights using the improved function
   const nights =
     dateRange.from && dateRange.to
       ? calculateNights(dateRange.from, dateRange.to)

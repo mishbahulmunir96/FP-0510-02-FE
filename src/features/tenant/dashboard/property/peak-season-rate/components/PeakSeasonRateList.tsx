@@ -1,7 +1,7 @@
-'use client';
-import Pagination from '@/components/PaginationSection';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+"use client";
+import Pagination from "@/components/PaginationSection";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -10,12 +10,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { useSession } from 'next-auth/react';
-import { FC, useState } from 'react';
-import { EditPeakSeasonButton } from './EditPeakSeasonRate';
-import { useGetPeakSeasons } from '@/hooks/api/peak-season-rate/useGetPeakSeasonRate';
-import { useDeletePeakSeasonRate } from '@/hooks/api/peak-season-rate/useDeletePeakSeasonRate';
+} from "@/components/ui/table";
+import { useSession } from "next-auth/react";
+import { FC, useState } from "react";
+import { EditPeakSeasonButton } from "./EditPeakSeasonRate";
+import { useGetPeakSeasons } from "@/hooks/api/peak-season-rate/useGetPeakSeasonRate";
+import { useDeletePeakSeasonRate } from "@/hooks/api/peak-season-rate/useDeletePeakSeasonRate";
 
 interface PeakSeasonsPageProps {
   roomId: number;
@@ -38,78 +38,108 @@ const PeakSeasonsRateList: FC<PeakSeasonsPageProps> = ({ roomId }) => {
 
   if (isPending) {
     return (
-      <div className="container max-w-7xl mx-auto">
-        <Skeleton className="relative h-[400px] w-full rounded-2xl overflow-hidden bg-slate-200" />
+      <div className="w-full">
+        <Skeleton className="h-[400px] w-full rounded-lg bg-gray-200 dark:bg-gray-700" />
       </div>
     );
   }
 
   if (!data) {
     return (
-      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
-        Peak Season not found
-      </h5>
+      <div className="flex h-40 w-full items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          No peak season rates found
+        </p>
+      </div>
     );
   }
+
   return (
-    <>
-      <h5 className="container max-w-7xl mx-auto font-semibold mb-3 text-center md:text-left">
-        Peak Seasons Rate List
-      </h5>
-      <section className="container max-w-7xl mx-auto bg-white p-5 rounded-lg">
-        <Table>
-          <TableCaption>A list of your Peak Seasons Rate</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Room</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data?.data.map((peakSeasons) => {
-              return (
-                <TableRow key={peakSeasons.id}>
-                  <TableCell className="font-medium">
-                    {peakSeasons.room.name}
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {new Intl.NumberFormat('id-ID', {
-                      style: 'currency',
-                      currency: 'IDR',
-                    }).format(peakSeasons.price)}
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {peakSeasons.startDate && peakSeasons.endDate
-                      ? `${new Date(peakSeasons.startDate).toLocaleDateString()} - ${new Date(peakSeasons.endDate).toLocaleDateString()}`
-                      : 'N/A'}
-                  </TableCell>
-                  <TableCell className="flex items-center gap-3">
-                    <Button
-                      variant={'destructive'}
-                      disabled={pendingPeakSeason}
-                      onClick={() => deletePeakSeason(peakSeasons.id)}
-                    >
-                      {pendingPeakSeason ? 'Deleting...' : 'Delete'}
-                    </Button>
-                    <EditPeakSeasonButton id={peakSeasons.id} />
+    <div className="w-full">
+      <div className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                <TableHead className="font-medium text-gray-700 dark:text-gray-300">
+                  Room
+                </TableHead>
+                <TableHead className="font-medium text-gray-700 dark:text-gray-300">
+                  Price
+                </TableHead>
+                <TableHead className="font-medium text-gray-700 dark:text-gray-300">
+                  Duration
+                </TableHead>
+                <TableHead className="font-medium text-gray-700 dark:text-gray-300">
+                  Action
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.data.map((peakSeasons) => {
+                return (
+                  <TableRow
+                    key={peakSeasons.id}
+                    className="border-b border-gray-100 hover:bg-gray-50/50 dark:border-gray-700 dark:hover:bg-gray-800/50"
+                  >
+                    <TableCell className="font-medium">
+                      {peakSeasons.room.name}
+                      {peakSeasons.room.type}
+                    </TableCell>
+                    <TableCell>
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(peakSeasons.price)}
+                    </TableCell>
+                    <TableCell>
+                      {peakSeasons.startDate && peakSeasons.endDate
+                        ? `${new Date(peakSeasons.startDate).toLocaleDateString()} - ${new Date(peakSeasons.endDate).toLocaleDateString()}`
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <EditPeakSeasonButton id={peakSeasons.id} />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="h-8 px-3 text-xs"
+                          disabled={pendingPeakSeason}
+                          onClick={() => deletePeakSeason(peakSeasons.id)}
+                        >
+                          {pendingPeakSeason ? "Deleting..." : "Delete"}
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {data.data.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="h-24 text-center text-sm text-gray-500"
+                  >
+                    No peak season rates found
                   </TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </section>
-      <div className="container max-w-7xl mx-auto flex justify-center mt-10">
-      <Pagination
-          take={data.meta.take}
-          total={data.meta.total}
-          page={page}
-          onChangePage={(newPage: number) => setPage(newPage)}
-        />
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </>
+
+      {data.data.length > 0 && (
+        <div className="mt-6 flex justify-center">
+          <Pagination
+            take={data.meta.take}
+            total={data.meta.total}
+            page={page}
+            onChangePage={(newPage: number) => setPage(newPage)}
+          />
+        </div>
+      )}
+    </div>
   );
 };
 

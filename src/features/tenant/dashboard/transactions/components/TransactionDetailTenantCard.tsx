@@ -36,6 +36,7 @@ import {
   CreditCard,
   Eye,
   Hotel,
+  Loader2,
   MapPin,
   ShieldCheck,
   Star,
@@ -288,9 +289,14 @@ const TransactionDetailTenantCard = ({
                   className="w-full sm:w-auto"
                 >
                   <X className="mr-2 h-4 w-4" />
-                  {approveTransaction.isPending
-                    ? "Processing..."
-                    : "Reject Payment"}
+                  {approveTransaction.isPending ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      <span className="ml-2">Processing</span>
+                    </>
+                  ) : (
+                    "Reject Payment"
+                  )}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -307,9 +313,14 @@ const TransactionDetailTenantCard = ({
                     onClick={() => handleApproval(false)}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    {approveTransaction.isPending
-                      ? "Processing..."
-                      : "Yes, reject payment"}
+                    {approveTransaction.isPending ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        <span className="ml-2">Processing...</span>
+                      </>
+                    ) : (
+                      "Yes, reject payment"
+                    )}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -322,9 +333,14 @@ const TransactionDetailTenantCard = ({
                   disabled={approveTransaction.isPending}
                 >
                   <Check className="mr-2 h-4 w-4" />
-                  {approveTransaction.isPending
-                    ? "Processing..."
-                    : "Approve Payment"}
+                  {approveTransaction.isPending ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      <span className="ml-2">Processing...</span>
+                    </>
+                  ) : (
+                    "Approve Payment"
+                  )}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -341,9 +357,14 @@ const TransactionDetailTenantCard = ({
                     onClick={() => handleApproval(true)}
                     className="bg-blue-600 hover:bg-blue-700"
                   >
-                    {approveTransaction.isPending
-                      ? "Processing..."
-                      : "Yes, approve payment"}
+                    {approveTransaction.isPending ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        <span className="ml-2">Processing...</span>
+                      </>
+                    ) : (
+                      "Yes, approve payment"
+                    )}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -371,8 +392,17 @@ const TransactionDetailTenantCard = ({
                     className="w-full sm:w-auto"
                     disabled={isCancelling}
                   >
-                    <X className="mr-2 h-4 w-4" />
-                    Cancel Order
+                    {isCancelling ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        <span className="ml-2">Cancelling...</span>
+                      </>
+                    ) : (
+                      <>
+                        <X className="mr-2 h-4 w-4" />
+                        Cancel Order
+                      </>
+                    )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -389,7 +419,14 @@ const TransactionDetailTenantCard = ({
                       onClick={handleCancel}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
-                      {isCancelling ? "Cancelling..." : "Yes, cancel order"}
+                      {isCancelling ? (
+                        <>
+                          <Loader2 className="animate-spin" />
+                          <span className="ml-2">Cancelling...</span>
+                        </>
+                      ) : (
+                        "Yes, cancel order"
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -407,7 +444,14 @@ const TransactionDetailTenantCard = ({
                     disabled={isCheckingIn}
                   >
                     <Clock className="mr-2 h-4 w-4" />
-                    {isCheckingIn ? "Processing..." : "Confirm Check-in"}
+                    {isCheckingIn ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        <span className="ml-2">Processing</span>
+                      </>
+                    ) : (
+                      "Confirm Check-in"
+                    )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -424,7 +468,14 @@ const TransactionDetailTenantCard = ({
                       onClick={handleCheckIn}
                       className="bg-green-600 text-white hover:bg-green-700"
                     >
-                      {isCheckingIn ? "Processing..." : "Yes, confirm check-in"}
+                      {isCheckingIn ? (
+                        <>
+                          <Loader2 className="animate-spin" />
+                          <span className="ml-2">Processing...</span>
+                        </>
+                      ) : (
+                        "Yes, confirm check-in"
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -439,7 +490,14 @@ const TransactionDetailTenantCard = ({
                     disabled={isCheckingOut}
                   >
                     <Clock className="mr-2 h-4 w-4" />
-                    {isCheckingOut ? "Processing..." : "Confirm Check-out"}
+                    {isCheckingOut ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        <span className="ml-2">Processing...</span>
+                      </>
+                    ) : (
+                      "Confirm Check-out"
+                    )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -456,9 +514,14 @@ const TransactionDetailTenantCard = ({
                       onClick={handleCheckOut}
                       className="bg-orange-600 text-white hover:bg-orange-700"
                     >
-                      {isCheckingOut
-                        ? "Processing..."
-                        : "Yes, confirm check-out"}
+                      {isCheckingOut ? (
+                        <>
+                          <Loader2 className="animate-spin" />
+                          <span className="ml-2">Processing...</span>
+                        </>
+                      ) : (
+                        "Yes, confirm check-out"
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

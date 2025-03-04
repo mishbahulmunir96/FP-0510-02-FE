@@ -1,0 +1,124 @@
+/* Chart container styles */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Horizontal scrolling container for charts */
+.chart-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  padding-bottom: 1rem; /* Provide space for scrollbar */
+}
+
+/* Custom scrollbar styling */
+.chart-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.chart-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.chart-scroll-container::-webkit-scrollbar-thumb {
+  background: #cdcdcd;
+  border-radius: 10px;
+}
+
+.chart-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chart-scroll-container::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 20px;
+    height: 50px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.7) 50%,
+      rgba(255, 255, 255, 0.9)
+    );
+    border-radius: 4px 0 0 4px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+    animation: fadeInOut 2s infinite;
+  }
+
+  @keyframes fadeInOut {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+}
+
+/* Enhanced chart visuals */
+.apexcharts-menu-icon,
+.apexcharts-reset-icon,
+.apexcharts-zoom-icon,
+.apexcharts-zoomin-icon,
+.apexcharts-zoomout-icon,
+.apexcharts-pan-icon {
+  transform: scale(1.2);
+  margin-right: 8px !important;
+}
+
+.apexcharts-tooltip {
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: none !important;
+}
+
+.apexcharts-tooltip-title {
+  font-weight: 600 !important;
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.apexcharts-tooltip-y-group {
+  padding: 2px 0 !important;
+}
+
+.apexcharts-legend-text {
+  font-weight: 500 !important;
+}
+
+/* Dark mode support */
+.dark .chart-scroll-container::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark .chart-scroll-container::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark .chart-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.dark .chart-scroll-container::after {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(15, 23, 42, 0.7) 50%,
+    rgba(15, 23, 42, 0.9)
+  );
+}
+
+.dark .apexcharts-tooltip-title {
+  background: #1e293b !important;
+  border-bottom: 1px solid #334155 !important;
+}

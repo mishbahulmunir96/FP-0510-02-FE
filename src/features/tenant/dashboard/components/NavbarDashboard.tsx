@@ -66,7 +66,9 @@ export default function NavbarDashboard() {
                 <div className="text-sm font-medium text-gray-800">
                   {tenant?.name || session?.user?.name || "User"}
                 </div>
-                <div className="text-xs text-gray-500">Tenant</div>
+                <div className="text-xs text-gray-500">
+                  {session.user.role === "TENANT" ? "Tenant" : "User"}
+                </div>
               </div>
               <div className="relative h-10 w-10 overflow-hidden rounded-full border border-gray-200 bg-white shadow-sm transition-all hover:shadow">
                 {tenant?.imageUrl ? (
@@ -114,12 +116,18 @@ export default function NavbarDashboard() {
               </div>
 
               <Link
-                href="/tenant/dashboard/account"
+                href={
+                  session.user.role === "TENANT"
+                    ? "/tenant/dashboard/account"
+                    : "/user/dashboard/account"
+                }
                 className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
                 onClick={() => setShowAuthDropdown(false)}
               >
                 <Building className="h-4 w-4 text-gray-500" />
-                Tenant Profile
+                {session.user.role === "TENANT"
+                  ? "Tenant Profile"
+                  : "User Profile"}
               </Link>
               <div className="border-t border-gray-100 pt-1">
                 <button
@@ -135,7 +143,6 @@ export default function NavbarDashboard() {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </nav>

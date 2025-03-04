@@ -2,11 +2,13 @@
 import { FilterType } from "@/types/report";
 import { getDateRangeParams } from "@/utils/date.utils";
 import { parseAsString, parseAsStringEnum, useQueryState } from "nuqs";
+import "./components/chart-styles.css";
 import DistributionChart from "./components/DistributionChart";
 import { RevenueChart } from "./components/ReveneuCharts";
 import StatCards from "./components/StatCharts";
 import StatisticFilters from "./components/StatisticFilters";
 import TopPropertiesTable from "./components/TopPropertiesTable";
+import { BarChart3 } from "lucide-react";
 
 const StatisticPage = () => {
   const defaultStartDate = new Date();
@@ -100,6 +102,23 @@ const StatisticPage = () => {
 
   return (
     <div className="space-y-8">
+      {/* Page Title Section */}
+      <div className="rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-6 dark:from-blue-900/20 dark:to-indigo-900/20">
+        <div className="mb-3 flex items-center gap-3">
+          <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-800/40">
+            <BarChart3 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+            Sales & Revenue Analytics
+          </h1>
+        </div>
+        <p className="mt-2 max-w-3xl leading-relaxed text-gray-600 dark:text-gray-400">
+          Analyze your property performance, revenue trends, and occupancy
+          rates. Filter by date range, property, or time period to get detailed
+          insights into your business.
+        </p>
+      </div>
+
       <StatisticFilters
         filterType={filterType as FilterType}
         startDate={new Date(startDate)}
