@@ -1,9 +1,14 @@
+import LandingPageLayout from "@/components/LandingPageLayout";
 import ForgotPasswordComponent from "@/features/auth/forgot-password";
-import UserAuthGuard from "@/hoc/userAuthGuard";
-import React from "react";
 
 const ForgotPassword = () => {
-  return <ForgotPasswordComponent />;
+  return (
+    <div>
+      <LandingPageLayout>
+        <ForgotPasswordComponent />
+      </LandingPageLayout>
+    </div>
+  );
 };
 
-export default UserAuthGuard(ForgotPassword);
+export default ForgotPassword;
