@@ -113,8 +113,7 @@ const StatisticPage = () => {
         </div>
         <p className="mt-2 max-w-3xl leading-relaxed text-gray-600 dark:text-gray-400">
           Analyze your property performance, revenue trends, and occupancy
-          rates. Filter by date range, property, or time period to get detailed
-          insights into your business.
+          rates.
         </p>
       </div>
 
