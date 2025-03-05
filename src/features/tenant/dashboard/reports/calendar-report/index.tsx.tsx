@@ -18,8 +18,7 @@ const CalendarReportPage: React.FC = () => {
         </div>
         <p className="mt-2 max-w-3xl leading-relaxed text-gray-600 dark:text-gray-400">
           View room availability, occupancy rates, and peak season information
-          for your properties. Select a property to explore detailed calendar
-          data and optimize your pricing strategy.
+          for your properties.
         </p>
       </div>
 
