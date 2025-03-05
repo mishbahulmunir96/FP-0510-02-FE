@@ -21,7 +21,7 @@ const useCreateRoomNonAvailability = () => {
   return useMutation({
     mutationFn: async (payload: CreateRoomNonAvailabilityPayload) => {
       const { data } = await axiosInstance.post(
-        `/room-non-availabilities`,
+        `/room-non-availabilities/room`,
         payload,
       );
       return data;
