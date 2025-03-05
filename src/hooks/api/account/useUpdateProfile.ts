@@ -3,7 +3,6 @@
 import useAxios from "@/hooks/api/useAxios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -32,7 +31,7 @@ const useUpdateProfile = () => {
     onSuccess: async () => {
       toast.success("Update profile success");
       await queryClient.invalidateQueries({ queryKey: ["account"] });
-      router.push("/account");
+      router.push("/user/dashboard/account");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data.message || error.response?.data);

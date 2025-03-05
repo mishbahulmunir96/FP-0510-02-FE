@@ -135,7 +135,6 @@ export default function PropertyCatalogPage() {
       {/* Top Navigation with PropertyNavigation component */}
       <div className="border-b bg-white py-6 shadow-md">
         <div className="container mx-auto px-6">
-
           <div className="mx-auto">
             <PropertyNavigation
               onLocation={handleLocation}

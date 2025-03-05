@@ -1,19 +1,17 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu as IconMenu, UserCircle } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -190,7 +188,7 @@ const Navbar = () => {
               {session?.user ? (
                 <>
                   <DropdownMenuItem asChild>
-                    <Link href="/account">Profile</Link>
+                    <Link href="/user/dashboard/account">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link

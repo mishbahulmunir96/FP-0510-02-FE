@@ -61,10 +61,6 @@ const HomePage = () => {
     refetchPropertiesByQuery();
   }, [searchParams, page]);
 
-  const onPageChange = ({ selected }: { selected: number }) => {
-    setPage(selected + 1);
-  };
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <Jumbotron />

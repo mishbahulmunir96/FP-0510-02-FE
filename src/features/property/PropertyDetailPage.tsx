@@ -1,27 +1,24 @@
 "use client";
 
 import PropertyDetailCard from "@/components/PropertyDetailCard";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useGetProperty from "@/hooks/api/property/useGetProperty";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { Coffee, Heart, MapPin, Share, Star, Wifi } from "lucide-react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
-import { RoomPriceCalendar } from "./components/RoomPriceCalendar";
-import { useRouter } from "next/navigation";
+import useGetReviewsByProperty from "@/hooks/api/review/useGetReviewsByProperty";
+import { getRatingColor, getRatingLabel } from "@/types/review";
 import {
   standardizeToCheckInTime,
   standardizeToCheckOutTime,
 } from "@/utils/date";
-import useGetReviewsByProperty from "@/hooks/api/review/useGetReviewsByProperty";
-import { number } from "yup";
-import { getRatingColor, getRatingLabel } from "@/types/review";
+import "leaflet/dist/leaflet.css";
+import { Coffee, Heart, MapPin, Share, Star, Wifi } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { RoomPriceCalendar } from "./components/RoomPriceCalendar";
 
 type DateRange = {
   from: Date | undefined;
@@ -255,7 +252,6 @@ export default function PropertyDetailPage({
             {/* Property Details & Description */}
             <div className="mt-6 space-y-5">
               <div>
-
                 <div className="flex items-center gap-3">
                   {reviewsData?.meta.averageRating ? (
                     <>
