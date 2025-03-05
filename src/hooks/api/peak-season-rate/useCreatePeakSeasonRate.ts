@@ -18,7 +18,10 @@ export const useCreatePeakSeasonRate = () => {
 
   return useMutation({
     mutationFn: async (payload: PeakSeasonRatePayload) => {
-      const { data } = await axiosInstance.post("/peak-season-rates", payload);
+      const { data } = await axiosInstance.post(
+        "/peak-season-rates/peak-season",
+        payload,
+      );
       return data;
     },
     onSuccess: () => {

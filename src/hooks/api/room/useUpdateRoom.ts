@@ -5,12 +5,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-interface Facility {
-  id?: number;
-  title: string;
-  description: string;
-  isDeleted?: boolean;
-}
 
 // Define facility interface
 interface Facility {
@@ -53,7 +47,11 @@ const useUpdateRoom = (id: number) => {
       if (payload.imageUrl) {
         formData.append("imageUrl", payload.imageUrl);
       }
+
+      // Convert facilities array to JSON string and append to form data
       formData.append("facilities", JSON.stringify(payload.facilities));
+
+      // Make the API request
       const { data } = await axiosInstance.patch(`/rooms/room/${id}`, formData);
       return data;
     },
