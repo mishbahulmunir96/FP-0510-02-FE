@@ -177,18 +177,6 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
             )}
           </div>
         </div>
-
-        <div className="mt-4 flex items-center justify-end border-t border-gray-100 pt-4 dark:border-gray-700/50">
-          <div className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400">
-            <CalendarRange className="mr-1.5 h-4 w-4 text-gray-400" />
-            <span>
-              {new Date(startDate).toLocaleDateString("en-US", {
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );
