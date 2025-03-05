@@ -19,7 +19,7 @@ const useUpdateCategory = () => {
   return useMutation({
     mutationFn: async (payload: UpdateCategoryPayload) => {
       const { data } = await axiosInstance.patch(
-        `/categories/update-category/${payload.id}`,
+        `/categories/category/${payload.id}`,
         payload,
       );
       return data;

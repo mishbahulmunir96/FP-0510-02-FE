@@ -14,7 +14,7 @@ const useDeleteCategory = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       const { data } = await axiosInstance.delete(
-        `/categories/delete-category/${id}`,
+        `/categories/category-property/${id}`,
       );
       return data;
     },
