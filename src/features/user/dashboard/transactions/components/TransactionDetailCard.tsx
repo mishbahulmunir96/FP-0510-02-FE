@@ -20,6 +20,8 @@ import { useState } from "react";
 import ReviewModal from "./ReviewModal";
 import TransactionPaymentSection from "./TransactionPaymentSection";
 import ViewReviewModal from "./viewReviewModal";
+import TransactionTenantDetails from "./TransactionTenantDetails";
+import TransactionStayDetails from "./TransactionStayDetails";
 
 interface TransactionDetailCardProps {
   data: TransactionDetail;
@@ -45,7 +47,6 @@ const TransactionDetailCard = ({
   const showReviewButton = data.status === "CHECKED_OUT" && !reviewData;
   const showViewReviewButton = data.status === "CHECKED_OUT" && reviewData;
 
-  // Mengambil informasi bank dari tenant dalam rezervasi pertama
   const bankAccount = data.reservations[0]?.tenant
     ? {
         bankName: data.reservations[0].tenant.bankName,
@@ -109,69 +110,12 @@ const TransactionDetailCard = ({
       </CardHeader>
 
       <CardContent className="space-y-6 p-6">
-        <div className="space-y-3">
-          <h4 className="flex items-center gap-2 font-medium text-gray-900">
-            <User className="h-4 w-4 text-blue-600" />
-            Tenant Details
-          </h4>
-          <div className="rounded-lg border p-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-12 w-12">
-                <AvatarImage
-                  src={
-                    data.reservations[0].tenant.imageUrl ||
-                    "/images/profile_default.jpg"
-                  }
-                  alt={data.reservations[0].tenant.name}
-                  className="border border-green-500"
-                />
-                <AvatarFallback>
-                  {data.reservations[0].tenant.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-medium text-gray-900">
-                  {data.reservations[0].tenant.name}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <h4 className="flex items-center gap-2 font-medium text-gray-900">
-            <CalendarDays className="h-4 w-4 text-blue-600" />
-            Stay Details
-          </h4>
-          <div className="rounded-lg border p-4">
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-              <div className="text-center sm:text-left">
-                <p className="text-sm text-gray-500">Check-in</p>
-                <p className="font-medium text-gray-900">
-                  {data.checkInDate
-                    ? format(new Date(data.checkInDate), "EEE, MMM dd yyyy")
-                    : "Not set"}
-                </p>
-              </div>
-
-              <Hotel className="h-5 w-5 rotate-90 text-gray-400 sm:rotate-0" />
-
-              <div className="text-center sm:text-right">
-                <p className="text-sm text-gray-500">Check-out</p>
-                <p className="font-medium text-gray-900">
-                  {data.checkOutDate
-                    ? format(new Date(data.checkOutDate), "EEE, MMM dd yyyy")
-                    : "Not set"}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 flex justify-center">
-              <Badge variant="secondary" className="text-sm">
-                {data.duration} Night Stay
-              </Badge>
-            </div>
-          </div>
-        </div>
+        <TransactionTenantDetails tenant={data.reservations[0].tenant} />
+        <TransactionStayDetails
+          checkInDate={data.checkInDate}
+          checkOutDate={data.checkOutDate}
+          duration={data.duration}
+        />
 
         <TransactionPaymentSection
           paymentMethode={data.paymentMethode}
@@ -194,7 +138,7 @@ const TransactionDetailCard = ({
           isUploading={isUploading}
           isCancelling={isCancelling}
           invoiceUrl={data.invoiceUrl}
-          bankAccount={bankAccount} // Menambahkan properti bankAccount
+          bankAccount={bankAccount}
           onUploadProof={onUploadProof}
           onCancelTransaction={onCancelTransaction}
         />

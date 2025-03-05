@@ -1,7 +1,7 @@
 import useSalesReport from "@/hooks/api/statistic/useGetSalesReport";
 import { Building2, DollarSign, Percent, ShoppingCart } from "lucide-react";
 import CardDataStats from "./CardDataStats";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, calculateGrowthPercentage } from "@/lib/utils";
 import { StatCardsSkeletonList } from "./LoadingSkeleton";
 
 interface StatCardsProps {
@@ -44,23 +44,26 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
       return "New";
     }
 
-    return Number(
-      (((currentRevenue - previousRevenue) / previousRevenue) * 100).toFixed(2),
-    );
+    return calculateGrowthPercentage(currentRevenue, previousRevenue);
   })();
 
-  const totalTransactions =
+  const currentTransactions =
     salesReport?.transactionMetrics.totalTransactions || 0;
-  const averageBookingDuration =
-    salesReport?.transactionMetrics.averageBookingDuration || 0;
-  const totalProperties = salesReport?.propertyMetrics.length || 0;
-  const totalRooms =
-    salesReport?.propertyMetrics.reduce(
-      (total, property) => total + property.totalRooms,
-      0,
-    ) || 0;
+  const previousTransactions =
+    previousSalesReport?.transactionMetrics.totalTransactions || 0;
 
-  const averageOccupancy = salesReport?.propertyMetrics.length
+  const transactionsChange = (() => {
+    if (isLoading) return null;
+
+    if (previousTransactions === 0) {
+      if (currentTransactions === 0) return 0;
+      return "New";
+    }
+
+    return calculateGrowthPercentage(currentTransactions, previousTransactions);
+  })();
+
+  const currentOccupancy = salesReport?.propertyMetrics.length
     ? Math.max(
         0,
         salesReport.propertyMetrics.reduce(
@@ -69,6 +72,37 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
         ) / salesReport.propertyMetrics.length,
       )
     : 0;
+
+  const previousOccupancy = previousSalesReport?.propertyMetrics.length
+    ? Math.max(
+        0,
+        previousSalesReport.propertyMetrics.reduce(
+          (acc, curr) => acc + Math.max(0, curr.occupancyRate),
+          0,
+        ) / previousSalesReport.propertyMetrics.length,
+      )
+    : 0;
+
+  const occupancyChange = (() => {
+    if (isLoading) return null;
+
+    if (previousOccupancy === 0) {
+      if (currentOccupancy === 0) return 0;
+      return "New";
+    }
+
+    return calculateGrowthPercentage(currentOccupancy, previousOccupancy);
+  })();
+
+  const totalProperties = salesReport?.propertyMetrics.length || 0;
+  const totalRooms =
+    salesReport?.propertyMetrics.reduce(
+      (total, property) => total + property.totalRooms,
+      0,
+    ) || 0;
+  const averageBookingDuration =
+    salesReport?.transactionMetrics.averageBookingDuration || 0;
+  const totalTransactions = currentTransactions;
 
   if (isLoading) {
     return <StatCardsSkeletonList />;
@@ -94,8 +128,18 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
       <CardDataStats
         title="Total Transactions"
         total={totalTransactions.toString()}
-        rate={`${averageBookingDuration} days`}
-        levelUp
+        rate={
+          transactionsChange === "New"
+            ? "New"
+            : `${Math.abs(transactionsChange || 0)}%`
+        }
+        levelUp={
+          transactionsChange === "New" ||
+          (typeof transactionsChange === "number" && transactionsChange > 0)
+        }
+        levelDown={
+          typeof transactionsChange === "number" && transactionsChange < 0
+        }
       >
         <ShoppingCart className="h-6 w-6" />
       </CardDataStats>
@@ -104,17 +148,23 @@ const StatCards = ({ startDate, endDate, propertyId }: StatCardsProps) => {
         title="Total Properties"
         total={totalProperties.toString()}
         rate={`${totalRooms} rooms`}
-        levelUp
       >
         <Building2 className="h-6 w-6" />
       </CardDataStats>
 
       <CardDataStats
         title="Occupancy Rate"
-        total={`${averageOccupancy.toFixed(1)}%`}
-        rate="occupancy rate"
-        levelUp={averageOccupancy > 50}
-        levelDown={averageOccupancy <= 50}
+        total={`${currentOccupancy.toFixed(1)}%`}
+        rate={
+          occupancyChange === "New"
+            ? "New"
+            : `${Math.abs(occupancyChange || 0)}%`
+        }
+        levelUp={
+          occupancyChange === "New" ||
+          (typeof occupancyChange === "number" && occupancyChange > 0)
+        }
+        levelDown={typeof occupancyChange === "number" && occupancyChange < 0}
       >
         <Percent className="h-6 w-6" />
       </CardDataStats>
