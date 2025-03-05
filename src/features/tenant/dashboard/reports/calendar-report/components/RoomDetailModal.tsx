@@ -10,8 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { DayCalendarData } from "@/hooks/api/statistic/useGetCalendarReport";
 import { CalendarIcon } from "lucide-react";
+import { DayCalendarData } from "@/types/calendar-report";
 
 interface RoomDetailModalProps {
   isOpen: boolean;
