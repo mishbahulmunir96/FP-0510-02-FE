@@ -7,9 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import useCalendarReport, {
-  DayCalendarData,
-} from "@/hooks/api/statistic/useGetCalendarReport";
 import { DateSelectArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -25,7 +22,6 @@ import CalendarLoadingSkeleton from "./CalendarLoadingSkeleton";
 import NoPropertyCard from "./NoPropertyCard";
 import ErrorCalendarCard from "./ErrorCalendarCard";
 import RoomDetailModal from "./RoomDetailModal";
-
 import "./calendar-styles-base.css";
 import "./calendar-styles-components.css";
 import {
@@ -33,6 +29,8 @@ import {
   getCalendarOptions,
   getDayCellHtml,
 } from "@/utils/calendarUtils";
+import { DayCalendarData } from "@/types/calendar-report";
+import useCalendarReport from "@/hooks/api/statistic/useGetCalendarReport";
 
 const CalendarReportCard: React.FC = () => {
   const [propertyIdParam] = usePropertyIdParam();
