@@ -21,7 +21,7 @@ export const useUpdatePeakSeasonRate = () => {
     mutationFn: async (payload: UpdatePeakSeasonRatePayload) => {
       const { id, ...data } = payload;
       const { data: response } = await axiosInstance.patch(
-        `/peak-season-rates/${id}`,
+        `/peak-season-rates/peak-season/${id}`,
         data,
       );
       return response;
