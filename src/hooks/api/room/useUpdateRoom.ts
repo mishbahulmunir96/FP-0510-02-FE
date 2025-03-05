@@ -6,6 +6,15 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+// Define facility interface
+interface Facility {
+  id?: number;
+  title: string;
+  description: string;
+  isDeleted?: boolean;
+}
+
+// Define payload interface with strict types
 interface UpdateRoomPayload {
   type: "Deluxe" | "Standard" | "Suite";
   name: string;
@@ -14,8 +23,7 @@ interface UpdateRoomPayload {
   guest: number;
   propertyId: number;
   imageUrl?: File;
-  facilityTitle?: string;
-  facilityDescription?: string;
+  facilities: Facility[];
 }
 
 const useUpdateRoom = (id: number) => {
@@ -27,6 +35,7 @@ const useUpdateRoom = (id: number) => {
     mutationFn: async (payload: UpdateRoomPayload) => {
       const formData = new FormData();
 
+      // Add basic room data
       formData.append("type", payload.type);
       formData.append("name", payload.name);
       formData.append("stock", String(payload.stock));
@@ -34,18 +43,15 @@ const useUpdateRoom = (id: number) => {
       formData.append("guest", String(payload.guest));
       formData.append("propertyId", String(payload.propertyId));
 
+      // Add image if provided
       if (payload.imageUrl) {
         formData.append("imageUrl", payload.imageUrl);
       }
 
-      if (payload.facilityTitle) {
-        formData.append("facilityTitle", payload.facilityTitle);
-      }
+      // Convert facilities array to JSON string and append to form data
+      formData.append("facilities", JSON.stringify(payload.facilities));
 
-      if (payload.facilityDescription) {
-        formData.append("facilityDescription", payload.facilityDescription);
-      }
-
+      // Make the API request
       const { data } = await axiosInstance.patch(
         `/rooms/update-room/${id}`,
         formData,
@@ -53,12 +59,15 @@ const useUpdateRoom = (id: number) => {
       return data;
     },
     onSuccess: () => {
+      // Invalidate cached queries and redirect
       queryClient.invalidateQueries({ queryKey: ["room"] });
       toast.success("Update room success");
       router.push("/tenant/dashboard/property/room");
     },
     onError: (error: AxiosError<any>) => {
-      toast.error(error.response?.data || "Update room failed");
+      const errorMessage = error.response?.data || "Update room failed";
+      toast.error(errorMessage);
+      console.error("Update room error:", error);
     },
   });
 };

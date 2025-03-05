@@ -6,6 +6,11 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+interface Facility {
+  title: string;
+  description: string;
+}
+
 interface CreateRoomPayload {
   type: "Deluxe" | "Standard" | "Suite";
   name: string;
@@ -14,8 +19,7 @@ interface CreateRoomPayload {
   guest: number;
   propertyId: number;
   imageUrl: File | null;
-  facilityTitle: string;
-  facilityDescription: string;
+  facilities: Facility[];
 }
 
 const useCreateRoom = () => {
@@ -38,9 +42,8 @@ const useCreateRoom = () => {
         createRoomForm.append("imageUrl", payload.imageUrl);
       }
 
-      // Field untuk fasilitas ruangan
-      createRoomForm.append("facilityTitle", payload.facilityTitle);
-      createRoomForm.append("facilityDescription", payload.facilityDescription);
+      // Convert facilities array to JSON string and append to form data
+      createRoomForm.append("facilities", JSON.stringify(payload.facilities));
 
       const { data } = await axiosInstance.post(
         "/rooms/create-room",
@@ -54,7 +57,7 @@ const useCreateRoom = () => {
       router.push("/tenant/dashboard/property/room");
     },
     onError: (error: AxiosError<any>) => {
-      toast.error(error.response?.data);
+      toast.error(error.response?.data || "Create room failed");
     },
   });
 };

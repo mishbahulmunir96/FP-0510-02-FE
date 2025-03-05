@@ -9,9 +9,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useUpdateRoom from "@/hooks/api/room/useUpdateRoom";
 import useDeleteRoom from "@/hooks/api/room/useDeleteRoom";
 import useGetRoom from "@/hooks/api/room/useGetRoom";
-import { useFormik } from "formik";
+import { useFormik, FormikErrors } from "formik";
 import Image from "next/image";
-import { ChangeEvent, FC, useRef, useState } from "react";
+import { ChangeEvent, FC, useRef, useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -31,9 +31,30 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import * as Yup from "yup";
+import { PlusCircle, X, ImagePlus, Save, Trash2 } from "lucide-react";
 
 interface UpdateRoomPageProps {
   roomId: number;
+}
+
+// Define a type for facility
+interface Facility {
+  id?: number;
+  title: string;
+  description: string;
+  isDeleted?: boolean;
+}
+
+// Define the form values interface
+interface FormValues {
+  type: string;
+  name: string;
+  stock: number;
+  price: number;
+  guest: number;
+  propertyId: number | null;
+  imageUrl: File | null;
+  facilities: Facility[];
 }
 
 const validationSchema = Yup.object().shape({
@@ -52,10 +73,14 @@ const validationSchema = Yup.object().shape({
   guest: Yup.number()
     .required("Guest capacity is required")
     .min(1, "Guest capacity must be at least 1"),
-  facilityTitle: Yup.string().required("Facility name is required"),
-  facilityDescription: Yup.string().required(
-    "Facility description is required",
-  ),
+  facilities: Yup.array()
+    .of(
+      Yup.object().shape({
+        title: Yup.string().required("Facility name is required"),
+        description: Yup.string().required("Facility description is required"),
+      }),
+    )
+    .min(1, "At least one facility is required"),
 });
 
 const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
@@ -66,17 +91,16 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const imageRef = useRef<HTMLInputElement>(null);
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
-      type: data?.type || "Standard",
-      name: data?.name || "",
-      stock: data?.stock || 0,
-      price: data?.price || 0,
-      guest: data?.guest || 2,
-      propertyId: data?.propertyId || null,
+      type: "Standard",
+      name: "",
+      stock: 0,
+      price: 0,
+      guest: 2,
+      propertyId: null,
       imageUrl: null,
-      facilityTitle: data?.roomFacility?.[0]?.title || "",
-      facilityDescription: data?.roomFacility?.[0]?.description || "",
+      facilities: [{ title: "", description: "" }],
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -87,13 +111,37 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
           type: values.type as "Standard" | "Deluxe" | "Suite",
           name: values.name,
           imageUrl: values.imageUrl ?? undefined,
+          facilities: values.facilities,
         });
       } catch (error) {
         console.error("Failed to update room:", error);
       }
     },
-    enableReinitialize: true,
+    enableReinitialize: false,
   });
+
+  // When data is loaded, update the form values
+  useEffect(() => {
+    if (data) {
+      // Transform existing facilities into the format needed for the form
+      const facilities = data.roomFacility?.map((facility) => ({
+        id: facility.id,
+        title: facility.title,
+        description: facility.description,
+      })) || [{ title: "", description: "" }];
+
+      formik.setValues({
+        type: data.type,
+        name: data.name || "",
+        stock: data.stock,
+        price: data.price,
+        guest: data.guest,
+        propertyId: data.propertyId,
+        imageUrl: null,
+        facilities: facilities,
+      });
+    }
+  }, [data]);
 
   const handleDelete = async () => {
     try {
@@ -119,45 +167,160 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     }
   };
 
+  const addFacility = () => {
+    const facilities = [...formik.values.facilities];
+    facilities.push({ title: "", description: "" });
+    formik.setFieldValue("facilities", facilities);
+  };
+
+  const removeFacility = (index: number) => {
+    if (formik.values.facilities.length > 1) {
+      const facilities = [...formik.values.facilities];
+
+      // If it has an ID, mark it as deleted instead of removing it
+      if (facilities[index]?.id) {
+        facilities[index] = {
+          ...facilities[index],
+          isDeleted: true,
+        };
+      } else {
+        facilities.splice(index, 1);
+      }
+
+      formik.setFieldValue("facilities", facilities);
+    }
+  };
+
+  // Fixed handleFacilityChange function with proper type safety
+  const handleFacilityChange = (
+    index: number,
+    field: keyof Facility,
+    value: string,
+  ) => {
+    const facilities = [...formik.values.facilities];
+
+    // Check if the facility at this index exists
+    if (facilities[index]) {
+      // Create a new object with the updated field
+      facilities[index] = {
+        ...facilities[index],
+        [field]: value,
+      };
+
+      formik.setFieldValue("facilities", facilities);
+    }
+  };
+
+  // Helper function to get nested error with proper typings
+  const getNestedError = (
+    errors: FormikErrors<FormValues> | undefined,
+    index: number,
+    field: keyof Facility,
+  ): string | undefined => {
+    if (!errors || !errors.facilities) return undefined;
+
+    if (typeof errors.facilities === "string") {
+      return undefined;
+    }
+
+    // If facilities is an array in the errors object
+    const facilitiesArray = errors.facilities as FormikErrors<Facility>[];
+    if (Array.isArray(facilitiesArray) && facilitiesArray[index]) {
+      return facilitiesArray[index][field] as string | undefined;
+    }
+
+    return undefined;
+  };
+
+  // Helper function to check if a field has an error
+  const hasNestedError = (
+    touched: any,
+    errors: FormikErrors<FormValues> | undefined,
+    index: number,
+    field: keyof Facility,
+  ): boolean => {
+    if (!touched || !errors) return false;
+
+    // Check if facilities is touched and is an array
+    if (!touched.facilities || !Array.isArray(touched.facilities)) return false;
+
+    // Check if the specific field is touched
+    if (!touched.facilities[index] || !touched.facilities[index][field]) {
+      return false;
+    }
+
+    // Check if there's an error for this field
+    return !!getNestedError(errors, index, field);
+  };
+
   if (dataIsPending) {
     return (
-      <div className="container mx-auto max-w-7xl space-y-6 p-6">
-        <Skeleton className="h-[300px] w-full overflow-hidden rounded-2xl bg-slate-200" />
+      <div className="container mx-auto max-w-5xl px-4 py-8">
+        <div className="space-y-6">
+          <Skeleton className="h-12 w-3/4 rounded-md" />
+          <Skeleton className="h-[300px] w-full rounded-xl" />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Skeleton className="h-20 rounded-lg" />
+            <Skeleton className="h-20 rounded-lg" />
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-1/2 rounded-md" />
+            <Skeleton className="h-32 w-full rounded-lg" />
+            <Skeleton className="h-32 w-full rounded-lg" />
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="container mx-auto max-w-7xl space-y-6 p-6">
-        Error: Room data not found
+      <div className="container mx-auto max-w-5xl px-4 py-12 text-center">
+        <h2 className="text-2xl font-semibold text-red-600">
+          Error: Room data not found
+        </h2>
+        <p className="mt-2 text-gray-600">
+          The requested room information could not be retrieved.
+        </p>
       </div>
     );
   }
 
+  // Filter out deleted facilities for rendering
+  const activeFacilities = formik.values.facilities.filter(
+    (facility) => !facility.isDeleted,
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
-        <div className="container mx-auto max-w-7xl px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto max-w-5xl px-4 py-6 sm:px-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Update Room</h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Update room information and facilities
+              <h1 className="mb-1 text-2xl font-bold text-gray-900">
+                Update Room
+              </h1>
+              <p className="text-sm text-gray-500">
+                Manage room details and facilities
               </p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={isDeleting}>
+                <Button
+                  variant="destructive"
+                  disabled={isDeleting}
+                  className="flex items-center gap-2 self-start md:self-auto"
+                >
+                  <Trash2 size={16} />
                   {isDeleting ? "Deleting..." : "Delete Room"}
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="max-w-md">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete
-                    the room and remove all associated data.
+                    the room and all associated data.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -175,156 +338,296 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
         </div>
       </div>
 
-      <section className="container mx-auto max-w-7xl p-6">
-        <div className="rounded-lg bg-white p-8 shadow">
-          <form onSubmit={formik.handleSubmit} className="space-y-5">
+      <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <div className="overflow-hidden rounded-xl bg-white shadow-sm">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="divide-y divide-gray-100"
+          >
             {/* Image Section */}
-            <div className="space-y-5">
-              {selectedImage ? (
-                <>
-                  <div className="relative h-[350px] w-full overflow-hidden rounded-lg">
-                    <Image
-                      src={selectedImage}
-                      alt="Room Image"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <Button onClick={removeSelectedImage} variant="destructive">
-                    Remove Image
-                  </Button>
-                </>
-              ) : data.roomImage?.[0]?.imageUrl ? (
-                <div className="relative h-[350px] w-full overflow-hidden rounded-lg">
-                  <Image
-                    src={data.roomImage[0].imageUrl}
-                    alt="Room Image"
-                    fill
-                    className="object-cover"
-                  />
+            <div className="space-y-4 p-6">
+              <h2 className="mb-4 text-lg font-medium text-gray-900">
+                Room Image
+              </h2>
+
+              <div className="flex flex-col gap-6 md:flex-row">
+                <div className="w-full md:w-2/3">
+                  {selectedImage ? (
+                    <div className="relative aspect-video overflow-hidden rounded-lg">
+                      <Image
+                        src={selectedImage}
+                        alt="Room Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : data.roomImage?.[0]?.imageUrl ? (
+                    <div className="relative aspect-video overflow-hidden rounded-lg">
+                      <Image
+                        src={data.roomImage[0].imageUrl}
+                        alt="Room Image"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex aspect-video items-center justify-center rounded-lg bg-gray-100">
+                      <p className="text-gray-400">No image available</p>
+                    </div>
+                  )}
                 </div>
-              ) : null}
-              <div className="mx-auto max-w-xs">
-                <Label>Room Image</Label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={onChangeImage}
-                  ref={imageRef}
+
+                <div className="w-full space-y-4 md:w-1/3">
+                  <div className="space-y-3 rounded-lg border border-gray-200 p-4">
+                    <Label className="text-sm font-medium">
+                      Upload New Image
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={onChangeImage}
+                        ref={imageRef}
+                        className="text-sm file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-600 hover:file:bg-blue-100"
+                      />
+                    </div>
+                    {selectedImage && (
+                      <Button
+                        onClick={removeSelectedImage}
+                        variant="outline"
+                        size="sm"
+                        className="flex w-full items-center justify-center gap-2 border-red-200 text-red-600 hover:bg-red-50"
+                      >
+                        <X size={14} />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Room Details */}
+            <div className="space-y-6 p-6">
+              <h2 className="mb-4 text-lg font-medium text-gray-900">
+                Room Details
+              </h2>
+
+              <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="space-y-2">
+                  <Label>Room Type</Label>
+                  <Select
+                    value={formik.values.type}
+                    onValueChange={(value) =>
+                      formik.setFieldValue("type", value)
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select room type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Standard">Standard</SelectItem>
+                      <SelectItem value="Deluxe">Deluxe</SelectItem>
+                      <SelectItem value="Suite">Suite</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {formik.touched.type && formik.errors.type && (
+                    <p className="text-xs text-red-500">{formik.errors.type}</p>
+                  )}
+                </div>
+
+                <FormInput
+                  name="name"
+                  label="Room Name"
+                  type="text"
+                  placeholder="Enter room name"
+                  value={formik.values.name}
+                  isError={!!formik.touched.name && !!formik.errors.name}
+                  error={formik.errors.name}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                />
+
+                <FormInput
+                  name="stock"
+                  label="Available Units"
+                  placeholder="Number of available units"
+                  type="number"
+                  value={formik.values.stock}
+                  isError={!!formik.touched.stock && !!formik.errors.stock}
+                  error={formik.errors.stock}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                />
+
+                <FormInput
+                  name="price"
+                  label="Price per Night"
+                  type="number"
+                  placeholder="Price in IDR"
+                  value={formik.values.price}
+                  isError={!!formik.touched.price && !!formik.errors.price}
+                  error={formik.errors.price}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                />
+
+                <FormInput
+                  name="guest"
+                  label="Guest Capacity"
+                  type="number"
+                  placeholder="Max number of guests"
+                  value={formik.values.guest}
+                  isError={!!formik.touched.guest && !!formik.errors.guest}
+                  error={formik.errors.guest}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
                 />
               </div>
             </div>
 
-            <div className="grid w-full items-end gap-7 md:grid-cols-5">
-              {/* Room Type Select */}
-              <div className="space-y-2">
-                <Label>Room Type</Label>
-                <Select
-                  value={formik.values.type}
-                  onValueChange={(value) => formik.setFieldValue("type", value)}
+            {/* Room Facilities */}
+            <div className="space-y-6 p-6">
+              <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-lg font-medium text-gray-900">
+                  Room Facilities
+                </h2>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addFacility}
+                  className="flex items-center gap-2 self-start sm:self-auto"
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select room type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Standard">Standard</SelectItem>
-                    <SelectItem value="Deluxe">Deluxe</SelectItem>
-                    <SelectItem value="Suite">Suite</SelectItem>
-                  </SelectContent>
-                </Select>
-                {formik.touched.type && formik.errors.type && (
-                  <p className="text-xs text-red-500">{formik.errors.type}</p>
-                )}
+                  <PlusCircle size={16} />
+                  Add New Facility
+                </Button>
               </div>
 
-              {/* Name Input */}
-              <FormInput
-  name="name"
-  label="Room Name"
-  placeholder="Enter room name"
-  type="text"  // Add this line to fix the error
-  value={formik.values.name}
-  isError={!!formik.touched.name && !!formik.errors.name}
-  error={formik.errors.name}
-  onBlur={formik.handleBlur}
-  onChange={formik.handleChange}
-/>
+              <div className="space-y-6">
+                {activeFacilities.map((facility, index) => {
+                  // Find the actual index in the formik values array
+                  const formikIndex = formik.values.facilities.findIndex(
+                    (f) => f === facility,
+                  );
 
-              <FormInput
-                name="stock"
-                label="Stock"
-                placeholder="Stock room available"
-                type="number"
-                value={formik.values.stock}
-                isError={!!formik.touched.stock && !!formik.errors.stock}
-                error={formik.errors.stock}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
-              <FormInput
-                name="price"
-                label="Price"
-                type="number"
-                placeholder="price"
-                value={formik.values.price}
-                isError={!!formik.touched.price && !!formik.errors.price}
-                error={formik.errors.price}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
-              <FormInput
-                name="guest"
-                label="Guest"
-                type="number"
-                placeholder="guest"
-                value={formik.values.guest}
-                isError={!!formik.touched.guest && !!formik.errors.guest}
-                error={formik.errors.guest}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
+                  return (
+                    <div
+                      key={facility.id || index}
+                      className="rounded-lg border border-gray-200 bg-white p-5 transition-all hover:shadow-sm"
+                    >
+                      <div className="mb-4 flex items-start justify-between">
+                        <h4 className="text-md flex items-center font-medium text-gray-700">
+                          {facility.id ? (
+                            <span className="flex items-center">
+                              <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-medium text-blue-800">
+                                {facility.id}
+                              </span>
+                              Existing Facility
+                            </span>
+                          ) : (
+                            <span className="flex items-center">
+                              <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-xs font-medium text-green-800">
+                                {index + 1}
+                              </span>
+                              New Facility
+                            </span>
+                          )}
+                        </h4>
+                        {activeFacilities.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeFacility(formikIndex)}
+                            className="h-8 w-8 p-0 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                          >
+                            <X size={16} />
+                          </Button>
+                        )}
+                      </div>
+
+                      <div className="space-y-4">
+                        <FormInput
+                          name={`facilities.${formikIndex}.title`}
+                          label="Facility Name"
+                          type="text"
+                          placeholder="e.g., Free Wi-Fi, Mini Bar, etc."
+                          value={facility.title}
+                          isError={hasNestedError(
+                            formik.touched,
+                            formik.errors,
+                            formikIndex,
+                            "title",
+                          )}
+                          error={getNestedError(
+                            formik.errors,
+                            formikIndex,
+                            "title",
+                          )}
+                          onBlur={formik.handleBlur}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleFacilityChange(
+                              formikIndex,
+                              "title",
+                              e.target.value,
+                            )
+                          }
+                        />
+
+                        <FormTextarea
+                          name={`facilities.${formikIndex}.description`}
+                          label="Facility Description"
+                          placeholder="Provide details about this facility..."
+                          value={facility.description}
+                          isError={hasNestedError(
+                            formik.touched,
+                            formik.errors,
+                            formikIndex,
+                            "description",
+                          )}
+                          error={getNestedError(
+                            formik.errors,
+                            formikIndex,
+                            "description",
+                          )}
+                          onBlur={formik.handleBlur}
+                          onChange={(
+                            e: React.ChangeEvent<HTMLTextAreaElement>,
+                          ) =>
+                            handleFacilityChange(
+                              formikIndex,
+                              "description",
+                              e.target.value,
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {typeof formik.errors.facilities === "string" && (
+                  <p className="rounded bg-red-50 p-2 text-sm text-red-500">
+                    {formik.errors.facilities}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Room Facility */}
-            <div className="space-y-5">
-              <h3 className="text-lg font-semibold">Room Facility</h3>
-              <FormInput
-                name="facilityTitle"
-                label="Facility Name"
-                type="text"
-                placeholder="Facility Name"
-                value={formik.values.facilityTitle}
-                isError={
-                  !!formik.touched.facilityTitle &&
-                  !!formik.errors.facilityTitle
-                }
-                error={formik.errors.facilityTitle}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
-              <FormTextarea
-                name="facilityDescription"
-                label="Facility Description"
-                placeholder="Describe the facility"
-                value={formik.values.facilityDescription}
-                isError={
-                  !!formik.touched.facilityDescription &&
-                  !!formik.errors.facilityDescription
-                }
-                error={formik.errors.facilityDescription}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
-            </div>
-
-            <div className="flex justify-end pt-6">
-              <Button type="submit" disabled={isPending || !formik.isValid}>
-                {isPending ? "Updating..." : "Update Room"}
+            {/* Submit Button */}
+            <div className="flex justify-end bg-gray-50 p-6">
+              <Button
+                type="submit"
+                disabled={isPending || !formik.isValid}
+                className="flex items-center gap-2 px-6"
+              >
+                <Save size={16} />
+                {isPending ? "Saving Changes..." : "Save Changes"}
               </Button>
             </div>
           </form>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
