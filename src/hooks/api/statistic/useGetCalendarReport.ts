@@ -1,65 +1,12 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../useAxios";
+import {
+  PropertyCalendarReport,
+  PropertyCalendarReportParams,
+  PropertyCalendarReportResponse,
+} from "@/types/calendar-report";
 
-/**
- * Interface for room calendar data within a specific day
- */
-export interface RoomCalendarData {
-  roomId: number;
-  roomName: string;
-  roomType: "Deluxe" | "Suite" | "Standard";
-  totalRooms: number;
-  bookedRooms: number;
-  availableRooms: number;
-  occupancyRate: number;
-  isNonAvailable: boolean;
-  isPeakSeason: boolean;
-  price: number;
-}
-
-/**
- * Interface for a day's calendar data
- */
-export interface DayCalendarData {
-  date: string;
-  totalRooms: number;
-  totalBookedRooms: number;
-  totalAvailableRooms: number;
-  occupancyRate: number;
-  rooms: RoomCalendarData[];
-}
-
-/**
- * Interface for the full property calendar report
- */
-export interface PropertyCalendarReport {
-  propertyId: number;
-  propertyName: string;
-  calendarData: DayCalendarData[];
-}
-
-/**
- * API response format
- */
-export interface PropertyCalendarReportResponse {
-  status: string;
-  data: PropertyCalendarReport;
-}
-
-/**
- * Parameters for the calendar report API request
- */
-export interface PropertyCalendarReportParams {
-  propertyId: number;
-  startDate: Date;
-  endDate: Date;
-  roomId?: number;
-}
-
-/**
- * Hook for fetching property calendar report data
- */
 const useCalendarReport = (params: PropertyCalendarReportParams) => {
   const { axiosInstance } = useAxios();
 
