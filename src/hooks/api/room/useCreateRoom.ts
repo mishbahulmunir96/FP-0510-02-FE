@@ -45,10 +45,7 @@ const useCreateRoom = () => {
       // Convert facilities array to JSON string and append to form data
       createRoomForm.append("facilities", JSON.stringify(payload.facilities));
 
-      const { data } = await axiosInstance.post(
-        "/rooms/create-room",
-        createRoomForm,
-      );
+      const { data } = await axiosInstance.post("/rooms/room", createRoomForm);
       return data;
     },
     onSuccess: async () => {

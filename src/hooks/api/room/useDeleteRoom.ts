@@ -13,7 +13,7 @@ const useDeleteRoom = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await axiosInstance.delete(`/rooms/delete-room/${id}`);
+      const { data } = await axiosInstance.delete(`/rooms/room/${id}`);
       return data;
     },
     onSuccess: () => {

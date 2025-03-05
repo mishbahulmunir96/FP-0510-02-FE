@@ -52,10 +52,7 @@ const useUpdateRoom = (id: number) => {
       formData.append("facilities", JSON.stringify(payload.facilities));
 
       // Make the API request
-      const { data } = await axiosInstance.patch(
-        `/rooms/update-room/${id}`,
-        formData,
-      );
+      const { data } = await axiosInstance.patch(`/rooms/room/${id}`, formData);
       return data;
     },
     onSuccess: () => {
