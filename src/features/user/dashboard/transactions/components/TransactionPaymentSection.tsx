@@ -1,39 +1,24 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PaymentMethod, TransactionStatus } from "@/types/transaction";
 import {
   AlertCircle,
   CreditCard,
-  Eye,
   Loader2,
   Upload,
   Wallet,
   XCircle,
 } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
+import PaymentProofPreview from "./PaymentProofPreview";
+import CancelOrderDialog from "./CancelOrderDialog";
+import BankAccountInfo from "./BankAccountInfo";
 
 interface BankAccount {
   bankName: string;
-  bankNumber: string; // Sesuai dengan struktur tenant di backend
-  name: string; // Nama pemilik rekening (menggunakan name dari tenant)
+  bankNumber: string;
+  name: string;
 }
 
 interface TransactionPaymentSectionProps {
@@ -45,7 +30,7 @@ interface TransactionPaymentSectionProps {
   isUploading: boolean;
   isCancelling: boolean;
   invoiceUrl: string | null;
-  bankAccount?: BankAccount | null; // Tambahkan properti bankAccount
+  bankAccount?: BankAccount | null;
   onUploadProof: (file: File) => void;
   onCancelTransaction: () => void;
 }
@@ -59,7 +44,7 @@ const TransactionPaymentSection = ({
   isUploading,
   isCancelling,
   invoiceUrl,
-  bankAccount, // Tambahkan properti bankAccount
+  bankAccount,
   onUploadProof,
   onCancelTransaction,
 }: TransactionPaymentSectionProps) => {
@@ -88,7 +73,6 @@ const TransactionPaymentSection = ({
   const handleRemovePreview = () => {
     setPreviewUrl(null);
     setSelectedFile(null);
-    // Reset file input
     const fileInput = document.getElementById(
       "payment-proof",
     ) as HTMLInputElement;
@@ -102,7 +86,6 @@ const TransactionPaymentSection = ({
     setShowCancelDialog(false);
   };
 
-  // Menentukan teks tombol untuk preview sesuai dengan kebutuhan
   const getPreviewButtonText = () => {
     if (selectedFile && !paymentProof) {
       return "View Preview Payment Proof";
@@ -120,32 +103,7 @@ const TransactionPaymentSection = ({
 
       {status === "WAITING_FOR_PAYMENT" &&
         paymentMethode === "MANUAL" &&
-        bankAccount && (
-          <div className="space-y-2 rounded-lg border border-blue-100 bg-blue-50 p-4">
-            <div className="flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-blue-600" />
-              <h4 className="font-medium text-gray-900">Informasi Rekening</h4>
-            </div>
-            <div className="space-y-1 pl-7">
-              <p className="text-sm text-gray-700">
-                <span className="font-medium">Bank:</span>{" "}
-                {bankAccount.bankName}
-              </p>
-              <p className="text-sm text-gray-700">
-                <span className="font-medium">No. Rekening:</span>{" "}
-                {bankAccount.bankNumber}
-              </p>
-              <p className="text-sm text-gray-700">
-                <span className="font-medium">Atas Nama:</span>{" "}
-                {bankAccount.name}
-              </p>
-            </div>
-            <p className="pl-7 text-xs text-blue-600">
-              Mohon transfer sesuai dengan jumlah yang tertera dan unggah bukti
-              pembayaran
-            </p>
-          </div>
-        )}
+        bankAccount && <BankAccountInfo bankAccount={bankAccount} />}
 
       <div className="space-y-4">
         {paymentMethode === "OTOMATIS" &&
@@ -209,83 +167,23 @@ const TransactionPaymentSection = ({
         )}
 
         {(previewUrl || paymentProof) && paymentMethode === "MANUAL" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowPreviewDialog(true)}
-            className="w-full sm:w-auto"
-          >
-            <Eye className="mr-2 h-4 w-4" />
-            {getPreviewButtonText()} {/* Teks tombol yang dinamis */}
-          </Button>
+          <PaymentProofPreview
+            previewUrl={previewUrl}
+            paymentProof={paymentProof}
+            selectedFile={selectedFile}
+            showPreviewDialog={showPreviewDialog}
+            setShowPreviewDialog={setShowPreviewDialog}
+            getPreviewButtonText={getPreviewButtonText}
+            handleRemovePreview={handleRemovePreview}
+          />
         )}
 
-        <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedFile && !paymentProof
-                  ? "Preview Payment Proof"
-                  : "Payment Proof"}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-lg">
-              <Image
-                src={previewUrl || paymentProof || "/placeholder.svg"}
-                alt="Payment Proof"
-                fill
-                className="object-contain"
-              />
-            </div>
-            {selectedFile && !paymentProof && (
-              <div className="mt-4 flex justify-end">
-                <p>Wrong image selection?</p>
-                <Button
-                  onClick={() => {
-                    handleRemovePreview();
-                    setShowPreviewDialog(false);
-                  }}
-                  variant="destructive"
-                  size="sm"
-                >
-                  <XCircle className="mr-2 h-4 w-4" />
-                  Remove Payment Proof
-                </Button>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
-
-        <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Cancel Order</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to cancel this order? This action cannot
-                be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={isCancelling}>
-                No, keep order
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleCancelOrder}
-                disabled={isCancelling}
-                className="bg-red-500 hover:bg-red-600"
-              >
-                {isCancelling ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    <span className="ml-2">Cancelling...</span>
-                  </>
-                ) : (
-                  "Yes, cancel order"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <CancelOrderDialog
+          showCancelDialog={showCancelDialog}
+          setShowCancelDialog={setShowCancelDialog}
+          isCancelling={isCancelling}
+          handleCancelOrder={handleCancelOrder}
+        />
 
         <Button
           variant="destructive"
