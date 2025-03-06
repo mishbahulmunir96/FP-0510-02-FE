@@ -197,7 +197,7 @@ export function AppSidebar() {
       >
         <div className="flex h-16 items-center border-b px-6">
           <Link
-            href="/tenant/dashboard"
+            href="/"
             className="flex items-center gap-3 transition-transform hover:scale-[0.98]"
           >
             <Image

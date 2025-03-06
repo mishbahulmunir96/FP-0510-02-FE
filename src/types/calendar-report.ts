@@ -31,7 +31,6 @@ export interface CalendarReport {
   dailyStats: DailyStats[];
 }
 
-// For the calendar day data specifically
 export interface CalendarDayData {
   date: string;
   rooms: {
@@ -52,4 +51,43 @@ export interface CalendarReportResponse {
   propertyId: number;
   propertyName: string;
   calendarData: CalendarDayData[];
+}
+
+export interface CalendarRoomData {
+  roomId: number;
+  roomName: string;
+  roomType: "Deluxe" | "Suite" | "Standard";
+  totalRooms: number;
+  bookedRooms: number;
+  availableRooms: number;
+  occupancyRate: number;
+  isNonAvailable: boolean;
+  isPeakSeason: boolean;
+  price: number;
+}
+
+export interface DayCalendarData {
+  date: string;
+  totalRooms: number;
+  totalBookedRooms: number;
+  totalAvailableRooms: number;
+  occupancyRate: number;
+  rooms: CalendarRoomData[];
+}
+
+export interface PropertyCalendarReport {
+  propertyId: number;
+  propertyName: string;
+  calendarData: DayCalendarData[];
+}
+export interface PropertyCalendarReportResponse {
+  status: string;
+  data: PropertyCalendarReport;
+}
+
+export interface PropertyCalendarReportParams {
+  propertyId: number;
+  startDate: Date;
+  endDate: Date;
+  roomId?: number;
 }

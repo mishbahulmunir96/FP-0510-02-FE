@@ -37,6 +37,7 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto max-w-5xl px-4 py-8 md:py-12">
+
         <header className="mb-8">
           <h1 className="text-2xl font-light text-gray-800 dark:text-gray-100 md:text-3xl">
             Room <span className="font-semibold">Availability Management</span>
@@ -45,6 +46,7 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
             Define periods when rooms are unavailable for booking
           </p>
         </header>
+
 
         <div className="mb-8 overflow-hidden rounded-xl bg-white shadow-sm transition-all dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
@@ -90,6 +92,7 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
             </form>
           </div>
         </div>
+
 
         <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">

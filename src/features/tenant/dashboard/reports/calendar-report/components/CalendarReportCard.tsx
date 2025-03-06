@@ -7,9 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import useCalendarReport, {
-  DayCalendarData,
-} from "@/hooks/api/statistic/useGetCalendarReport";
 import { DateSelectArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -25,7 +22,6 @@ import CalendarLoadingSkeleton from "./CalendarLoadingSkeleton";
 import NoPropertyCard from "./NoPropertyCard";
 import ErrorCalendarCard from "./ErrorCalendarCard";
 import RoomDetailModal from "./RoomDetailModal";
-
 import "./calendar-styles-base.css";
 import "./calendar-styles-components.css";
 import {
@@ -33,6 +29,8 @@ import {
   getCalendarOptions,
   getDayCellHtml,
 } from "@/utils/calendarUtils";
+import { DayCalendarData } from "@/types/calendar-report";
+import useCalendarReport from "@/hooks/api/statistic/useGetCalendarReport";
 
 const CalendarReportCard: React.FC = () => {
   const [propertyIdParam] = usePropertyIdParam();
@@ -151,7 +149,7 @@ const CalendarReportCard: React.FC = () => {
 
   return (
     <>
-      <Card className="overflow-hidden border-gray-200 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-800">
+      <Card className="overflow-hidden rounded-lg border-gray-200 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-800">
         <CardHeader className="border-b border-gray-200 bg-white pb-4 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
