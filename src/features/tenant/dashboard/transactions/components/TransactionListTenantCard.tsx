@@ -63,7 +63,12 @@ const TransactionListTenantCard = ({
             alt={firstReservation.propertyTitle}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             fill
-            src={firstReservation.roomImages[0].imageUrl || "/images/room.avif"}
+            src={
+              firstReservation.roomImages &&
+              firstReservation.roomImages.length > 0
+                ? firstReservation.roomImages[0].imageUrl || "/images/room.avif"
+                : "/images/room.avif"
+            }
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>

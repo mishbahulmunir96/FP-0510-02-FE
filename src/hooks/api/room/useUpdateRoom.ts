@@ -33,6 +33,7 @@ const useUpdateRoom = (id: number) => {
     mutationFn: async (payload: UpdateRoomPayload) => {
       const formData = new FormData();
 
+ 
       formData.append("type", payload.type);
       formData.append("name", payload.name);
       formData.append("stock", String(payload.stock));
@@ -40,6 +41,7 @@ const useUpdateRoom = (id: number) => {
       formData.append("guest", String(payload.guest));
       formData.append("propertyId", String(payload.propertyId));
 
+   
       if (payload.imageUrl) {
         formData.append("imageUrl", payload.imageUrl);
       }

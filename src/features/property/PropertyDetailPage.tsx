@@ -95,6 +95,7 @@ export default function PropertyDetailPage({
     router.push(`/transactions?${params.toString()}`);
   };
 
+
   const handlePositionChange = (lat: string, lng: string) => {};
   const handleShowOnMap = () => {
     setActiveTab("location");

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import useAxios from "@/hooks/api/useAxios";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface CreateReservationPayload {
   roomId: number;
