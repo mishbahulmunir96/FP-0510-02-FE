@@ -125,7 +125,8 @@ const TransactionDetailTenantCard = ({
         )}
 
         {data.status === "WAITING_FOR_PAYMENT" &&
-          data.paymentMethode === "MANUAL" && (
+          data.paymentMethode === "MANUAL" &&
+          data.paymentProof === null && (
             <CancelOrderAction
               isCancelling={isCancelling}
               onCancel={handleCancel}

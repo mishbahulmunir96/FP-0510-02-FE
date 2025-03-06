@@ -87,7 +87,7 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
   );
 
   return (
-    <Card className="overflow-hidden border-gray-200 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-800">
+    <Card className="overflow-hidden rounded-lg border-gray-200 shadow-md transition-all duration-200 hover:shadow-lg dark:border-gray-800">
       <CardContent className="p-5">
         <div className="mb-4 flex items-center">
           <div className="mr-3 rounded-full bg-blue-50 p-2 dark:bg-blue-900/20">
@@ -175,18 +175,6 @@ const CalendarReportFilter: React.FC<CalendarFiltersProps> = () => {
                 Please select a property first
               </p>
             )}
-          </div>
-        </div>
-
-        <div className="mt-4 flex items-center justify-end border-t border-gray-100 pt-4 dark:border-gray-700/50">
-          <div className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400">
-            <CalendarRange className="mr-1.5 h-4 w-4 text-gray-400" />
-            <span>
-              {new Date(startDate).toLocaleDateString("en-US", {
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
           </div>
         </div>
       </CardContent>
