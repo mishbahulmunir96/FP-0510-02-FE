@@ -1,16 +1,15 @@
 "use client";
 
+import CatalogPagination from "@/components/CatalogPagination";
 import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
-import { Calendar as CalendarIcon, Loader2, Search, Map } from "lucide-react";
-import { useMemo, useState } from "react";
-import useDebounce from "../../hooks/useDebounce";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
+import { Loader2, Search } from "lucide-react";
+import { useMemo, useState } from "react";
 import useGetProperties from "../../hooks/api/property/useGetProperties";
+import useDebounce from "../../hooks/useDebounce";
 import PropertyCard from "../property/components/PropertyCard";
 import PropertyNavigation from "./components/PropertyNavigation";
-import PaginationSection from "../../components/PaginationSection";
-import CatalogPagination from "@/components/CatalogPagination";
 
 export default function PropertyCatalogPage() {
   const [location, setLocation] = useState<string>("");
@@ -132,7 +131,6 @@ export default function PropertyCatalogPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      {/* Top Navigation with PropertyNavigation component */}
       <div className="border-b bg-white py-6 shadow-md">
         <div className="container mx-auto px-6">
           <div className="mx-auto">
@@ -147,7 +145,6 @@ export default function PropertyCatalogPage() {
         </div>
       </div>
 
-      {/* Centered Search Bar - BIGGER */}
       <div className="container mx-auto px-6 py-8">
         <div className="mx-auto max-w-7xl">
           <div className="relative w-full md:mx-auto md:max-w-4xl">
@@ -163,7 +160,6 @@ export default function PropertyCatalogPage() {
         </div>
       </div>
 
-      {/* Filter Tags - Show selected filters - BIGGER */}
       {hasActiveFilters && (
         <div className="container mx-auto px-6 pb-6">
           <div className="mx-auto max-w-7xl">
@@ -236,7 +232,6 @@ export default function PropertyCatalogPage() {
         </div>
       )}
 
-      {/* Main Content Area - BIGGER spacing and elements */}
       <main className="container mx-auto flex-1 px-6 pb-16">
         <div className="max-w- mx-auto">
           {isLoading ? (

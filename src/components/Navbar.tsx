@@ -44,7 +44,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-30 bg-white shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <Link href="/" className="flex items-center space-x-2">
           <Image

@@ -33,7 +33,6 @@ const SearchPropertiesPage = () => {
   const endDate = searchParams.get("endDate") || "";
   const guest = Number(searchParams.get("guest")) || 0;
 
-  // Debug logging
   useEffect(() => {
     console.log("Search params:", {
       title,
@@ -131,7 +130,6 @@ const SearchPropertiesPage = () => {
           </div>
         </div>
 
-        {/* Results section */}
         <div className="space-y-6">
           {isPending ? (
             <div className="space-y-4">
@@ -160,7 +158,6 @@ const SearchPropertiesPage = () => {
               <Link key={property.id} href={`/property/${property.slug}`}>
                 <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-md">
                   <div className="flex flex-col md:flex-row">
-                    {/* Image section */}
                     <div className="relative h-60 w-full shrink-0 overflow-hidden md:h-auto md:w-1/3">
                       <Image
                         src={
@@ -181,7 +178,6 @@ const SearchPropertiesPage = () => {
                       )}
                     </div>
 
-                    {/* Content section */}
                     <div className="flex flex-1 flex-col p-6">
                       <div className="mb-2 flex items-start justify-between">
                         <h3 className="text-xl font-semibold text-gray-900">
@@ -235,7 +231,6 @@ const SearchPropertiesPage = () => {
           )}
         </div>
 
-        {/* Pagination and explore more */}
         <div className="mt-10">
           {data && data.meta.total > data.meta.take && (
             <div className="flex justify-center">

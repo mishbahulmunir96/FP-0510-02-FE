@@ -1,4 +1,3 @@
-// src/types/property.ts
 
 import { ReactNode } from "react";
 
@@ -16,14 +15,14 @@ export interface Property {
   isDeleted: boolean;
   propertyCategoryId: number;
   tenantId: number;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string; 
+  updatedAt: string; 
   location: string;
   propertyImage: PropertyImage[];
   propertyFacility: PropertyFacility[];
   tenant: Tenant;
   room: Room[];
-  PropertyCategory?: PropertyCategory[]; // Opsional: detail kategori
+  PropertyCategory?: PropertyCategory[]; 
 }
 
 export interface PropertyImage {
@@ -76,14 +75,13 @@ export interface Room {
   peakSeasonRate: PeakSeasonRate[];
   roomNonAvailability?: RoomNonAvailability[];
   reservation?: Reservation[];
-  // === added by misbah =====
   property: {
     id: number;
     slug: string;
     title: string;
     description: string;
     location: string;
-  }; // === end ===
+  }; 
 }
 
 export interface RoomImage {

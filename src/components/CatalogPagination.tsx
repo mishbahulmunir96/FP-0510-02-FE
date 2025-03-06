@@ -37,7 +37,6 @@ const CatalogPagination: FC<PaginationSectionProps> = ({
     }
   };
 
-  // Don't render pagination if there's only one page
   if (totalPages <= 1) {
     return null;
   }
@@ -55,7 +54,6 @@ const CatalogPagination: FC<PaginationSectionProps> = ({
         </PaginationItem>
 
         {totalPages <= 7 ? (
-          // Show all pages if 7 or fewer
           [...Array(totalPages)].map((_, i) => (
             <PaginationItem key={i + 1}>
               <PaginationLink
@@ -68,9 +66,7 @@ const CatalogPagination: FC<PaginationSectionProps> = ({
             </PaginationItem>
           ))
         ) : (
-          // Show first, last, current and some surrounding pages
           <>
-            {/* First page */}
             <PaginationItem>
               <PaginationLink
                 onClick={() => onChangePage(1)}
@@ -81,14 +77,12 @@ const CatalogPagination: FC<PaginationSectionProps> = ({
               </PaginationLink>
             </PaginationItem>
 
-            {/* Ellipsis if needed */}
             {page > 3 && (
               <PaginationItem>
                 <PaginationLink className="cursor-default">...</PaginationLink>
               </PaginationItem>
             )}
 
-            {/* Pages around current */}
             {[...Array(3)]
               .map((_, i) => {
                 const pageNum = Math.max(2, page - 1) + i;
@@ -109,14 +103,12 @@ const CatalogPagination: FC<PaginationSectionProps> = ({
               })
               .filter(Boolean)}
 
-            {/* Ellipsis if needed */}
             {page < totalPages - 2 && (
               <PaginationItem>
                 <PaginationLink className="cursor-default">...</PaginationLink>
               </PaginationItem>
             )}
 
-            {/* Last page */}
             <PaginationItem>
               <PaginationLink
                 onClick={() => onChangePage(totalPages)}

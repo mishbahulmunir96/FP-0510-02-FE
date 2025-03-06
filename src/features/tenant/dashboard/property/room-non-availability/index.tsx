@@ -4,7 +4,6 @@ import FormInput from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
 import useCreateRoomNonAvailability from "@/hooks/api/room-non-availability/useCreateRoomNonAvailability";
 import { useFormik } from "formik";
-import { useSession } from "next-auth/react";
 import { RoomIdSelect } from "../peak-season-rate/components/RoomIdSelect";
 import { DatePickerWithRangeForRoomNonAvailability } from "./components/DateRoomNonAvailability";
 import RoomNonAvailabilityList from "./components/RoomNonAvailability";
@@ -38,7 +37,7 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto max-w-5xl px-4 py-8 md:py-12">
-        {/* Header */}
+
         <header className="mb-8">
           <h1 className="text-2xl font-light text-gray-800 dark:text-gray-100 md:text-3xl">
             Room <span className="font-semibold">Availability Management</span>
@@ -48,7 +47,7 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
           </p>
         </header>
 
-        {/* Add Non-Availability Form */}
+
         <div className="mb-8 overflow-hidden rounded-xl bg-white shadow-sm transition-all dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
             <h2 className="font-medium text-gray-700 dark:text-gray-300">
@@ -94,7 +93,7 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
           </div>
         </div>
 
-        {/* Non-Availability List */}
+
         <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
             <div className="flex items-center justify-between">

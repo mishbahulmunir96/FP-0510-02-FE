@@ -31,14 +31,9 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
     take: 7,
   });
 
-  const onPageChange = ({ selected }: { selected: number }) => {
-    setPage(selected + 1);
-  };
-
   const { mutateAsync: deleteCategory, isPending: pendingDelete } =
     useDeleteCategory();
-  const { mutateAsync: updateCategory, isPending: pendingUpdate } =
-    useUpdateCategory();
+  useUpdateCategory();
 
   if (isPending) {
     return (

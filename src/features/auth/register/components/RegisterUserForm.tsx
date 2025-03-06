@@ -59,7 +59,6 @@ export default function RegisterPageForm() {
       formik.resetForm();
     } catch (error) {
       setShowConfirmModal(false);
-      // Error handling is managed in useRegister
     }
   };
 
@@ -79,7 +78,6 @@ export default function RegisterPageForm() {
       <div className="w-full max-w-sm md:max-w-4xl">
         <Card className="overflow-hidden border-none shadow-lg">
           <CardContent className="grid p-0 md:grid-cols-2">
-            {/* Left: Registration Form */}
             <div className="relative p-6 sm:p-8 md:p-10">
               <Link
                 href="/login"
@@ -104,7 +102,6 @@ export default function RegisterPageForm() {
                     </p>
                   </div>
 
-                  {/* Divider */}
                   <div className="relative flex items-center justify-center">
                     <Separator className="absolute w-full" />
                     <span className="relative bg-white px-4 text-sm text-gray-500">
@@ -112,7 +109,6 @@ export default function RegisterPageForm() {
                     </span>
                   </div>
 
-                  {/* Email Input */}
                   <div className="grid gap-3">
                     <Label
                       htmlFor="email"
@@ -160,7 +156,6 @@ export default function RegisterPageForm() {
                     )}
                   </div>
 
-                  {/* Continue with Email Button */}
                   <Button
                     type="submit"
                     className="flex w-full items-center justify-center rounded-md bg-sky-600 py-2.5 font-medium text-white shadow-sm transition-colors hover:bg-sky-700"
@@ -179,7 +174,6 @@ export default function RegisterPageForm() {
                     )}
                   </Button>
 
-                  {/* Google Sign-In Button - Prominently Displayed */}
                   <div className="mt-2">
                     <Button
                       type="button"
@@ -214,7 +208,7 @@ export default function RegisterPageForm() {
                       </span>
                     </Button>
                   </div>
-                  {/* Register as Tenant Option */}
+
                   <div className="flex flex-col gap-4 border-t border-gray-100 pt-4">
                     <p className="text-center text-sm text-gray-500">
                       Are you a property owner?
@@ -243,7 +237,6 @@ export default function RegisterPageForm() {
               </form>
             </div>
 
-            {/* Right: Image */}
             <div className="relative hidden md:block">
               <div className="absolute inset-0 z-10 bg-gradient-to-br from-sky-500/30 to-indigo-600/30 mix-blend-multiply"></div>
               <Image

@@ -19,10 +19,9 @@ interface FormSelectProps {
 
 export const EditPropertyCategorySelect: FC<FormSelectProps> = ({
   setFieldValue,
-  initialValue,
 }) => {
   const session = useSession();
-  const { data, isPending } = useGetCategory({
+  const { data } = useGetCategory({
     userId: session.data?.user.id,
   });
 

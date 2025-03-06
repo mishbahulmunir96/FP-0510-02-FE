@@ -5,17 +5,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDeletePeakSeasonRate } from "@/hooks/api/peak-season-rate/useDeletePeakSeasonRate";
+import { useGetPeakSeasons } from "@/hooks/api/peak-season-rate/useGetPeakSeasonRate";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
 import { EditPeakSeasonButton } from "./EditPeakSeasonRate";
-import { useGetPeakSeasons } from "@/hooks/api/peak-season-rate/useGetPeakSeasonRate";
-import { useDeletePeakSeasonRate } from "@/hooks/api/peak-season-rate/useDeletePeakSeasonRate";
 
 interface PeakSeasonsPageProps {
   roomId: number;

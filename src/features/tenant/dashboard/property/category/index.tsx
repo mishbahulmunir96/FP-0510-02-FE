@@ -31,12 +31,10 @@ const CategoryPage = ({ propertyCategoryId }: CreatePropertyPageProps) => {
   return (
     <div className="flex h-screen">
       <div className="flex flex-grow flex-col bg-gray-100 dark:bg-gray-900">
-        {/* Main Dashboard Content */}
         <section className="container mx-auto max-w-7xl space-y-10 p-6">
           <div>
             <form onSubmit={formik.handleSubmit}>
               <div>
-                {/* Contoh Konten Utama */}
                 <h5 className="mb-3 text-center font-semibold md:text-left">
                   Add Category
                 </h5>

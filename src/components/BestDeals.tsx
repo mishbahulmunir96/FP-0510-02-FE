@@ -6,10 +6,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import React, { useRef } from "react";
 import Image from "next/image";
-import { Card, CardContent } from "./ui/card";
-import Link from "next/link";
+import { useRef } from "react";
 
 const BestDeals = () => {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
@@ -77,9 +75,7 @@ const BestDeals = () => {
           </Carousel>
         </div>
 
-
         <div className="mt-6 text-center"></div>
-
       </div>
     </section>
   );

@@ -13,7 +13,7 @@ interface CreatePropertyPayload {
   slug: string;
   location: string;
   title: string;
-  imageUrl: File[] | null; // Changed from File | null to File[] | null
+  imageUrl: File[] | null;
   propertyCategoryId: number;
 }
 
@@ -37,7 +37,6 @@ const useCreateProperty = () => {
         String(payload.propertyCategoryId),
       );
 
-      // Add each image file with the same key "imageUrl"
       if (payload.imageUrl && payload.imageUrl.length > 0) {
         payload.imageUrl.forEach((image) => {
           createPropertyForm.append("imageUrl", image);

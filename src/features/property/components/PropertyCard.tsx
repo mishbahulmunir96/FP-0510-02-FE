@@ -42,26 +42,19 @@ const PriceIcon = () => (
     />
   </svg>
 );
-
-// Interface yang jelas untuk props komponen
 interface PropertyCardProps {
   property: Property;
 }
 
 const PropertyCard: FC<PropertyCardProps> = ({ property }) => {
-  // Ambil gambar utama, dengan fallback jika tidak ada
   const mainImage =
     property.propertyImage && property.propertyImage.length > 0
       ? property.propertyImage[0].imageUrl
       : "/placeholder.png";
-
-  // Ambil harga terendah dari kamar-kamar yang tersedia
   const lowestPrice =
     property.room && property.room.length > 0
       ? Math.min(...property.room.map((r) => r.price))
       : 0;
-
-  // Tampilkan kategori properti jika tersedia
   const categoryName = property.propertyCategory?.name || "Uncategorized";
 
   return (

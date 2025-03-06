@@ -156,7 +156,6 @@ const HomePage = () => {
         </div>
         <PropertyList />
       </div>
-      {/* Best Deals Section */}
       <div className="py-8 md:py-12">
         <BestDeals />
       </div>

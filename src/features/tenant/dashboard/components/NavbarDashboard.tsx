@@ -1,11 +1,11 @@
 "use client";
-import { LogOut, LogIn, Settings, User, Building } from "lucide-react";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
-import Link from "next/link";
 import useGetTenant from "@/hooks/api/account/useGetTenant";
+import { cn } from "@/lib/utils";
+import { Building, LogIn, LogOut } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 export default function NavbarDashboard() {
   const [isMobileView, setIsMobileView] = useState(false);
@@ -22,7 +22,6 @@ export default function NavbarDashboard() {
     checkMobileView();
     window.addEventListener("resize", checkMobileView);
 
-    // Close dropdown when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -47,16 +46,11 @@ export default function NavbarDashboard() {
         isMobileView ? "px-4" : "px-6",
       )}
     >
-      {/* Logo or Brand */}
       <div className="flex items-center">
         <h1 className="text-lg font-medium text-gray-800"></h1>
       </div>
-
-      {/* Right Section */}
       <div className="flex w-auto items-center gap-4">
-        {/* Auth Button with Dropdown (Nebula) */}
         <div className="relative" ref={dropdownRef}>
-          {/* Profile Trigger Button */}
           {session ? (
             <button
               onClick={() => setShowAuthDropdown(!showAuthDropdown)}
@@ -101,8 +95,6 @@ export default function NavbarDashboard() {
               <span>Login</span>
             </button>
           )}
-
-          {/* Nebula Dropdown */}
           {showAuthDropdown && session && (
             <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md border border-gray-100 bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition-all">
               <div className="border-b border-gray-100 px-4 py-3">

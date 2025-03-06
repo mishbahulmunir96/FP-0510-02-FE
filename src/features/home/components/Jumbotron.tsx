@@ -40,7 +40,6 @@ const Jumbotron = () => {
                       priority={index === 0}
                     />
 
-                    {/* Gradient Overlay with Caption */}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
                       <h3 className="mb-1 text-xl font-semibold sm:text-2xl">
                         {item.title}
