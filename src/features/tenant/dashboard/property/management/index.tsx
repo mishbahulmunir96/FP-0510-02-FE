@@ -25,7 +25,7 @@ const PropertyManagementPage = () => {
       variant: "secondary" as const,
     },
     {
-      href: "/tenant/dashboard/property",
+      href: "/tenant/dashboard/property/management",
       label: "Settings",
       icon: <FiSettings className="h-5 w-5" />,
       variant: "outline" as const,
