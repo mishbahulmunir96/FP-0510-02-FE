@@ -30,7 +30,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   const { mutateAsync: deleteProperty, isPending: deletePending } =
     useDeleteProperty();
   const { data, isPending: dataIsPending } = useGetPropertyTenant(propertyId);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]); // Changed to array
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const imageRef = useRef<HTMLInputElement>(null);
   const [selectedPosition, setSelectedPosition] = useState<[string, string]>([
     "0",
@@ -101,20 +101,14 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length) {
-      // Convert FileList to Array
       const fileArray = Array.from(files);
-
-      // Update formik
       formik.setFieldValue("imageUrl", fileArray);
-
-      // Create object URLs for preview
       const imageUrls = fileArray.map((file) => URL.createObjectURL(file));
       setSelectedImages(imageUrls);
     }
   };
 
   const removeSelectedImage = (index: number) => {
-    // Create new arrays without the item at the specified index
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);

@@ -1,16 +1,14 @@
-// userAuthGuard.tsx
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export default function UserAuthGuard(Component: any) {
-  return async function IsUserAuth(props: any) {
+export default function GoogleAuthGuard(Component: any) {
+  return async function IsGoogleAuth(props: any) {
     const session = await auth();
 
     if (!session) {
-      return redirect("/login");
+      return redirect("/");
     }
-
-    if (session.user?.role !== "USER") {
+    if (session.user?.provider === "GOOGLE") {
       return redirect("/");
     }
 

@@ -28,9 +28,6 @@ const PeakSeasonsRateList: FC<PeakSeasonsPageProps> = ({ roomId }) => {
     take: 10,
   });
 
-  const onPageChange = ({ selected }: { selected: number }) => {
-    setPage(selected + 1);
-  };
 
   const { mutateAsync: deletePeakSeason, isPending: pendingPeakSeason } =
     useDeletePeakSeasonRate();

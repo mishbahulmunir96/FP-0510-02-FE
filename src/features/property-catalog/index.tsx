@@ -22,8 +22,6 @@ export default function PropertyCatalogPage() {
   const debouncedSearch = useDebounce(search, 500);
   const formattedStartDate = checkIn ? format(checkIn, "yyyy-MM-dd") : "";
   const formattedEndDate = checkOut ? format(checkOut, "yyyy-MM-dd") : "";
-
-  // Active filters tracking
   const hasActiveFilters = location || category || checkIn || checkOut || guest;
 
   const { data, isLoading, isError } = useGetProperties({
@@ -286,8 +284,6 @@ export default function PropertyCatalogPage() {
               >
                 {propertyCards}
               </motion.div>
-
-              {/* Pagination - BIGGER */}
               {data?.data?.meta && (
                 <div className="mt-16">
                   <CatalogPagination

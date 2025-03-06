@@ -2,23 +2,6 @@
 
 import FormInput from "@/components/FormInput";
 import FormTextarea from "@/components/FormTextArea";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
-import useUpdateRoom from "@/hooks/api/room/useUpdateRoom";
-import useDeleteRoom from "@/hooks/api/room/useDeleteRoom";
-import useGetRoom from "@/hooks/api/room/useGetRoom";
-import { useFormik, FormikErrors } from "formik";
-import Image from "next/image";
-import { ChangeEvent, FC, useRef, useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,8 +13,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import * as Yup from "yup";
-import { PlusCircle, X, ImagePlus, Save, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import useDeleteRoom from "@/hooks/api/room/useDeleteRoom";
+import useGetRoom from "@/hooks/api/room/useGetRoom";
+import useUpdateRoom from "@/hooks/api/room/useUpdateRoom";
+import { FormikErrors, useFormik } from "formik";
+import Image from "next/image";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
+
+import { PlusCircle, Save, Trash2, X } from "lucide-react";
+import validationSchema from "./schemas";
 
 interface UpdateRoomPageProps {
   roomId: number;
@@ -54,32 +55,6 @@ interface FormValues {
   imageUrl: File | null;
   facilities: Facility[];
 }
-
-const validationSchema = Yup.object().shape({
-  type: Yup.string()
-    .oneOf(["Standard", "Deluxe", "Suite"], "Invalid room type")
-    .required("Room type is required"),
-  name: Yup.string()
-    .required("Room name is required")
-    .min(3, "Name must be at least 3 characters"),
-  stock: Yup.number()
-    .required("Stock is required")
-    .min(1, "Stock must be at least 1"),
-  price: Yup.number()
-    .required("Price is required")
-    .min(1000, "Price must be at least 1000"),
-  guest: Yup.number()
-    .required("Guest capacity is required")
-    .min(1, "Guest capacity must be at least 1"),
-  facilities: Yup.array()
-    .of(
-      Yup.object().shape({
-        title: Yup.string().required("Facility name is required"),
-        description: Yup.string().required("Facility description is required"),
-      }),
-    )
-    .min(1, "At least one facility is required"),
-});
 
 const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
   const { mutateAsync: updateRoom, isPending = false } =

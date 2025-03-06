@@ -22,7 +22,6 @@ import { useGetPropertiesTenant } from "@/hooks/api/property/useGetPropertiesTen
 import { EditPropertyCategory } from "../../category/components/EditPropertyCategory";
 
 const PropertyList = () => {
-  const session = useSession();
   const [page, setPage] = useState(1);
 
   const { data, isPending } = useGetPropertiesTenant({

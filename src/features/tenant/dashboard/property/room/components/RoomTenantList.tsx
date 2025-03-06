@@ -15,10 +15,6 @@ const RoomTenantList = () => {
     propertyId: session.data?.user.id,
   });
 
-  const onPageChange = ({ selected }: { selected: number }) => {
-    setPage(selected + 1);
-  };
-
   if (isPending) {
     return (
       <div className="container mx-auto max-w-7xl grid-cols-4 gap-5 md:grid">

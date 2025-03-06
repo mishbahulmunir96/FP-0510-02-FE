@@ -8,10 +8,8 @@ export default function TenantAuthGuard(Component: any) {
     if (!session) {
       return redirect("/login");
     }
-
-    // Check if user has the tenant role
     if (session.user?.role !== "TENANT") {
-      return redirect("/"); // Redirect to home if not a tenant
+      return redirect("/");
     }
 
     return <Component {...props} />;

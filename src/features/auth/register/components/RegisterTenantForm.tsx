@@ -49,7 +49,6 @@ const RegisterTenantForm = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [formData, setFormData] = useState<any>(null);
 
-  // Ref for file input to be triggered by the "Choose" button
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formik = useFormik({

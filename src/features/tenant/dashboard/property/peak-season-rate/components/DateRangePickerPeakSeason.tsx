@@ -33,7 +33,6 @@ export function DatePickerWithRangeForPeakSeason({
     }
   }, [date, setFieldValue]);
 
-  // Calculate nights
   const nights = React.useMemo(() => {
     if (date?.from && date?.to) {
       return Math.ceil(

@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import PropertyTenantList from "./components/PropertyTenantList";
-import { FiPlus, FiHome, FiCalendar, FiList, FiSettings } from "react-icons/fi";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { FiCalendar, FiList, FiPlus, FiSettings } from "react-icons/fi";
+import PropertyTenantList from "./components/PropertyTenantList";
 
 const PropertyManagementPage = () => {
   const actionButtons = [

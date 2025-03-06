@@ -1,14 +1,12 @@
-// components/modals/ConfirmationModal.tsx
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Mail, AlertCircle } from "lucide-react";
+import { AlertCircle, Mail } from "lucide-react";
 
 interface ConfirmationModalProps {
   isOpen: boolean;

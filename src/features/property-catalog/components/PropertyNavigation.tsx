@@ -49,11 +49,8 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
       setDuration(0);
     }
   }, [checkIn, checkOut]);
-
-  // Update checkout date automatically when checkin date changes
   useEffect(() => {
     if (checkIn && (!checkOut || checkIn >= checkOut)) {
-      // Set checkout to checkin + 1 day by default
       setCheckOut(addDays(checkIn, 1));
     }
   }, [checkIn, checkOut]);
@@ -102,7 +99,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
             </div>
 
             <div className="space-y-5 pt-4">
-              {/* Category */}
               <div>
                 <label className="mb-2.5 block text-sm font-medium text-gray-700">
                   Property Type
@@ -124,8 +120,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
                   ))}
                 </div>
               </div>
-
-              {/* Location */}
               <div>
                 <label className="mb-2.5 block text-sm font-medium text-gray-700">
                   Enter City or Location

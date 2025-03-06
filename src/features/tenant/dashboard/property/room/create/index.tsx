@@ -17,8 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import * as Yup from "yup";
+
 import { PlusCircle, X, ImagePlus, Save } from "lucide-react";
+import validationSchema from "./schemas";
 
 interface Facility {
   title: string;
@@ -34,31 +35,6 @@ interface FormValues {
   imageUrl: File | null;
   facilities: Facility[];
 }
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Room name is required"),
-  type: Yup.string()
-    .oneOf(["Standard", "Deluxe", "Suite"], "Invalid room type")
-    .required("Room type is required"),
-  stock: Yup.number()
-    .required("Stock is required")
-    .min(1, "Stock must be at least 1"),
-  price: Yup.number()
-    .required("Price is required")
-    .min(1000, "Price must be at least 1000"),
-  guest: Yup.number()
-    .required("Guest capacity is required")
-    .min(1, "Guest capacity must be at least 1"),
-  propertyId: Yup.number().required("Property is required"),
-  facilities: Yup.array()
-    .of(
-      Yup.object().shape({
-        title: Yup.string().required("Facility name is required"),
-        description: Yup.string().required("Facility description is required"),
-      }),
-    )
-    .min(1, "At least one facility is required"),
-});
 
 const CreateRoomPage = () => {
   const { mutateAsync: createRoom, isPending } = useCreateRoom();
