@@ -13,7 +13,7 @@ interface UpdatePropertyPayload {
   longitude: string;
   slug: string;
   title: string;
-  imageUrl: File[] | null; // Changed from File | null to File[] | null
+  imageUrl: File[] | null;
   propertyCategoryId: number;
 }
 
@@ -37,7 +37,6 @@ const useUpdateProperty = (id: number) => {
         String(payload.propertyCategoryId),
       );
 
-      // Add each image file with the same key "imageUrl"
       if (payload.imageUrl && payload.imageUrl.length > 0) {
         payload.imageUrl.forEach((image) => {
           editPropertyForm.append("imageUrl", image);
@@ -53,7 +52,7 @@ const useUpdateProperty = (id: number) => {
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["property"] });
       toast.success("Update property success");
-      router.push("/tenant/dashboard/property/management"); // Fixed the path - added leading slash
+      router.push("/tenant/dashboard/property/management");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data);

@@ -20,13 +20,10 @@ import {
 import * as Yup from "yup";
 import { PlusCircle, X, ImagePlus, Save } from "lucide-react";
 
-// Define a type for facility
 interface Facility {
   title: string;
   description: string;
 }
-
-// Define the form values interface
 interface FormValues {
   name: string;
   type: string;
@@ -132,9 +129,7 @@ const CreateRoomPage = () => {
   ) => {
     const facilities = [...formik.values.facilities];
 
-    // Check if the facility at this index exists
     if (facilities[index]) {
-      // Create a new object with the updated field
       facilities[index] = {
         ...facilities[index],
         [field]: value,
@@ -144,7 +139,6 @@ const CreateRoomPage = () => {
     }
   };
 
-  // Helper function to get nested error with proper typings
   const getNestedError = (
     errors: FormikErrors<FormValues> | undefined,
     index: number,
@@ -156,7 +150,6 @@ const CreateRoomPage = () => {
       return undefined;
     }
 
-    // If facilities is an array in the errors object
     const facilitiesArray = errors.facilities as FormikErrors<Facility>[];
     if (Array.isArray(facilitiesArray) && facilitiesArray[index]) {
       return facilitiesArray[index][field] as string | undefined;
@@ -165,7 +158,6 @@ const CreateRoomPage = () => {
     return undefined;
   };
 
-  // Helper function to check if a field has an error
   const hasNestedError = (
     touched: any,
     errors: FormikErrors<FormValues> | undefined,
@@ -174,21 +166,17 @@ const CreateRoomPage = () => {
   ): boolean => {
     if (!touched || !errors) return false;
 
-    // Check if facilities is touched and is an array
     if (!touched.facilities || !Array.isArray(touched.facilities)) return false;
 
-    // Check if the specific field is touched
     if (!touched.facilities[index] || !touched.facilities[index][field]) {
       return false;
     }
 
-    // Check if there's an error for this field
     return !!getNestedError(errors, index, field);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow">
         <div className="container mx-auto max-w-5xl px-4 py-6 sm:px-6">
           <div>
@@ -202,14 +190,12 @@ const CreateRoomPage = () => {
         </div>
       </div>
 
-      {/* Form */}
       <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <div className="overflow-hidden rounded-xl bg-white shadow-sm">
           <form
             onSubmit={formik.handleSubmit}
             className="divide-y divide-gray-100"
           >
-            {/* Image Upload Section */}
             <div className="space-y-4 p-6">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
                 Room Image
@@ -269,7 +255,6 @@ const CreateRoomPage = () => {
               </div>
             </div>
 
-            {/* Room Details */}
             <div className="space-y-6 p-6">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
                 Room Details
@@ -358,7 +343,6 @@ const CreateRoomPage = () => {
               </div>
             </div>
 
-            {/* Room Facilities */}
             <div className="space-y-6 p-6">
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-lg font-medium text-gray-900">
@@ -458,7 +442,6 @@ const CreateRoomPage = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="flex justify-end bg-gray-50 p-6">
               <Button
                 type="submit"

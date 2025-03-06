@@ -50,25 +50,19 @@ const EditProfileForm = () => {
   const changePasswordMutation = useChangePassword();
   const { mutate: changeEmail, isPending } = useChangeEmail();
 
-  // Tenant hooks
   const { data: tenant, isLoading: isTenantLoading } = useGetTenant();
   const { mutate: updateTenant, isPending: isUpdateTenantPending } =
     useUpdateTenant();
-
-  // Display states
   const [displayName, setDisplayName] = useState("");
   const [displayEmail, setDisplayEmail] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
-  // Form states
   const [formEmail, setFormEmail] = useState("");
 
-  // Password states
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Tenant form states
   const [tenantName, setTenantName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bankName, setBankName] = useState("");
@@ -87,7 +81,6 @@ const EditProfileForm = () => {
     }
   }, [session]);
 
-  // Load tenant data
   useEffect(() => {
     if (tenant) {
       setTenantName(tenant.name || "");
@@ -189,13 +182,11 @@ const EditProfileForm = () => {
     );
   };
 
-  // Tenant profile image change handler
   const handleTenantImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setTenantImageFile(file);
 
-      // Create a preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setTenantPreviewImage(reader.result as string);
@@ -204,7 +195,6 @@ const EditProfileForm = () => {
     }
   };
 
-  // Tenant update handler
   const handleTenantUpdate = async () => {
     try {
       await updateTenant(
@@ -319,7 +309,6 @@ const EditProfileForm = () => {
         </TabsList>
 
         <div className="mt-6">
-          {/* Tenant Tab */}
           <TabsContent value="tenant">
             <Card className="border-none bg-white shadow-sm">
               <CardHeader>

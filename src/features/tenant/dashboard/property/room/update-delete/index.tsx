@@ -37,7 +37,6 @@ interface UpdateRoomPageProps {
   roomId: number;
 }
 
-// Define a type for facility
 interface Facility {
   id?: number;
   title: string;
@@ -45,7 +44,6 @@ interface Facility {
   isDeleted?: boolean;
 }
 
-// Define the form values interface
 interface FormValues {
   type: string;
   name: string;
@@ -120,10 +118,8 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     enableReinitialize: false,
   });
 
-  // When data is loaded, update the form values
   useEffect(() => {
     if (data) {
-      // Transform existing facilities into the format needed for the form
       const facilities = data.roomFacility?.map((facility) => ({
         id: facility.id,
         title: facility.title,
@@ -177,7 +173,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     if (formik.values.facilities.length > 1) {
       const facilities = [...formik.values.facilities];
 
-      // If it has an ID, mark it as deleted instead of removing it
       if (facilities[index]?.id) {
         facilities[index] = {
           ...facilities[index],
@@ -191,7 +186,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     }
   };
 
-  // Fixed handleFacilityChange function with proper type safety
   const handleFacilityChange = (
     index: number,
     field: keyof Facility,
@@ -199,9 +193,7 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
   ) => {
     const facilities = [...formik.values.facilities];
 
-    // Check if the facility at this index exists
     if (facilities[index]) {
-      // Create a new object with the updated field
       facilities[index] = {
         ...facilities[index],
         [field]: value,
@@ -211,7 +203,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     }
   };
 
-  // Helper function to get nested error with proper typings
   const getNestedError = (
     errors: FormikErrors<FormValues> | undefined,
     index: number,
@@ -223,7 +214,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
       return undefined;
     }
 
-    // If facilities is an array in the errors object
     const facilitiesArray = errors.facilities as FormikErrors<Facility>[];
     if (Array.isArray(facilitiesArray) && facilitiesArray[index]) {
       return facilitiesArray[index][field] as string | undefined;
@@ -232,7 +222,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     return undefined;
   };
 
-  // Helper function to check if a field has an error
   const hasNestedError = (
     touched: any,
     errors: FormikErrors<FormValues> | undefined,
@@ -241,15 +230,12 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
   ): boolean => {
     if (!touched || !errors) return false;
 
-    // Check if facilities is touched and is an array
     if (!touched.facilities || !Array.isArray(touched.facilities)) return false;
 
-    // Check if the specific field is touched
     if (!touched.facilities[index] || !touched.facilities[index][field]) {
       return false;
     }
 
-    // Check if there's an error for this field
     return !!getNestedError(errors, index, field);
   };
 
@@ -286,7 +272,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
     );
   }
 
-  // Filter out deleted facilities for rendering
   const activeFacilities = formik.values.facilities.filter(
     (facility) => !facility.isDeleted,
   );
@@ -344,7 +329,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
             onSubmit={formik.handleSubmit}
             className="divide-y divide-gray-100"
           >
-            {/* Image Section */}
             <div className="space-y-4 p-6">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
                 Room Image
@@ -407,7 +391,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
               </div>
             </div>
 
-            {/* Room Details */}
             <div className="space-y-6 p-6">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
                 Room Details
@@ -486,7 +469,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
               </div>
             </div>
 
-            {/* Room Facilities */}
             <div className="space-y-6 p-6">
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-lg font-medium text-gray-900">
@@ -505,7 +487,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
 
               <div className="space-y-6">
                 {activeFacilities.map((facility, index) => {
-                  // Find the actual index in the formik values array
                   const formikIndex = formik.values.facilities.findIndex(
                     (f) => f === facility,
                   );
@@ -614,7 +595,6 @@ const UpdateRoomPage: FC<UpdateRoomPageProps> = ({ roomId }) => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="flex justify-end bg-gray-50 p-6">
               <Button
                 type="submit"

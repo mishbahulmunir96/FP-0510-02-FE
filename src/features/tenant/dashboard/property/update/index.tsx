@@ -45,7 +45,7 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
       latitude: data?.latitude || "",
       longitude: data?.longitude || "",
       location: data?.location || "",
-      imageUrl: [], // Changed from null to empty array
+      imageUrl: [],
       propertyCategoryId: data?.propertyCategory?.id || null,
     },
     onSubmit: async (values) => {
@@ -145,8 +145,8 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
   const handleSlugChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9-]/g, "") // Hanya izinkan huruf, angka, dan strip
-      .replace(/--+/g, "-"); // Ganti multiple strip dengan single strip
+      .replace(/[^a-zA-Z0-9-]/g, "")
+      .replace(/--+/g, "-");
     formik.setFieldValue("slug", value);
   };
 
@@ -171,7 +171,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
     <div>
       <section className="container mx-auto max-w-7xl p-6">
         <form onSubmit={formik.handleSubmit} className="space-y-5">
-          {/* Image Section */}
           <div className="space-y-5">
             {selectedImages.length > 0 ? (
               <div className="space-y-4">
@@ -225,12 +224,11 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
                 accept="image/*"
                 onChange={onChangeImage}
                 ref={imageRef}
-                multiple // Enable multiple file selection
+                multiple
               />
             </div>
           </div>
 
-          {/* Basic Info */}
           <FormInput
             name="title"
             label="Property Name"
@@ -270,7 +268,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
             onChange={formik.handleChange}
           />
 
-          {/* Map Section */}
           <div className="overflow-hidden rounded-md border-[1px]">
             <div className="h-[500px] w-full rounded-md">
               <DynamicMapComponent
@@ -280,7 +277,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
             </div>
           </div>
 
-          {/* Location Info */}
           <div className="grid w-full grid-cols-3 items-end gap-7">
             <FormInput
               name="latitude"
@@ -317,7 +313,6 @@ const UpdatePropertyPage: FC<PropertyDetailPageProps> = ({ propertyId }) => {
             />
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-between">
             <Button
               type="button"

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/select";
 import { useGetPropertiesTenant } from "@/hooks/api/property/useGetPropertiesTenant";
 import { PropertyCategory } from "@/types/property";
-import { useSession } from "next-auth/react";
 import { FC } from "react";
 
 interface FormSelectProps {
@@ -17,7 +16,6 @@ interface FormSelectProps {
 }
 
 export const PropertyIdSelect: FC<FormSelectProps> = ({ setFieldValue }) => {
-  const session = useSession();
   const { data, isPending } = useGetPropertiesTenant({
     take: 100,
   });

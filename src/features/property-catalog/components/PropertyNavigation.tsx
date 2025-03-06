@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -6,18 +5,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { format, differenceInDays, addDays } from "date-fns";
-import {
-  Building2,
-  CalendarDays,
-  Users,
-  MapPin,
-  Home,
-  X,
-  Filter,
-} from "lucide-react";
-import { locations } from "./Const";
+import { addDays, differenceInDays, format } from "date-fns";
+import { CalendarDays, Filter, MapPin, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import GuestSelector from "../../property/components/Guest";
+import { locations } from "./Const";
 
 interface NavigationProps {
   onLocation: (location: string) => void;
@@ -167,10 +159,7 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* Dates Row */}
               <div className="grid grid-cols-2 gap-4">
-                {/* Check In */}
                 <div>
                   <label className="mb-2.5 block text-sm font-medium text-gray-700">
                     Check In
@@ -200,7 +189,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
                   </Popover>
                 </div>
 
-                {/* Check Out */}
                 <div>
                   <label className="mb-2.5 block text-sm font-medium text-gray-700">
                     Check Out
@@ -232,8 +220,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
                   </Popover>
                 </div>
               </div>
-
-              {/* Guests */}
               <div>
                 <label className="mb-2.5 block text-sm font-medium text-gray-700">
                   Guests
@@ -247,7 +233,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
                 )}
               </div>
 
-              {/* Action Buttons */}
               <div className="flex gap-3 pt-2">
                 <Button
                   onClick={handleSearch}
@@ -268,7 +253,6 @@ const PropertyNavigation: React.FC<NavigationProps> = ({
         )}
       </div>
 
-      {/* Most Searched Locations */}
       <div className="my-8 hidden w-full md:block">
         <h2 className="mb-5 text-xl font-semibold text-gray-800">
           Popular Destinations

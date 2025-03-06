@@ -9,7 +9,7 @@ interface RegisterPayload {
   name: string;
   email: string;
   password?: string;
-  role: "USER" | "TENANT"; // Pastikan role selalu diisi
+  role: "USER" | "TENANT";
   bankName?: string;
   bankNumber?: string;
   phoneNumber?: string;
@@ -27,7 +27,6 @@ const useRegister = () => {
       formData.append("email", payload.email);
       formData.append("role", payload.role);
 
-      // Menambahkan field tambahan jika role adalah TENANT
       if (payload.role === "TENANT") {
         if (!payload.bankName || !payload.bankNumber || !payload.phoneNumber) {
           throw new Error(
@@ -38,7 +37,7 @@ const useRegister = () => {
         formData.append("bankNumber", payload.bankNumber!);
         formData.append("phoneNumber", payload.phoneNumber!);
       }
-      // Menambahkan gambar jika ada
+
       if (payload.image) {
         formData.append("image", payload.image);
       }

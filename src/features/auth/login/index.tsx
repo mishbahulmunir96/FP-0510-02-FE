@@ -38,7 +38,6 @@ const LoginPage = () => {
         <div className="flex flex-col gap-6">
           <Card className="overflow-hidden border-0 shadow-lg">
             <CardContent className="grid p-0 md:grid-cols-2">
-              {/* Left Section: Login Form */}
               <form
                 onSubmit={formik.handleSubmit}
                 className="p-6 md:p-8 lg:p-10"
@@ -53,8 +52,6 @@ const LoginPage = () => {
                       continue your journey.
                     </p>
                   </div>
-
-                  {/* Email Input with Icon */}
                   <div className="grid gap-2.5">
                     <Label
                       htmlFor="email"
@@ -86,8 +83,6 @@ const LoginPage = () => {
                       </p>
                     ) : null}
                   </div>
-
-                  {/* Password Input with Toggle Visibility */}
                   <div className="grid gap-2.5">
                     <div className="flex items-center justify-between">
                       <Label
@@ -138,8 +133,6 @@ const LoginPage = () => {
                       </p>
                     ) : null}
                   </div>
-
-                  {/* Login Button */}
                   <Button
                     type="submit"
                     className="w-full rounded-md bg-sky-600 py-2.5 font-medium text-white shadow-sm transition-colors hover:bg-sky-700"
@@ -155,7 +148,6 @@ const LoginPage = () => {
                     )}
                   </Button>
 
-                  {/* Divider */}
                   <div className="relative flex items-center justify-center">
                     <span className="absolute inset-x-0 h-px bg-gray-200"></span>
                     <span className="relative bg-white px-4 text-sm text-gray-500">
@@ -163,7 +155,6 @@ const LoginPage = () => {
                     </span>
                   </div>
 
-                  {/* Google Sign In Button */}
                   <Button
                     type="button"
                     variant="outline"
@@ -188,7 +179,6 @@ const LoginPage = () => {
                     Sign in with Google
                   </Button>
 
-                  {/* Sign Up Link */}
                   <div className="text-center text-sm text-gray-600">
                     New to our platform?{" "}
                     <Link
@@ -201,7 +191,6 @@ const LoginPage = () => {
                 </div>
               </form>
 
-              {/* Right Section: Image */}
               <div className="relative hidden md:block">
                 <div className="absolute inset-0 z-10 bg-gradient-to-br from-sky-500/20 to-indigo-500/30 mix-blend-multiply"></div>
                 <Image
@@ -227,7 +216,6 @@ const LoginPage = () => {
             </CardContent>
           </Card>
 
-          {/* Terms of Service and Privacy Policy Notice */}
           <div className="text-balance px-4 text-center text-xs text-gray-500">
             By signing in, you agree to our{" "}
             <Link

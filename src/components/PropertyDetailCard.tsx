@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Card, CardHeader } from "./ui/card";
 import { RoomFacility } from "@/types/property";
-// import ReservationForm from "@/features/reservation-room";
 import { FaSquareCheck } from "react-icons/fa6";
 
 interface PropertyDetailCardProps {
@@ -49,13 +48,6 @@ const PropertyDetailCard = ({
           <RoomInfo name={name} guest={guest} />
           <PriceInfo price={formatPrice(price)} />
           <FacilitiesList facilities={roomFacilities} />
-          {/* <div>
-            <ReservationForm
-              roomId={roomId}
-              price={price}
-              transactionId={transactionId}
-            />
-          </div> */}
         </div>
       </CardHeader>
     </Card>

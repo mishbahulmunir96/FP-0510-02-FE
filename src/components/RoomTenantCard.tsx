@@ -11,8 +11,8 @@ interface RoomCardProps {
   price: number;
   guest: number;
   imageUrl: string;
-  propertyTitle: string; // Nama property/hotel
-  type: string; // Tambahan tipe kamar
+  propertyTitle: string;
+  type: string;
 }
 
 const RoomCard: FC<RoomCardProps> = ({
@@ -38,7 +38,6 @@ const RoomCard: FC<RoomCardProps> = ({
 
       <Link href={`/tenant/dashboard/property/room/${id}`}>
         <CardHeader className="space-y-4">
-          {/* Property Name Badge */}
           <div className="absolute left-3 top-3 z-10">
             <div className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm">
               <Building2 className="h-4 w-4 text-blue-600" />

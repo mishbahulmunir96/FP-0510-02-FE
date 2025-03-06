@@ -33,7 +33,7 @@ const CreatePropertyPage = () => {
       description: "",
       latitude: selectedPosition[0],
       longitude: selectedPosition[1],
-      imageUrl: [], // Changed from null to empty array
+      imageUrl: [],
       propertyCategoryId: null,
       location: "",
     },
@@ -45,26 +45,20 @@ const CreatePropertyPage = () => {
     },
   });
 
-  const [selectedImages, setSelectedImages] = useState<string[]>([]); // Changed to array of strings
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   const imageRef = useRef<HTMLInputElement>(null);
   const onChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length) {
-      // Convert FileList to Array
       const fileArray = Array.from(files);
-
-      // Update formik
       formik.setFieldValue("imageUrl", fileArray);
-
-      // Create object URLs for preview
       const imageUrls = fileArray.map((file) => URL.createObjectURL(file));
       setSelectedImages(imageUrls);
     }
   };
 
   const removeSelectedImage = (index: number) => {
-    // Create new arrays without the item at the specified index
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
@@ -146,8 +140,8 @@ const CreatePropertyPage = () => {
   const handleSlugChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9-]/g, "") // Hanya izinkan huruf, angka, dan strip
-      .replace(/--+/g, "-"); // Ganti multiple strip dengan single strip
+      .replace(/[^a-zA-Z0-9-]/g, "")
+      .replace(/--+/g, "-");
     formik.setFieldValue("slug", value);
   };
 
@@ -192,7 +186,7 @@ const CreatePropertyPage = () => {
                 accept="image/*"
                 onChange={onChangeImage}
                 ref={imageRef}
-                multiple // Enable multiple file selection
+                multiple
               />
             </div>
           </div>

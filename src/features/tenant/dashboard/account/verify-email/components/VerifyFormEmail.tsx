@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+
 import { useVerifyChangeEmail } from "@/hooks/api/account/useChangeEmailVerify";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Check, X } from "lucide-react";
@@ -15,23 +15,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-
-const verifySchema = Yup.object().shape({
-  token: Yup.string().required(),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
-    .matches(
-      /[^a-zA-Z0-9]/,
-      "Password must contain at least one special character",
-    )
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Confirm password is required"),
-});
+import verifySchema from "../schema";
 
 export default function VerifyEmailForm({ token }: { token: string }) {
   const { mutate: verify, isPending } = useVerifyChangeEmail();

@@ -32,7 +32,7 @@ const useChangePassword = () => {
     },
     onSuccess: () => {
       toast.success("Change password success");
-      router.push("/");
+      router.push("/tenant/dashboard/account");
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data?.message || "Change password failed");

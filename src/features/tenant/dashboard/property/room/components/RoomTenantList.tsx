@@ -54,7 +54,7 @@ const RoomTenantList = () => {
               id={room.id}
               guest={room.guest}
               imageUrl={room.roomImage?.[0]?.imageUrl}
-              name={room.name || room.type} // Menggunakan type jika name tidak ada
+              name={room.name || room.type}
               stock={room.stock}
               price={room.price}
               propertyTitle={room.property.title}

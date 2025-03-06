@@ -1,38 +1,32 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useFormik } from "formik";
-import {
-  Mail,
-  User,
-  Phone,
-  Building,
-  CreditCard,
-  Camera,
-  ArrowRight,
-  UserCheck,
-  Loader2,
-  ChevronLeft,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import useRegister from "@/hooks/api/auth/useRegister";
-import * as Yup from "yup";
-import YupPassword from "yup-password";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import Image from "next/image";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import SuccessModal from "@/components/modals/SuccessModal";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import useRegister from "@/hooks/api/auth/useRegister";
+import { cn } from "@/lib/utils";
+import { useFormik } from "formik";
+import {
+  ArrowRight,
+  Building,
+  Camera,
+  ChevronLeft,
+  CreditCard,
+  Loader2,
+  Mail,
+  Phone,
+  User,
+  UserCheck,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import * as Yup from "yup";
+import YupPassword from "yup-password";
 
 YupPassword(Yup);
 
@@ -92,7 +86,6 @@ const RegisterTenantForm = () => {
       setSelectedImage("");
     } catch (error) {
       setShowConfirmModal(false);
-      // Error handling is already managed by the useRegister hook
     }
   };
 
@@ -109,7 +102,6 @@ const RegisterTenantForm = () => {
       <div className="w-full max-w-sm md:max-w-5xl">
         <Card className="overflow-hidden border-none shadow-lg">
           <CardContent className="grid p-0 md:grid-cols-2">
-            {/* Left: Tenant Registration Form */}
             <div className="relative p-6 sm:p-8">
               <Link
                 href="/register"
@@ -136,7 +128,6 @@ const RegisterTenantForm = () => {
                 </div>
 
                 <div className="space-y-5">
-                  {/* Profile Picture Upload with Preview */}
                   <div className="flex flex-col items-center gap-3">
                     <Label
                       htmlFor="imageUrl"
@@ -176,10 +167,7 @@ const RegisterTenantForm = () => {
                       Upload a professional profile image
                     </p>
                   </div>
-
-                  {/* Form Fields in Grid Layout */}
                   <div className="grid gap-5 sm:grid-cols-2">
-                    {/* Basic Information */}
                     <div className="space-y-2 sm:col-span-2">
                       <Label
                         htmlFor="name"
@@ -268,8 +256,6 @@ const RegisterTenantForm = () => {
                           </p>
                         )}
                     </div>
-
-                    {/* Banking Information */}
                     <div className="space-y-2">
                       <Label
                         htmlFor="bankName"
@@ -330,8 +316,6 @@ const RegisterTenantForm = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Action Buttons */}
                 <div className="space-y-4 pt-4">
                   <Button
                     type="submit"
@@ -370,8 +354,6 @@ const RegisterTenantForm = () => {
                 </div>
               </form>
             </div>
-
-            {/* Right: Image Section with Information */}
             <div className="relative hidden md:block">
               <div className="absolute inset-0 z-10 bg-gradient-to-br from-sky-600/20 to-indigo-600/30 mix-blend-multiply"></div>
               <Image

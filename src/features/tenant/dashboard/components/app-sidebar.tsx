@@ -10,7 +10,6 @@ import {
   ChevronDown,
   FileBarChart,
   Home,
-  LayoutDashboard,
   LayoutGrid,
   LucideIcon,
   Menu,
@@ -23,7 +22,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Define interfaces for menu items
 interface BaseMenuItem {
   title: string;
   icon: LucideIcon;
@@ -39,7 +37,6 @@ interface ParentMenuItem extends BaseMenuItem {
   url?: string;
 }
 
-// Define interface for MenuItem component props
 interface MenuItemProps {
   item: ParentMenuItem;
   isSubmenuItem?: boolean;
@@ -228,7 +225,7 @@ export function AppSidebar() {
     },
     {
       title: "Settings",
-      url: "/tenant/settings",
+      url: "/tenant/dashboard/reports/statistics",
       icon: Settings,
       description: "Configure your account",
     },

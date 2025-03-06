@@ -15,7 +15,6 @@ interface PeakSeasonsPageProps {
 }
 
 const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
-  const session = useSession();
   const { mutateAsync: createPeakSeasonRate, isPending } =
     useCreatePeakSeasonRate();
 
@@ -95,8 +94,6 @@ const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
             </form>
           </div>
         </div>
-
-        {/* Rates List */}
         <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
             <div className="flex items-center justify-between">

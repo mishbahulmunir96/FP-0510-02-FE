@@ -84,8 +84,6 @@ export function DatePickerWithRangeForPeakSeason({
                   </span>
                 )}
               </div>
-
-              {/* Hover indicator - subtle bottom border animation */}
               <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full"></div>
             </Button>
           </PopoverTrigger>
@@ -135,7 +133,6 @@ export function DatePickerWithRangeForPeakSeason({
                 size="sm"
                 className="h-8 rounded-full px-3 text-xs"
                 onClick={() => {
-                  // Close popover by simulating escape key
                   document.dispatchEvent(
                     new KeyboardEvent("keydown", { key: "Escape" }),
                   );

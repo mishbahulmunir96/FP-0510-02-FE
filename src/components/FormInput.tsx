@@ -16,8 +16,8 @@ interface FormInputProps {
   onChange: FormikHandlers["handleChange"];
   onBlur: FormikHandlers["handleBlur"];
   readOnly?: boolean;
-  className?: string; // Tambahkan ini
-  inputClassName?: string; // Optional: untuk styling input secara terpisah
+  className?: string;
+  inputClassName?: string;
 }
 
 const FormInput: FC<FormInputProps> = ({

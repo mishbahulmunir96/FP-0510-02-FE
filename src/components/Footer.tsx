@@ -6,7 +6,6 @@ import { Facebook, Twitter, Instagram } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const Footer = () => {
-  // Contoh: Sembunyikan footer di route tertentu
   const pathName = usePathname();
   const hideFooterRoutes = ["/tenant/dashboard", "/tenant/manage-properties"];
   if (hideFooterRoutes.includes(pathName)) {
@@ -17,15 +16,13 @@ const Footer = () => {
     <footer className="bg-gray-100 text-gray-600">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Kolom 1: Logo & Deskripsi */}
           <div className="flex flex-col">
             <div className="mb-3 flex items-center space-x-2">
-              {/* Logo tidak terpotong */}
               <Image
-                src="/RateHavenLogo.png" // Ganti sesuai path logo Anda
+                src="/RateHavenLogo.png"
                 alt="Rate Haven Logo"
-                width={64} // Ubah sesuai kebutuhan
-                height={64} // Ubah sesuai kebutuhan
+                width={64}
+                height={64}
                 className="object-contain"
                 priority
               />
@@ -37,7 +34,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Kolom 2: Quick Links */}
           <div>
             <h3 className="mb-3 text-sm font-semibold text-gray-800">
               Quick Links
@@ -62,7 +58,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Kolom 3: Legal */}
           <div>
             <h3 className="mb-3 text-sm font-semibold text-gray-800">Legal</h3>
             <ul className="space-y-2 text-sm">
@@ -84,7 +79,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Kolom 4: Social Media */}
           <div>
             <h3 className="mb-3 text-sm font-semibold text-gray-800">
               Follow Us
@@ -127,7 +121,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bagian Bawah Footer */}
         <div className="mt-8 border-t pt-4 text-center text-sm text-gray-500">
           © {new Date().getFullYear()} RateHaven. All rights reserved.
         </div>

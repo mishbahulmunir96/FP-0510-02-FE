@@ -21,16 +21,14 @@ import {
   standardizeToCheckInTime,
   standardizeToCheckOutTime,
 } from "@/utils/date";
-import { format, differenceInDays } from "date-fns";
+import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { CalendarIcon, Info, CreditCard } from "lucide-react";
+import { CalendarIcon, CreditCard, Info } from "lucide-react";
 import * as React from "react";
 import type { DayButtonProps } from "react-day-picker";
 
-// Threshold for determining "good price" (less than base price)
 const GOOD_PRICE_THRESHOLD_RATIO = 0.9;
 
-// Compact price formatting function
 const formatCompactPrice = (price: number) => {
   if (price >= 1_000_000) {
     return `${Math.round(price / 1_000_000)}M`;
@@ -63,11 +61,9 @@ interface RoomPriceCalendarProps {
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
-const disabledDays = [{ before: today }];
 
 const TIMEZONE = "Asia/Jakarta";
 
-// Function to calculate the number of nights between two dates
 const calculateNights = (checkIn: Date, checkOut: Date) => {
   const from = new Date(checkIn);
   const to = new Date(checkOut);
@@ -79,7 +75,6 @@ const calculateNights = (checkIn: Date, checkOut: Date) => {
   return Math.round(diffTime / (1000 * 60 * 60 * 24));
 };
 
-// Custom DayButton component with improved styling
 const DayButton = (
   props: DayButtonProps & {
     calendarData?: any;
@@ -110,6 +105,7 @@ const DayButton = (
   const price = dayData.price;
   const isGoodPrice = price < basePrice * GOOD_PRICE_THRESHOLD_RATIO;
   const isPeak = isPeakSeason?.[dateKey] || false;
+  const isSoldOut = !dayData.isAvailable;
 
   return (
     <button
@@ -117,11 +113,20 @@ const DayButton = (
       className={cn(
         buttonProps.className,
         isPeak && "rounded-md border border-amber-400 bg-amber-50/50",
+        isSoldOut && "cursor-not-allowed bg-rose-100 opacity-70",
         "p-0 transition-all duration-300 hover:scale-105 hover:shadow-sm",
       )}
+      disabled={isSoldOut}
     >
       <div className="flex h-full w-full flex-col items-center justify-center">
-        <span className="font-medium">{props.children}</span>
+        <span
+          className={cn(
+            "font-medium",
+            isSoldOut && "text-rose-700 line-through",
+          )}
+        >
+          {props.children}
+        </span>
         {price && (
           <span
             className={cn(
@@ -131,6 +136,7 @@ const DayButton = (
                 : price > basePrice * 1.1
                   ? "text-rose-600"
                   : "text-slate-600",
+              isSoldOut && "text-rose-700",
             )}
           >
             {formatCompactPrice(price)}
@@ -143,7 +149,7 @@ const DayButton = (
                 {dayData.availableStock} left
               </span>
             ) : (
-              <span className="rounded-sm bg-rose-50 px-1 py-0.5 font-semibold text-rose-500">
+              <span className="rounded-sm bg-rose-200 px-1 py-0.5 font-semibold text-rose-700">
                 Sold out
               </span>
             )}
@@ -168,15 +174,14 @@ export function RoomPriceCalendar({
   const [nightlyPrices, setNightlyPrices] = React.useState<{
     [key: string]: number;
   }>({});
+  const [hasUnavailableDates, setHasUnavailableDates] = React.useState(false);
 
-  // Fetch room calendar data if a room is selected
   const { data: calendarData, isLoading } = useRoomCalendar(
     selectedRoomId ? Number.parseInt(selectedRoomId) : 0,
     currentMonth,
     { enabled: !!selectedRoomId },
   );
 
-  // Calculate total price based on selected dates and room
   React.useEffect(() => {
     if (
       dateRange.from &&
@@ -186,6 +191,7 @@ export function RoomPriceCalendar({
     ) {
       let total = 0;
       const prices: { [key: string]: number } = {};
+      let unavailableDatesDetected = false;
 
       const startDate = new Date(dateRange.from);
       const endDate = new Date(dateRange.to);
@@ -197,7 +203,13 @@ export function RoomPriceCalendar({
         const dateKey = format(currentDate, "yyyy-MM-dd");
 
         if (calendarData.data.calendar[dateKey]) {
-          const dayPrice = calendarData.data.calendar[dateKey].price;
+          const dayData = calendarData.data.calendar[dateKey];
+          if (!dayData.isAvailable) {
+            unavailableDatesDetected = true;
+            break;
+          }
+
+          const dayPrice = dayData.price;
           total += dayPrice;
           prices[dateKey] = dayPrice;
         } else {
@@ -206,13 +218,25 @@ export function RoomPriceCalendar({
         }
       }
 
-      setTotalPrice(total);
-      setNightlyPrices(prices);
+      setHasUnavailableDates(unavailableDatesDetected);
 
-      if (onTotalPriceChange) {
-        onTotalPriceChange(total);
+      if (unavailableDatesDetected) {
+        setTotalPrice(null);
+        setNightlyPrices({});
+
+        if (onTotalPriceChange) {
+          onTotalPriceChange(null);
+        }
+      } else {
+        setTotalPrice(total);
+        setNightlyPrices(prices);
+
+        if (onTotalPriceChange) {
+          onTotalPriceChange(total);
+        }
       }
     } else {
+      setHasUnavailableDates(false);
       setTotalPrice(null);
       setNightlyPrices({});
 
@@ -253,6 +277,32 @@ export function RoomPriceCalendar({
       if (from > to) {
         onDateChange({ from, to: undefined });
         return;
+      }
+
+      if (calendarData?.data?.calendar) {
+        const startDate = new Date(from);
+        const endDate = new Date(to);
+
+        const currentDateCheck = new Date(startDate);
+        while (currentDateCheck < endDate) {
+          const dateKey = format(currentDateCheck, "yyyy-MM-dd");
+          const dayData = calendarData.data.calendar[dateKey];
+
+          if (dayData && !dayData.isAvailable) {
+            const prevDate = new Date(currentDateCheck);
+            prevDate.setDate(prevDate.getDate() - 1);
+            if (prevDate >= from) {
+              onDateChange({ from, to: prevDate });
+            } else {
+              onDateChange({ from, to: undefined });
+            }
+            alert(
+              `Sorry, the date ${format(currentDateCheck, "MM/dd/yyyy")} is not available for booking.`,
+            );
+            return;
+          }
+          currentDateCheck.setDate(currentDateCheck.getDate() + 1);
+        }
       }
     }
 
@@ -306,6 +356,28 @@ export function RoomPriceCalendar({
       ? calculateNights(dateRange.from, dateRange.to)
       : 0;
 
+  const checkUnavailableDatesInRange = () => {
+    if (!dateRange.from || !dateRange.to || !calendarData?.data?.calendar) {
+      return false;
+    }
+
+    const startDate = new Date(dateRange.from);
+    const endDate = new Date(dateRange.to);
+    const currentDateCheck = new Date(startDate);
+    while (currentDateCheck < endDate) {
+      const dateKey = format(currentDateCheck, "yyyy-MM-dd");
+      const dayData = calendarData.data.calendar[dateKey];
+
+      if (dayData && !dayData.isAvailable) {
+        return true;
+      }
+
+      currentDateCheck.setDate(currentDateCheck.getDate() + 1);
+    }
+
+    return false;
+  };
+
   return (
     <div className="mx-auto max-w-md space-y-6 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
       <div className="space-y-2">
@@ -334,11 +406,11 @@ export function RoomPriceCalendar({
       <div className="flex gap-2">
         <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
-            <div className="flex w-full justify-between divide-x rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:border-slate-300 hover:shadow">
+            <div className="flex w-full flex-col justify-between gap-2 transition-all sm:flex-row sm:gap-0">
               <div
                 className={`${buttonClasses(
                   dateRange.from,
-                )} flex h-full cursor-pointer flex-col gap-1 rounded-l-lg p-3 transition-colors hover:bg-slate-50`}
+                )} flex h-full cursor-pointer flex-col gap-1 rounded-lg border border-slate-200 p-3 transition-colors hover:bg-slate-50 sm:rounded-l-lg sm:rounded-r-none sm:border-r-0`}
                 onClick={() => setIsOpen(true)}
                 aria-label="Select check-in date"
               >
@@ -362,7 +434,7 @@ export function RoomPriceCalendar({
               <div
                 className={`${buttonClasses(
                   dateRange.to,
-                )} flex h-full cursor-pointer flex-col gap-1 rounded-r-lg p-3 transition-colors hover:bg-slate-50`}
+                )} flex h-full cursor-pointer flex-col gap-1 rounded-lg border border-slate-200 p-3 transition-colors hover:bg-slate-50 sm:rounded-l-none sm:rounded-r-lg`}
                 onClick={() => setIsOpen(true)}
                 aria-label="Select check-out date"
               >
@@ -460,6 +532,16 @@ export function RoomPriceCalendar({
                   day_button: "h-14 w-11 p-0 font-normal",
                 }}
               />
+              {selectedRoomId &&
+                dateRange.from &&
+                dateRange.to &&
+                checkUnavailableDatesInRange() && (
+                  <div className="rounded-md bg-rose-50 p-3 text-sm text-rose-700">
+                    <strong>Attention:</strong> The date range you selected
+                    contains dates that are already sold out. Please select a
+                    different date range to continue with your booking.
+                  </div>
+                )}
 
               <div className="flex items-center justify-end gap-2 border-t bg-gradient-to-r from-slate-50 to-blue-50 p-3">
                 <Button
@@ -493,63 +575,73 @@ export function RoomPriceCalendar({
           </div>
         </div>
       )}
-
-      {/* Price Summary Section */}
-      {selectedRoom && dateRange.from && dateRange.to && totalPrice && (
-        <div className="mt-4 space-y-3 rounded-lg border border-slate-200 bg-gradient-to-br from-blue-50/50 to-slate-50/50 p-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-medium text-slate-900">
-                {selectedRoom.type}
-              </h3>
-              <p className="text-sm text-slate-500">
-                {nights} {nights === 1 ? "night" : "nights"},{" "}
-                {selectedRoom.guest}{" "}
-                {selectedRoom.guest === 1 ? "guest" : "guests"}
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="font-semibold text-slate-900">
-                {formatIDR(totalPrice)}
-              </div>
-              <div className="text-xs text-slate-500">
-                {formatIDR(Math.round(totalPrice / nights))}/night avg.
-              </div>
-            </div>
+      {selectedRoomId &&
+        dateRange.from &&
+        dateRange.to &&
+        hasUnavailableDates && (
+          <div className="rounded-md bg-rose-50 p-3 text-sm text-rose-700">
+            <strong>Attention:</strong> The date range you selected contains
+            dates that are already sold out. Please select a different date
+            range to continue with your booking.
           </div>
-
-          {/* Expandable Price Breakdown */}
-          <details className="group">
-            <summary className="flex cursor-pointer items-center justify-between text-sm font-medium text-slate-700 hover:text-blue-600">
-              <span className="flex items-center">
-                <CreditCard className="mr-1.5 h-4 w-4 text-blue-500" />
-                View price breakdown
-              </span>
-              <span className="text-xs text-slate-400 transition-transform group-open:rotate-180">
-                ▼
-              </span>
-            </summary>
-            <div className="mt-2 space-y-1 pl-6 text-sm">
-              {Object.entries(nightlyPrices).map(([date, price]) => (
-                <div key={date} className="flex justify-between">
-                  <span className="text-slate-600">
-                    {format(new Date(date), "EEE, MMM d")}
-                  </span>
-                  <span className="font-medium text-slate-700">
-                    {formatIDR(price)}
-                  </span>
+        )}
+      {selectedRoom &&
+        dateRange.from &&
+        dateRange.to &&
+        totalPrice &&
+        !hasUnavailableDates && (
+          <div className="mt-4 space-y-3 rounded-lg border border-slate-200 bg-gradient-to-br from-blue-50/50 to-slate-50/50 p-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-medium text-slate-900">
+                  {selectedRoom.type}
+                </h3>
+                <p className="text-sm text-slate-500">
+                  {nights} {nights === 1 ? "night" : "nights"},{" "}
+                  {selectedRoom.guest}{" "}
+                  {selectedRoom.guest === 1 ? "guest" : "guests"}
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="font-semibold text-slate-900">
+                  {formatIDR(totalPrice)}
                 </div>
-              ))}
-              <div className="mt-2 flex justify-between border-t border-slate-200 pt-2 font-medium">
-                <span className="text-slate-800">
-                  Total ({nights} {nights === 1 ? "night" : "nights"})
-                </span>
-                <span className="text-blue-700">{formatIDR(totalPrice)}</span>
+                <div className="text-xs text-slate-500">
+                  {formatIDR(Math.round(totalPrice / nights))}/night avg.
+                </div>
               </div>
             </div>
-          </details>
-        </div>
-      )}
+            <details className="group">
+              <summary className="flex cursor-pointer items-center justify-between text-sm font-medium text-slate-700 hover:text-blue-600">
+                <span className="flex items-center">
+                  <CreditCard className="mr-1.5 h-4 w-4 text-blue-500" />
+                  View price breakdown
+                </span>
+                <span className="text-xs text-slate-400 transition-transform group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+              <div className="mt-2 space-y-1 pl-6 text-sm">
+                {Object.entries(nightlyPrices).map(([date, price]) => (
+                  <div key={date} className="flex justify-between">
+                    <span className="text-slate-600">
+                      {format(new Date(date), "EEE, MMM d")}
+                    </span>
+                    <span className="font-medium text-slate-700">
+                      {formatIDR(price)}
+                    </span>
+                  </div>
+                ))}
+                <div className="mt-2 flex justify-between border-t border-slate-200 pt-2 font-medium">
+                  <span className="text-slate-800">
+                    Total ({nights} {nights === 1 ? "night" : "nights"})
+                  </span>
+                  <span className="text-blue-700">{formatIDR(totalPrice)}</span>
+                </div>
+              </div>
+            </details>
+          </div>
+        )}
     </div>
   );
 }
