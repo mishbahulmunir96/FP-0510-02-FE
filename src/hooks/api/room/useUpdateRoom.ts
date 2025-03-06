@@ -6,7 +6,6 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-
 interface Facility {
   id?: number;
   title: string;
