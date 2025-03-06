@@ -33,18 +33,6 @@ const SearchPropertiesPage = () => {
   const endDate = searchParams.get("endDate") || "";
   const guest = Number(searchParams.get("guest")) || 0;
 
-  useEffect(() => {
-    console.log("Search params:", {
-      title,
-      startDate,
-      endDate,
-      guest,
-      sortBy,
-      sortOrder,
-      page,
-    });
-  }, [title, startDate, endDate, guest, sortBy, sortOrder, page]);
-
   const { data, isPending, refetch } = useGetPropertiesByQuery({
     take: 10,
     page,
