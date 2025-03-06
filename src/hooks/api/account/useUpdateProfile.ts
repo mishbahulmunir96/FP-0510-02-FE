@@ -31,7 +31,14 @@ const useUpdateProfile = () => {
     onSuccess: async () => {
       toast.success("Update profile success");
       await queryClient.invalidateQueries({ queryKey: ["account"] });
-      router.push("/user/dashboard/account");
+      try {
+        await axiosInstance.post("/auth/logout");
+        localStorage.removeItem("token");
+        sessionStorage.clear();
+        router.push("/login");
+      } catch (logoutError) {
+        router.push("/user/dashboard/account");
+      }
     },
     onError: (error: AxiosError<any>) => {
       toast.error(error.response?.data.message || error.response?.data);

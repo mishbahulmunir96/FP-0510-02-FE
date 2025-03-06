@@ -48,14 +48,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user.email = data.data.email;
           user.imageUrl = data.data.imageUrl;
 
-          // Pastikan struktur data konsisten
-          // Jika isVerified ada di data.data, bukan data.data.user
           user.isVerified = data.data.isVerified || true;
 
           return true;
         } catch (error) {
           console.error("Error pada autentikasi Google:", error);
-          return false; // Mengembalikan false akan menyebabkan error autentikasi
+          return false;
         }
       }
       return true;

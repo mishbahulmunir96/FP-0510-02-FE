@@ -23,7 +23,6 @@ const Navbar = () => {
     });
   };
 
-  // Render navigation items
   const renderNavigationItems = () => {
     return (
       <>
@@ -57,12 +56,10 @@ const Navbar = () => {
           <span className="text-xl font-bold text-gray-800">RateHaven</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden items-center space-x-8 md:flex">
           {renderNavigationItems()}
         </div>
 
-        {/* User Menu - Desktop */}
         <div className="hidden items-center space-x-4 md:flex">
           {session?.user ? (
             <DropdownMenu>
@@ -70,7 +67,7 @@ const Navbar = () => {
                 {session.user.imageUrl ? (
                   <div className="relative h-8 w-8 overflow-hidden rounded-full border border-gray-200">
                     <Image
-                      src={session.user.imageUrl}
+                      src={session.user.imageUrl || "/images/profile.png"}
                       alt="Profile Picture"
                       fill
                       className="object-cover"
@@ -128,7 +125,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu */}
         <div className="md:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger>

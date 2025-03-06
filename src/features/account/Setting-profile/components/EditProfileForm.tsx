@@ -1,44 +1,44 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent } from "react";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogCancel,
-  AlertDialogAction,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { toast } from "@/components/ui/use-toast";
-import { Icons } from "./icons";
-import useUpdateProfile from "@/hooks/api/account/useUpdateProfile";
-import useChangePassword from "@/hooks/api/account/useChangePassword";
-import { useChangeEmail } from "@/hooks/api/account/useChangeEmail";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
-  CheckCircle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/components/ui/use-toast";
+import { useChangeEmail } from "@/hooks/api/account/useChangeEmail";
+import useChangePassword from "@/hooks/api/account/useChangePassword";
+import useUpdateProfile from "@/hooks/api/account/useUpdateProfile";
+import {
   AlertCircle,
   Camera,
-  Mail,
+  CheckCircle,
   Lock,
+  Mail,
   User,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { Icons } from "./icons";
 
 const EditProfileForm = () => {
   const { data: session, status } = useSession();
@@ -46,24 +46,17 @@ const EditProfileForm = () => {
     useUpdateProfile();
   const changePasswordMutation = useChangePassword();
   const { mutate: changeEmail, isPending } = useChangeEmail();
-
-  // Display states
   const [displayName, setDisplayName] = useState("");
   const [displayEmail, setDisplayEmail] = useState("");
   const [displayImage, setDisplayImage] = useState("/images/placeholder.png");
-
-  // Form states
   const [formName, setFormName] = useState("");
   const [formEmail, setFormEmail] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-
-  // Password states
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Preview image state
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -73,7 +66,7 @@ const EditProfileForm = () => {
       setDisplayImage(
         session.user.imageUrl ||
           session.user.image ||
-          "/images/placeholder.png",
+          "/images/profile_default.jpg",
       );
       setFormName(session.user.name || "");
       setFormEmail(session.user.email || "");

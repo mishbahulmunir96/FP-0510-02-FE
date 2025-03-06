@@ -39,7 +39,6 @@ const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto max-w-5xl px-4 py-8 md:py-12">
-        {/* Header */}
         <header className="mb-8">
           <h1 className="text-2xl font-light text-gray-800 dark:text-gray-100 md:text-3xl">
             Peak Season <span className="font-semibold">Rate Management</span>
@@ -48,8 +47,6 @@ const PeakSeasonRatePage = ({ roomId }: PeakSeasonsPageProps) => {
             Set special rates for high-demand periods to maximize revenue
           </p>
         </header>
-
-        {/* Add Rate Form */}
         <div className="mb-8 overflow-hidden rounded-xl bg-white shadow-sm transition-all dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
             <h2 className="font-medium text-gray-700 dark:text-gray-300">

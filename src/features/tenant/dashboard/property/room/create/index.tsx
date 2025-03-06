@@ -17,15 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import * as Yup from "yup";
-import { PlusCircle, X, ImagePlus, Save } from "lucide-react";
 
+import { PlusCircle, X, ImagePlus, Save } from "lucide-react";
+import validationSchema from "./schemas";
 
 interface Facility {
   title: string;
   description: string;
 }
-
 interface FormValues {
   name: string;
   type: string;
@@ -36,31 +35,6 @@ interface FormValues {
   imageUrl: File | null;
   facilities: Facility[];
 }
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Room name is required"),
-  type: Yup.string()
-    .oneOf(["Standard", "Deluxe", "Suite"], "Invalid room type")
-    .required("Room type is required"),
-  stock: Yup.number()
-    .required("Stock is required")
-    .min(1, "Stock must be at least 1"),
-  price: Yup.number()
-    .required("Price is required")
-    .min(1000, "Price must be at least 1000"),
-  guest: Yup.number()
-    .required("Guest capacity is required")
-    .min(1, "Guest capacity must be at least 1"),
-  propertyId: Yup.number().required("Property is required"),
-  facilities: Yup.array()
-    .of(
-      Yup.object().shape({
-        title: Yup.string().required("Facility name is required"),
-        description: Yup.string().required("Facility description is required"),
-      }),
-    )
-    .min(1, "At least one facility is required"),
-});
 
 const CreateRoomPage = () => {
   const { mutateAsync: createRoom, isPending } = useCreateRoom();
@@ -131,9 +105,7 @@ const CreateRoomPage = () => {
   ) => {
     const facilities = [...formik.values.facilities];
 
-
     if (facilities[index]) {
-
       facilities[index] = {
         ...facilities[index],
         [field]: value,
@@ -142,7 +114,6 @@ const CreateRoomPage = () => {
       formik.setFieldValue("facilities", facilities);
     }
   };
-
 
   const getNestedError = (
     errors: FormikErrors<FormValues> | undefined,
@@ -155,7 +126,6 @@ const CreateRoomPage = () => {
       return undefined;
     }
 
-
     const facilitiesArray = errors.facilities as FormikErrors<Facility>[];
     if (Array.isArray(facilitiesArray) && facilitiesArray[index]) {
       return facilitiesArray[index][field] as string | undefined;
@@ -163,7 +133,6 @@ const CreateRoomPage = () => {
 
     return undefined;
   };
-
 
   const hasNestedError = (
     touched: any,
@@ -173,20 +142,17 @@ const CreateRoomPage = () => {
   ): boolean => {
     if (!touched || !errors) return false;
 
-
     if (!touched.facilities || !Array.isArray(touched.facilities)) return false;
 
     if (!touched.facilities[index] || !touched.facilities[index][field]) {
       return false;
     }
 
-
     return !!getNestedError(errors, index, field);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       <div className="bg-white shadow">
         <div className="container mx-auto max-w-5xl px-4 py-6 sm:px-6">
           <div>
@@ -200,14 +166,12 @@ const CreateRoomPage = () => {
         </div>
       </div>
 
-
       <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <div className="overflow-hidden rounded-xl bg-white shadow-sm">
           <form
             onSubmit={formik.handleSubmit}
             className="divide-y divide-gray-100"
           >
-
             <div className="space-y-4 p-6">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
                 Room Image
@@ -266,7 +230,6 @@ const CreateRoomPage = () => {
                 </div>
               </div>
             </div>
-
 
             <div className="space-y-6 p-6">
               <h2 className="mb-4 text-lg font-medium text-gray-900">
@@ -355,7 +318,6 @@ const CreateRoomPage = () => {
                 </div>
               </div>
             </div>
-
 
             <div className="space-y-6 p-6">
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -455,7 +417,6 @@ const CreateRoomPage = () => {
                 )}
               </div>
             </div>
-
 
             <div className="flex justify-end bg-gray-50 p-6">
               <Button

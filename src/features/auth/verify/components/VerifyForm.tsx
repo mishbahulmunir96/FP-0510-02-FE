@@ -70,7 +70,6 @@ export default function VerifyForm({ token }: { token: string }) {
       </CardHeader>
       <CardContent>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
-          {/* Name Input */}
           <div>
             <Input
               type="text"
@@ -88,8 +87,6 @@ export default function VerifyForm({ token }: { token: string }) {
               </motion.p>
             )}
           </div>
-
-          {/* Password Input */}
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
@@ -114,8 +111,6 @@ export default function VerifyForm({ token }: { token: string }) {
               {formik.errors.password}
             </motion.p>
           )}
-
-          {/* Confirm Password Input */}
           <div className="relative">
             <Input
               type={showConfirmPassword ? "text" : "password"}
@@ -141,7 +136,6 @@ export default function VerifyForm({ token }: { token: string }) {
             </motion.p>
           )}
 
-          {/* Password Strength Indicator */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Password strength:</span>
@@ -176,8 +170,6 @@ export default function VerifyForm({ token }: { token: string }) {
               />
             </div>
           </div>
-
-          {/* Password Requirements */}
           <div className="space-y-2">
             <p className="text-sm font-medium">Password must contain:</p>
             <ul className="space-y-1 text-sm">

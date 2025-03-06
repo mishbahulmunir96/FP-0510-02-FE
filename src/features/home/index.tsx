@@ -64,11 +64,8 @@ const HomePage = () => {
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       <Jumbotron />
-
-      {/* Search Section - Keeping original size */}
       <div className="mx-auto mt-20 max-w-7xl px-4">
         <div className="grid items-center gap-2 rounded-xl border-2 border-[#89CFF3] bg-white p-2 shadow-lg transition-all duration-300 hover:shadow-xl md:grid-cols-3">
-          {/* Property Search */}
           <div className="rounded-xl p-1">
             <p className="mb-1 text-center font-semibold text-[#00A9FF]">
               Property
@@ -86,11 +83,7 @@ const HomePage = () => {
               <p className="text-xs text-red-500">{formik.errors.title}</p>
             )}
           </div>
-
-          {/* Date Range Picker */}
           <DatePickerWithRange setFieldValue={formik.setFieldValue} />
-
-          {/* Guest Count */}
           <div className="rounded-xl p-1">
             <p className="mb-1 text-center font-semibold text-[#00A9FF]">Who</p>
             <Input
@@ -108,7 +101,6 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Search Button */}
         <div className="container mx-auto mt-3 max-w-7xl text-center">
           <Button
             className="w-full bg-[#00A9FF] font-medium text-white shadow-sm transition-all duration-300 hover:bg-[#0098e5] hover:shadow disabled:bg-[#89CFF3]"
@@ -141,8 +133,6 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
-
-      {/* Properties Section */}
       <div className="mx-auto px-4 py-16">
         <div className="mb-12 text-center">
           <h2 className="mb-2 text-3xl font-bold text-gray-800 transition-colors duration-300 hover:text-[#00A9FF]">

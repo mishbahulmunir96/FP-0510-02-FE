@@ -75,7 +75,7 @@ export default function NavbarDashboard() {
                 ) : session?.user?.imageUrl ? (
                   <Image
                     src={session.user.imageUrl}
-                    alt="Profile"
+                    alt="/images/profile_default.jpg"
                     fill
                     className="object-cover"
                   />

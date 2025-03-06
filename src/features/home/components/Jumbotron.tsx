@@ -28,9 +28,8 @@ const Jumbotron = () => {
           {jumbotronItems.map((item, index) => (
             <CarouselItem key={index}>
               <div className="p-2 sm:p-4">
-                <Card className="overflow-hidden shadow-lg">
-                  <CardContent className="relative h-[280px] w-full overflow-hidden rounded-lg sm:h-[320px] md:h-[400px] lg:h-[480px]">
-                    {/* Background image */}
+                <Card className="overflow-hidden rounded-b-3xl">
+                  <CardContent className="relative h-[280px] w-full overflow-hidden rounded-b-3xl sm:h-[320px] md:h-[400px] lg:h-[580px]">
                     <Image
                       src={item.imageUrl || "/placeholder.svg"}
                       alt={`jumbotron-${index}`}

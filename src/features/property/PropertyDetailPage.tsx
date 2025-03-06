@@ -24,8 +24,6 @@ type DateRange = {
   from: Date | undefined;
   to?: Date | undefined;
 };
-
-// Dynamic import for Map component
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
   loading: () => (
@@ -37,8 +35,6 @@ const Map = dynamic(() => import("@/components/Map"), {
     </div>
   ),
 });
-
-// Function to format price (e.g., 200000 -> 200k)
 const formatPrice = (price: number): string => {
   if (price >= 1000000) {
     return `${(price / 1000000).toFixed(1)}M`;
@@ -67,12 +63,9 @@ export default function PropertyDetailPage({
     from: undefined,
     to: undefined,
   });
-
-  // State for tab control and map highlighting
   const [activeTab, setActiveTab] = useState("rooms");
   const [highlightMap, setHighlightMap] = useState(false);
 
-  // Refs for scrolling
   const mapSectionRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -105,18 +98,12 @@ export default function PropertyDetailPage({
   const handlePositionChange = (lat: string, lng: string) => {
     console.log("Position changed:", lat, lng);
   };
-
-  // Function to handle "Show on map" click
   const handleShowOnMap = () => {
-    // Switch to the location tab
     setActiveTab("location");
 
-    // Scroll to the tabs section first to ensure tab content is visible
     setTimeout(() => {
       if (tabsRef.current) {
         tabsRef.current.scrollIntoView({ behavior: "smooth" });
-
-        // After tabs are in view and tab content is rendered, scroll to map
         setTimeout(() => {
           if (mapSectionRef.current) {
             mapSectionRef.current.scrollIntoView({
@@ -124,7 +111,6 @@ export default function PropertyDetailPage({
               block: "start",
             });
 
-            // Highlight the map temporarily
             setHighlightMap(true);
             setTimeout(() => setHighlightMap(false), 2000);
           }
@@ -135,7 +121,6 @@ export default function PropertyDetailPage({
 
   return (
     <main className="mx-auto my-8 max-w-screen-2xl px-4 sm:my-12 sm:px-6">
-      {/* Breadcrumb Navigation */}
       <div className="mb-4 text-sm text-gray-500">
         <span className="hover:text-primary hover:underline">Properties</span>
         <span className="mx-2">›</span>
@@ -143,9 +128,7 @@ export default function PropertyDetailPage({
       </div>
 
       <Card className="overflow-hidden border-0 bg-white shadow-sm">
-        {/* Main Content Section */}
         <div className="grid grid-cols-1 gap-8 p-4 lg:grid-cols-3 lg:p-6">
-          {/* Image Gallery Section */}
           <div className="space-y-4 lg:col-span-2">
             <div className="group relative h-[400px] overflow-hidden rounded-xl bg-gray-50 sm:h-[500px]">
               <Image
@@ -158,8 +141,6 @@ export default function PropertyDetailPage({
                 fill
                 priority
               />
-
-              {/* Image Navigation Arrows */}
               <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <button
                   onClick={() =>
@@ -210,8 +191,6 @@ export default function PropertyDetailPage({
                   </svg>
                 </button>
               </div>
-
-              {/* Action Buttons */}
               <div className="absolute right-4 top-4 flex space-x-2">
                 <button className="rounded-full bg-white/90 p-2 text-gray-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white hover:text-rose-500">
                   <Heart className="h-4 w-4" />
@@ -220,14 +199,10 @@ export default function PropertyDetailPage({
                   <Share className="h-4 w-4" />
                 </button>
               </div>
-
-              {/* Image Counter */}
               <div className="absolute bottom-4 right-4 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
                 {activeImageIndex + 1} / {property.propertyImage.length}
               </div>
             </div>
-
-            {/* Horizontal Thumbnail Gallery */}
             <div className="grid grid-cols-6 gap-2">
               {property.propertyImage.slice(0, 6).map((image, index) => (
                 <button
@@ -248,8 +223,6 @@ export default function PropertyDetailPage({
                 </button>
               ))}
             </div>
-
-            {/* Property Details & Description */}
             <div className="mt-6 space-y-5">
               <div>
                 <div className="flex items-center gap-3">
@@ -284,7 +257,6 @@ export default function PropertyDetailPage({
                 <div className="mt-2 flex items-center gap-2 text-gray-500">
                   <MapPin className="h-4 w-4" />
                   <span className="text-sm">{property.location}</span>
-                  {/* Show on map link with onClick handler */}
                   <span
                     onClick={handleShowOnMap}
                     className="cursor-pointer text-sm font-medium text-primary underline transition-colors hover:text-primary/80"
@@ -298,18 +270,13 @@ export default function PropertyDetailPage({
                   <span className="ml-1 font-medium">
                     {property.tenant.name}
                   </span>
-                  <div className="ml-2 h-6 w-6 overflow-hidden rounded-full bg-gray-100">
-                    {/* Host avatar could go here */}
-                  </div>
+                  <div className="ml-2 h-6 w-6 overflow-hidden rounded-full bg-gray-100"></div>
                 </div>
               </div>
 
-              {/* Description */}
               <div className="prose prose-sm max-w-none text-gray-600">
                 <p>{property.description}</p>
               </div>
-
-              {/* Quick Facts */}
               <div className="mt-4 flex justify-between">
                 <div className="flex-1 px-3 text-center">
                   <p className="text-xs text-gray-500">Available rooms</p>
@@ -337,15 +304,11 @@ export default function PropertyDetailPage({
               </div>
             </div>
           </div>
-
-          {/* Booking Section */}
           <div>
             <div className="sticky top-6 rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
               <h3 className="mb-4 text-lg font-semibold text-gray-900">
                 Book your stay
               </h3>
-
-              {/* Custom styling for the RoomPriceCalendar to fix date format display */}
               <style jsx global>{`
                 .date-input-placeholder {
                   font-family: inherit;
@@ -382,8 +345,6 @@ export default function PropertyDetailPage({
                   Please select a room and your stay dates
                 </p>
               )}
-
-              {/* Booking policies information */}
               <div className="mt-6 space-y-2.5 border-t border-gray-100 pt-4">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Check-in</span>
@@ -402,8 +363,6 @@ export default function PropertyDetailPage({
                   <span className="font-medium">Secure payment</span>
                 </div>
               </div>
-
-              {/* Trust indicators */}
               <div className="mt-6 rounded-lg bg-blue-50 p-3 text-center text-sm text-blue-600">
                 <p className="font-medium">Price guarantee</p>
                 <p className="mt-1 text-xs">
@@ -415,7 +374,6 @@ export default function PropertyDetailPage({
           </div>
         </div>
 
-        {/* Tabs Section */}
         <div ref={tabsRef}>
           <Tabs
             value={activeTab}
@@ -437,8 +395,6 @@ export default function PropertyDetailPage({
                 Location
               </TabsTrigger>
             </TabsList>
-
-            {/* Rooms Tab */}
             <TabsContent value="rooms" className="mt-6">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {availableRooms.map((room) => (
@@ -458,11 +414,8 @@ export default function PropertyDetailPage({
                 ))}
               </div>
             </TabsContent>
-
-            {/* Location Tab with Map */}
             <TabsContent value="location" className="mt-6">
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                {/* Map section */}
                 <div
                   ref={mapSectionRef}
                   className={`h-[450px] overflow-hidden rounded-lg transition-all duration-500 lg:col-span-2 ${
@@ -552,8 +505,6 @@ export default function PropertyDetailPage({
     </main>
   );
 }
-
-// Loading Skeleton Component
 const LoadingSkeleton = () => (
   <div className="mx-auto my-8 max-w-screen-2xl px-4 sm:my-12 sm:px-6">
     <Card className="overflow-hidden border-0 bg-white shadow-sm">
@@ -593,8 +544,6 @@ const LoadingSkeleton = () => (
     </Card>
   </div>
 );
-
-// Facility icon utility function
 const getFacilityIcon = (facilityName: string) => {
   const iconClass = "h-4 w-4 text-primary";
 

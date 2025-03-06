@@ -47,7 +47,6 @@ const useUpdateRoom = (id: number) => {
         formData.append("imageUrl", payload.imageUrl);
       }
 
-
       formData.append("facilities", JSON.stringify(payload.facilities));
 
       const { data } = await axiosInstance.patch(`/rooms/room/${id}`, formData);

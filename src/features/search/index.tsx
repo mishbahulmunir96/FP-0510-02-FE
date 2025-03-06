@@ -82,7 +82,6 @@ const SearchPropertiesPage = () => {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Page header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
@@ -99,8 +98,6 @@ const SearchPropertiesPage = () => {
             </p>
           </div>
         </div>
-
-        {/* Sorting section */}
         <div className="mb-6 flex justify-end rounded-lg bg-white p-4 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-gray-700">Sort by:</span>

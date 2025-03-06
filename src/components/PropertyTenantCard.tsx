@@ -41,7 +41,6 @@ const PropertyTenantCard: FC<PropertyCardProps> = ({
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             priority
           />
-          {/* Overlay with Dropdown Menu */}
           <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -12,7 +12,6 @@ import { useRef } from "react";
 const BestDeals = () => {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
 
-  // External image URLs
   const imageUrls = [
     "https://res.cloudinary.com/andikalp/image/upload/v1741069132/id-id_idjnu1.png",
     "https://res.cloudinary.com/andikalp/image/upload/v1741070759/id-id_pjz26n.png",

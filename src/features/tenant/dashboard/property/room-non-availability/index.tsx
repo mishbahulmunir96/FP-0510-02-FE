@@ -47,7 +47,6 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
           </p>
         </header>
 
-
         <div className="mb-8 overflow-hidden rounded-xl bg-white shadow-sm transition-all dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
             <h2 className="font-medium text-gray-700 dark:text-gray-300">
@@ -92,7 +91,6 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
             </form>
           </div>
         </div>
-
 
         <div className="overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">

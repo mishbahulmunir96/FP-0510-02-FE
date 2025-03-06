@@ -1,5 +1,4 @@
 "use client";
-import Pagination from "@/components/PaginationSection";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -15,7 +14,7 @@ import useDeleteCategory from "@/hooks/api/category/useDeleteCategory";
 import useGetCategory from "@/hooks/api/category/useGetCategory";
 import useUpdateCategory from "@/hooks/api/category/useUpdateCategory";
 import { useSession } from "next-auth/react";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { EditPropertyCategory } from "./EditPropertyCategory";
 interface PropertyCategoryPageProps {
   propertyCategoryId: number;
@@ -25,7 +24,6 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
   propertyCategoryId,
 }) => {
   const session = useSession();
-  const [page, setPage] = useState(1);
   const { data, isPending } = useGetCategory({
     userId: session.data?.user.id,
     take: 7,
@@ -85,14 +83,6 @@ const PropertyCategoryList: FC<PropertyCategoryPageProps> = ({
           </TableBody>
         </Table>
       </section>
-      <div className="container mx-auto mt-10 flex max-w-7xl justify-center">
-        <Pagination
-          take={data.meta.take}
-          total={data.meta.total}
-          page={page}
-          onChangePage={(newPage: number) => setPage(newPage)}
-        />
-      </div>
     </>
   );
 };
