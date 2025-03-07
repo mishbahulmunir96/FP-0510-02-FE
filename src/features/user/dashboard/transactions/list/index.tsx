@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Filters, SortOrder } from "@/types/transaction";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { createParser, useQueryStates } from "nuqs";
 import TransactionListCard from "./component/TransactionListCard";
 import TransactionListSkeleton from "./component/TransactionListSkeleton";
@@ -11,6 +11,8 @@ import TransactionPagination from "@/components/TransactionPagination";
 import useGetTransactionsByUser from "@/hooks/api/transaction/useGetTransactionsByUser";
 import TransactionFilters from "@/components/TransactionFilter";
 import { ArrowDownUp, Filter, Link } from "lucide-react";
+import UnauthenticatedState from "./component/UnauthenticatedState";
+import ErrorState from "./component/ErrorState";
 
 const numberParser = createParser({
   parse: (value: string) => parseInt(value, 10),
@@ -78,54 +80,11 @@ const TransactionListPage = () => {
   }
 
   if (status === "unauthenticated") {
-    return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4 rounded-xl bg-white p-8 shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-900">
-          Please login to view your bookings
-        </h2>
-        <p className="text-center text-gray-600">
-          Sign in to access your booking history and manage your reservations.
-        </p>
-        <Button
-          onClick={() => signIn()}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          Login
-        </Button>
-      </div>
-    );
+    return <UnauthenticatedState />;
   }
 
   if (isError) {
-    return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4 rounded-xl bg-white p-8 shadow-sm">
-        <div className="rounded-full bg-red-50 p-3">
-          <svg
-            className="h-6 w-6 text-red-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-        </div>
-        <h2 className="text-xl font-semibold text-gray-900">
-          Something went wrong
-        </h2>
-        <p className="text-center text-gray-600">{error?.message}</p>
-        <Button
-          onClick={() => window.location.reload()}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          Try Again
-        </Button>
-      </div>
-    );
+    return <ErrorState errorMessage={error?.message} />;
   }
 
   const totalPages = Math.ceil((transactionsResponse?.meta?.total || 0) / take);
