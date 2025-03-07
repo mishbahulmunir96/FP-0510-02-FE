@@ -37,7 +37,6 @@ const RoomNonAvailabilityPage = ({ roomId }: RoomNonAvailabilityPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
       <div className="container mx-auto max-w-5xl px-4 py-8 md:py-12">
-
         <header className="mb-8">
           <h1 className="text-2xl font-light text-gray-800 dark:text-gray-100 md:text-3xl">
             Room <span className="font-semibold">Availability Management</span>

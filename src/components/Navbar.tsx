@@ -99,7 +99,7 @@ const Navbar = () => {
                 <DropdownMenuItem asChild></DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
-                  <Link href="/forgot-password">Reset Password</Link>
+                  <Link href="/reset-password">Reset Password</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
@@ -199,7 +199,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild></DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/forgot-password">Reset Password</Link>
+                    <Link href="/reset-password">Reset Password</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     Logout
